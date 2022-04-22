@@ -113,11 +113,12 @@ struct PhotosOnThisDayWidgetEntryView : View {
 						}
 					}
 				}
-					.overlay(alignment: .bottomLeading) {
-						VStack(alignment: .leading) {
+					.overlay(alignment: .bottomTrailing) {
+						VStack(alignment: .trailing) {
 							if entry.image != nil {
 								Group {
-									if geometry.size.width >= 256 {
+									let isSmall = geometry.size.width < 256
+									if !isSmall {
 										if geometry.size.height >= 256 {
 											Text(entry.photoDate ?? entry.date, style: .date)
 										} else {
@@ -126,14 +127,14 @@ struct PhotosOnThisDayWidgetEntryView : View {
 									}
 									if let date = entry.photoDate {
 										Text(date, format: .relative(presentation: .numeric, unitsStyle: .wide))
-											.font(.system(.body, design: .rounded).weight(.semibold))
+											.font(.system(.callout, design: .rounded).weight(.semibold))
 									}
 								}
-									.font(.system(.title2, design: .rounded).weight(.semibold))
+									.font(.system(geometry.size.width < 256 ? .title2 : .title, design: .rounded).weight(.semibold))
 									.foregroundColor(.white)
 									.shadow(color: .black, radius: 1.5, x: 0, y: 1)
 							} else {
-								VStack(alignment: .leading, spacing: 4) {
+								VStack(alignment: .trailing, spacing: 4) {
 									let photosAuthStatus = PHPhotoLibrary.authorizationStatus(for: .readWrite)
 									if photosAuthStatus != .authorized {
 										Image(systemName: "photo")
@@ -151,6 +152,7 @@ struct PhotosOnThisDayWidgetEntryView : View {
 							}
 						}
 							.padding()
+							.padding(.bottom, -2)
 					}
 			}
 		}
