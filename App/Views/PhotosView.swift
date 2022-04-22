@@ -21,5 +21,6 @@ struct PhotosView: View {
 struct PhotosView_Previews: PreviewProvider {
 	static var previews: some View {
 		PhotosView(date: Date())
+			.environment(\.screenSize, UIScreen.main.bounds.size)
 	}
 }

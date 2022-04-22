@@ -7,7 +7,10 @@ struct PhotosOnThisDayApp: App {
 
 	var body: some Scene {
 		WindowGroup {
-			ContentView()
+			GeometryReader { geometryProxy in
+				ContentView()
+					.environment(\.screenSize, geometryProxy.size)
+			}
 		}
 	}
 }
