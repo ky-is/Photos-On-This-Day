@@ -5,5 +5,5 @@ extension Color {
 }
 
 extension UIColor {
-	static let accentColor = UIColor(named: "AccentColor")
+	static let accentColor = UIColor(named: "AccentColor")!
 }
