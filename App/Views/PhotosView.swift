@@ -1,5 +1,4 @@
 import SwiftUI
-import PhotosUI
 
 struct PhotosView: View {
 	let date: Date

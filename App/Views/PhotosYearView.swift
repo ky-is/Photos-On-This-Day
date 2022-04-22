@@ -1,5 +1,4 @@
 import SwiftUI
-import PhotosUI
 
 private struct PhotosYearHeader: View {
 	let fetch: PhotosFetchSingleYear

@@ -1,5 +1,5 @@
-import SwiftUI
 import Photos
+import SwiftUI
 
 @main
 struct PhotosOnThisDayApp: App {

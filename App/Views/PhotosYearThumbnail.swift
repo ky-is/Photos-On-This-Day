@@ -1,5 +1,5 @@
+import Photos
 import SwiftUI
-import PhotosUI
 
 struct PhotosYearThumbnail: View {
 	let asset: PHAsset

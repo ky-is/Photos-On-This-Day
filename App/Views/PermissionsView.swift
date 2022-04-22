@@ -1,5 +1,4 @@
 import SwiftUI
-import PhotosUI
 
 struct PermissionsView: View {
 	@ObservedObject private var permissions = PermissionsManager.shared
