@@ -26,8 +26,8 @@ final class AppDelegate: NSObject, UIApplicationDelegate, PHPhotoLibraryAvailabi
 		UINavigationBar.appearance().titleTextAttributes = [.font : UIFont.rounded(style: .headline, bold: false)]
 
 		PHPhotoLibrary.shared().register(self)
-		Task {
-			if StateManager.shared.permission != .limited {
+		if StateManager.shared.permission != .authorized && StateManager.shared.permission != .limited {
+			Task(priority: .userInitiated) {
 				StateManager.shared.permission = await PHPhotoLibrary.requestAuthorization(for: .readWrite)
 			}
 		}

@@ -18,7 +18,7 @@ final class PhotosFetchSingleYear: Identifiable, ObservableObject {
 	}
 
 	func update() {
-		Task {
+		Task(priority: .userInitiated) {
 			let fetch = PHAsset.fetchAssets(yearsBack: yearsBack, from: date, areDuplicatesAcceptable: true)
 			var fetchedAssets: [PHAsset] = []
 			fetch.enumerateObjects { asset, _, _ in
