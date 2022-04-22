@@ -19,7 +19,6 @@ final class AppDelegate: NSObject, UIApplicationDelegate, PHPhotoLibraryAvailabi
 
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
 		UIView.appearance(whenContainedInInstancesOf: [UIAlertController.self]).tintColor = .accentColor
-
 		UINavigationBar.appearance().largeTitleTextAttributes = [.font : UIFont.rounded(style: .largeTitle, bold: true)]
 		UINavigationBar.appearance().titleTextAttributes = [.font : UIFont.rounded(style: .headline, bold: false)]
 

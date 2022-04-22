@@ -33,8 +33,6 @@ struct PermissionsView: View {
 							} else {
 								Text("Please allow photos access to \"**All Photos**\" in Settings.app.")
 							}
-							Text("Your privacy is of the utmost importance. Photos are only used to display in the widget and app UI. This app never stores or uploads your photos anywhere, nor does it make any changes to your photo library.")
-								.font(.callout.italic())
 						}
 					}
 					HStack {
