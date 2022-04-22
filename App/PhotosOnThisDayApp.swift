@@ -19,6 +19,9 @@ final class AppDelegate: NSObject, UIApplicationDelegate, PHPhotoLibraryAvailabi
 	}
 
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+		UINavigationBar.appearance().largeTitleTextAttributes = [.font : UIFont.rounded(style: .largeTitle, bold: true)]
+		UINavigationBar.appearance().titleTextAttributes = [.font : UIFont.rounded(style: .headline, bold: false)]
+
 		PHPhotoLibrary.shared().register(self)
 		Task {
 			PermissionsManager.shared.permission = await PHPhotoLibrary.requestAuthorization(for: .readWrite)

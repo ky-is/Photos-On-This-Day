@@ -12,7 +12,7 @@ struct PermissionsView: View {
 				VStack {
 					if PermissionsManager.shared.permission == .limited {
 						Text("Photo Access Unavailable")
-							.font(.headline)
+							.font(.system(.headline, design: .rounded))
 							.padding(.bottom, 2)
 						Text("You're currently allowing a limited number of photos from your library. This isn't recommended since new photos will not be automatically included. Note that Hidden photos are never accessed or displayed through this app.")
 						Button("Manage limited photos") {
@@ -24,7 +24,7 @@ struct PermissionsView: View {
 						}
 					} else {
 						Text("Photo Access Unavailable")
-							.font(.headline)
+							.font(.system(.headline, design: .rounded))
 							.padding(.bottom)
 						Text("Photos On This Day does not have permission to access your photo library, which prevents your photos from being show in the Widget or App.")
 						if PermissionsManager.shared.permission == .restricted {
@@ -35,8 +35,8 @@ struct PermissionsView: View {
 					}
 					Link("Go to Settings", destination: URL(string: UIApplication.openSettingsURLString)!)
 				}
-				.buttonStyle(.bordered)
-				.padding(24)
+					.buttonStyle(.bordered)
+					.padding(24)
 			}
 		}
 	}
