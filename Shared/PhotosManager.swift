@@ -12,10 +12,8 @@ struct PhotosFetch {
 		(1...yearsBack).forEach { yearsToSubtract in
 			let (startDate, endDate) = Calendar.current.date(byAdding: .year, value: -yearsToSubtract, to: date)!.getStartAndEndOfDay()
 			let fetchPhotosOptions = PHFetchOptions()
-			fetchPhotosOptions.predicate = NSPredicate(format: "creationDate >= %@ AND creationDate < %@", startDate as NSDate, endDate as NSDate)
-	//		fetchPhotosOptions.predicate = NSPredicate(format: "@K >= %@ AND @K < %@", #keyPath(PHAsset.creationDate), startDate as NSDate, endDate as NSDate)
-	//		fetchPhotosOptions.predicate = \PHAsset.creationDate > (startDate as NSDate) && \PHAsset.creationDate < (endDate as NSDate)
-			fetchPhotosOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
+			fetchPhotosOptions.predicate = \PHAsset.creationDate > startDate && \PHAsset.creationDate < endDate
+			fetchPhotosOptions.sortDescriptors = [NSSortDescriptor(key: #keyPath(PHAsset.creationDate), ascending: true)]
 			fetchPhotosOptions.includeAssetSourceTypes = [.typeCloudShared, .typeUserLibrary, .typeiTunesSynced]
 			let fetch = PHAsset.fetchAssets(with: fetchPhotosOptions)
 			fetch.enumerateObjects { asset, index, _ in

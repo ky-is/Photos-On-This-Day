@@ -22,6 +22,8 @@
 		24721DED2811DCC0006EB593 /* Photos On This Day WidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 24721DDC2811DCBF006EB593 /* Photos On This Day WidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		24721DF32811DE34006EB593 /* Foundation+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24721DD42811C66D006EB593 /* Foundation+Extensions.swift */; };
 		24721DF42811DE37006EB593 /* PhotosManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24721DD62811CEAF006EB593 /* PhotosManager.swift */; };
+		2473CBC028126DB000A5E34B /* Predicates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2473CBBF28126DB000A5E34B /* Predicates.swift */; };
+		2473CBC128126DB000A5E34B /* Predicates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2473CBBF28126DB000A5E34B /* Predicates.swift */; };
 		249F40CA2812374C002287F0 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 249F40C92812374C002287F0 /* Constants.swift */; };
 		249F40CB2812374C002287F0 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 249F40C92812374C002287F0 /* Constants.swift */; };
 		249F40CD28123C49002287F0 /* PermissionsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 249F40CC28123C49002287F0 /* PermissionsManager.swift */; };
@@ -68,6 +70,7 @@
 		24721DE62811DCC0006EB593 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		24721DE82811DCC0006EB593 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		24721DF5281233F2006EB593 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2473CBBF28126DB000A5E34B /* Predicates.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Predicates.swift; sourceTree = "<group>"; };
 		249F40C92812374C002287F0 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		249F40CC28123C49002287F0 /* PermissionsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionsManager.swift; sourceTree = "<group>"; };
 		249F40CE281245BF002287F0 /* UIKit+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIKit+Extensions.swift"; sourceTree = "<group>"; };
@@ -161,6 +164,7 @@
 				249F40C92812374C002287F0 /* Constants.swift */,
 				24721DD42811C66D006EB593 /* Foundation+Extensions.swift */,
 				24721DD62811CEAF006EB593 /* PhotosManager.swift */,
+				2473CBBF28126DB000A5E34B /* Predicates.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -268,6 +272,7 @@
 			files = (
 				24721DC72811BE7C006EB593 /* ContentView.swift in Sources */,
 				24721DD72811CEAF006EB593 /* PhotosManager.swift in Sources */,
+				2473CBC028126DB000A5E34B /* Predicates.swift in Sources */,
 				249F40CD28123C49002287F0 /* PermissionsManager.swift in Sources */,
 				24721DC52811BE7C006EB593 /* PhotosOnThisDayApp.swift in Sources */,
 				24721DEA2811DCC0006EB593 /* PhotosOnThisDayWidget.intentdefinition in Sources */,
@@ -286,6 +291,7 @@
 				24721DF42811DE37006EB593 /* PhotosManager.swift in Sources */,
 				24721DE92811DCC0006EB593 /* PhotosOnThisDayWidget.intentdefinition in Sources */,
 				249F40CB2812374C002287F0 /* Constants.swift in Sources */,
+				2473CBC128126DB000A5E34B /* Predicates.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
