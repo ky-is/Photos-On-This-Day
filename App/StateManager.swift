@@ -1,9 +1,10 @@
-import Foundation
 import Photos
 import WidgetKit
 
-final class PermissionsManager: ObservableObject {
-	static let shared = PermissionsManager()
+final class StateManager: ObservableObject {
+	static let shared = StateManager()
+
+	@Published var daysChange = 0
 
 	@Published var permission = PHPhotoLibrary.authorizationStatus(for: .readWrite) {
 		didSet {

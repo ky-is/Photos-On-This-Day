@@ -23,8 +23,8 @@ final class AppDelegate: NSObject, UIApplicationDelegate, PHPhotoLibraryAvailabi
 
 		PHPhotoLibrary.shared().register(self)
 		Task {
-			if PermissionsManager.shared.permission != .limited {
-				PermissionsManager.shared.permission = await PHPhotoLibrary.requestAuthorization(for: .readWrite)
+			if StateManager.shared.permission != .limited {
+				StateManager.shared.permission = await PHPhotoLibrary.requestAuthorization(for: .readWrite)
 			}
 		}
 		return true

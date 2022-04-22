@@ -3,18 +3,18 @@ import SwiftUI
 
 struct PhotosYearThumbnail: View {
 	let asset: PHAsset
+	let size: CGSize
 
 	@State private var image: UIImage?
 
 	var body: some View {
-		GeometryReader { geometry in
-			ZStack {
+		ZStack {
+			Group {
 				if let image = image {
 					Image(uiImage: image)
 						.resizable()
 						.aspectRatio(contentMode: .fill)
-						.frame(width: geometry.size.width, height: geometry.size.height)
-						.clipped()
+						.frame(width: size.width, height: size.height)
 						.overlay(alignment: .bottomTrailing) {
 							if asset.sourceType == .typeCloudShared {
 								Image(systemName: "icloud")
@@ -23,21 +23,26 @@ struct PhotosYearThumbnail: View {
 									.padding(2)
 							}
 						}
+				} else {
+					Image(systemName: "photo")
+						.font(.system(size: 32))
+						.foregroundColor(.secondary)
 				}
 			}
-				.task {
-					PHImageManager.default().requestImage(for: asset, targetSize: geometry.size, contentMode: .aspectFill, options: nil) { image, userInfo in
-						DispatchQueue.main.async {
-							self.image = image
-						}
+				.clipped()
+		}
+			.task {
+				PHImageManager.default().requestImage(for: asset, targetSize: size, contentMode: .aspectFill, options: nil) { image, userInfo in
+					DispatchQueue.main.async {
+						self.image = image
 					}
 				}
-		}
+			}
 	}
 }
 
 struct PhotosYearThumbnail_Previews: PreviewProvider {
 	static var previews: some View {
-		PhotosYearThumbnail(asset: PHAsset())
+		PhotosYearThumbnail(asset: PHAsset(), size: CGSize(width: 128, height: 128))
 	}
 }

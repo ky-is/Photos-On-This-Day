@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct PermissionsView: View {
-	@ObservedObject private var permissions = PermissionsManager.shared
+	@ObservedObject private var state = StateManager.shared
 
 	@State private var showPrivacy = false
 
@@ -10,7 +10,7 @@ struct PermissionsView: View {
 	}
 
 	var body: some View {
-		if permissions.permission != .authorized && permissions.permission != .notDetermined {
+		if state.permission != .authorized && state.permission != .notDetermined {
 			ZStack {
 				RoundedRectangle(cornerRadius: 48, style: .continuous)
 					.fill(Color(uiColor: .secondarySystemFill))
@@ -18,17 +18,17 @@ struct PermissionsView: View {
 						openSettings()
 					}
 				VStack {
-					Label("Access \(permissions.permission == .limited ? "Limited" : "Unavailable")", systemImage: "photo")
+					Label("Access \(state.permission == .limited ? "Limited" : "Unavailable")", systemImage: "photo")
 						.font(.system(.headline, design: .rounded))
 						.padding(.bottom, 1)
 					VStack(alignment: .leading, spacing: 8) {
-						if permissions.permission == .limited {
+						if state.permission == .limited {
 							Text("You're currently limiting access to photos from your library. This isn't recommended since new photos will not be automatically included.")
 							Text("Note that photos you mark as **Hidden** from Photos.app are never displayed or even accessed by this app.")
 								.font(.callout.italic())
 						} else {
 							Text("_Photos On This Day_ does not have permission to access your photo library, which prevents the Widget and App from displaying your photos.")
-							if permissions.permission == .restricted {
+							if state.permission == .restricted {
 								Text("Please enable apps to access photos with permission via Settings.app.")
 							} else {
 								Text("Please allow photos access to \"**All Photos**\" in Settings.app.")
