@@ -34,6 +34,7 @@
 		249F40CB2812374C002287F0 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 249F40C92812374C002287F0 /* Constants.swift */; };
 		249F40CD28123C49002287F0 /* StateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 249F40CC28123C49002287F0 /* StateManager.swift */; };
 		249F40CF281245BF002287F0 /* UIKit+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 249F40CE281245BF002287F0 /* UIKit+Extensions.swift */; };
+		24DBDA0D2813400300B4313E /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24DBDA0C2813400300B4313E /* Colors.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -85,6 +86,7 @@
 		249F40C92812374C002287F0 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		249F40CC28123C49002287F0 /* StateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateManager.swift; sourceTree = "<group>"; };
 		249F40CE281245BF002287F0 /* UIKit+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIKit+Extensions.swift"; sourceTree = "<group>"; };
+		24DBDA0C2813400300B4313E /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -137,6 +139,7 @@
 				24721DCA2811BE7D006EB593 /* Preview Content */,
 				249F40CE281245BF002287F0 /* UIKit+Extensions.swift */,
 				249F40CC28123C49002287F0 /* StateManager.swift */,
+				24DBDA0C2813400300B4313E /* Colors.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -295,6 +298,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				24721DC72811BE7C006EB593 /* ContentView.swift in Sources */,
+				24DBDA0D2813400300B4313E /* Colors.swift in Sources */,
 				24721DD72811CEAF006EB593 /* PhotosManager.swift in Sources */,
 				2473CBC028126DB000A5E34B /* Predicates.swift in Sources */,
 				247BF61D2812766B0024B9F2 /* PhotosYearView.swift in Sources */,
