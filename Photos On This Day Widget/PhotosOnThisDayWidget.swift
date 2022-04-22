@@ -37,7 +37,7 @@ struct Provider: IntentTimelineProvider {
 		let calendar = Calendar.current
 		let currentDate = Date()
 		let startHour = calendar.component(.hour, from: currentDate)
-//		let nextDayStart = calendar.startOfDay(for: calendar.date(byAdding: .day, value: 1, to: currentDate)!)
+		let nextDayStart = calendar.startOfDay(for: calendar.date(byAdding: .day, value: 1, to: currentDate)!)
 //		let timeForUpdates = nextDayStart.timeIntervalSince(currentDate)
 //		let timePerUpdate = timeForUpdates / photoAssets.results.count
 		let photosNeededCount = 24 - startHour
@@ -52,7 +52,7 @@ struct Provider: IntentTimelineProvider {
 				entries.append(entry)
 			}
 		}
-		let timeline = Timeline(entries: entries, policy: .atEnd)
+		let timeline = Timeline(entries: entries, policy: .after(nextDayStart))
 		completion(timeline)
 	}
 }
