@@ -16,17 +16,24 @@ struct PhotosYearThumbnail: View {
 						.aspectRatio(contentMode: .fill)
 						.frame(width: size.width, height: size.height)
 						.overlay(alignment: .bottomTrailing) {
-							if asset.sourceType == .typeCloudShared {
-								Image(systemName: "icloud")
-									.foregroundColor(.white)
-									.shadow(color: .black, radius: 1, x: 0, y: 0.5)
-									.padding(2)
+							Group {
+								if asset.sourceType == .typeCloudShared {
+									Image(systemName: "icloud") // rectangle.stack.badge.person.crop
+								}
+								if asset.mediaSubtypes.contains(.photoScreenshot) {
+									Image(systemName: "iphone")
+								}
 							}
+								.foregroundColor(.white)
+								.shadow(color: .black, radius: 1, x: 0, y: 0.5)
+								.padding(2)
 						}
 				} else {
 					Image(systemName: "photo")
-						.font(.system(size: 32))
-						.foregroundColor(.secondary)
+						.font(.system(size: 64, weight: .black))
+						.foregroundColor(.background)
+						.frame(width: size.width, height: size.height)
+						.background(Color.primary.opacity(0.05))
 				}
 			}
 				.clipped()

@@ -3,6 +3,8 @@ import SwiftUI
 struct ContentView: View {
 	@ObservedObject private var state = StateManager.shared
 
+	@State private var showHelp = false
+
 	var body: some View {
 		NavigationView {
 			let date = Calendar.current.date(byAdding: .init(day: state.daysChange), to: Date())!
@@ -40,6 +42,18 @@ struct ContentView: View {
 						}
 							.disabled(!canShowPhotos)
 					}
+					ToolbarItemGroup(placement: .navigationBarTrailing) {
+						if canShowPhotos {
+							Button {
+								showHelp.toggle()
+							} label: {
+								Image(systemName: "questionmark.circle")
+							}
+						}
+					}
+				}
+				.sheet(isPresented: $showHelp) {
+					AboutView()
 				}
 		}
 			.navigationViewStyle(.stack)

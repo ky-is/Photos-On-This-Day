@@ -31,3 +31,7 @@ extension UIFont {
 		return UIFont(descriptor: descriptor, size: font.pointSize)
 	}
 }
+
+extension Bundle {
+	static let iTunesIdentifier = "" //TODO
+}

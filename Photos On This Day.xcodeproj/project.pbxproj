@@ -35,6 +35,9 @@
 		249F40CD28123C49002287F0 /* StateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 249F40CC28123C49002287F0 /* StateManager.swift */; };
 		249F40CF281245BF002287F0 /* UIKit+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 249F40CE281245BF002287F0 /* UIKit+Extensions.swift */; };
 		24DBDA0D2813400300B4313E /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24DBDA0C2813400300B4313E /* Colors.swift */; };
+		24DBDA0F281344F100B4313E /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24DBDA0E281344F100B4313E /* AboutView.swift */; };
+		24DBDA12281347D400B4313E /* UIViewButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24DBDA112813468C00B4313E /* UIViewButton.swift */; };
+		24DBDA142813484700B4313E /* Sharing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24DBDA132813484700B4313E /* Sharing.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -87,6 +90,9 @@
 		249F40CC28123C49002287F0 /* StateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateManager.swift; sourceTree = "<group>"; };
 		249F40CE281245BF002287F0 /* UIKit+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIKit+Extensions.swift"; sourceTree = "<group>"; };
 		24DBDA0C2813400300B4313E /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
+		24DBDA0E281344F100B4313E /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
+		24DBDA112813468C00B4313E /* UIViewButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewButton.swift; sourceTree = "<group>"; };
+		24DBDA132813484700B4313E /* Sharing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sharing.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -140,6 +146,7 @@
 				249F40CE281245BF002287F0 /* UIKit+Extensions.swift */,
 				249F40CC28123C49002287F0 /* StateManager.swift */,
 				24DBDA0C2813400300B4313E /* Colors.swift */,
+				24DBDA132813484700B4313E /* Sharing.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -192,8 +199,18 @@
 				247BF62128127D930024B9F2 /* PhotosView.swift */,
 				247BF61C2812766B0024B9F2 /* PhotosYearView.swift */,
 				242F2E1B28130B2E00E88ADF /* PhotosYearThumbnail.swift */,
+				24DBDA0E281344F100B4313E /* AboutView.swift */,
+				24DBDA102813468300B4313E /* Components */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		24DBDA102813468300B4313E /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				24DBDA112813468C00B4313E /* UIViewButton.swift */,
+			);
+			path = Components;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -310,7 +327,10 @@
 				249F40CA2812374C002287F0 /* Constants.swift in Sources */,
 				242F2E1C28130B2E00E88ADF /* PhotosYearThumbnail.swift in Sources */,
 				24721DD52811C66D006EB593 /* Foundation+Extensions.swift in Sources */,
+				24DBDA0F281344F100B4313E /* AboutView.swift in Sources */,
+				24DBDA12281347D400B4313E /* UIViewButton.swift in Sources */,
 				247BF620281278910024B9F2 /* PermissionsView.swift in Sources */,
+				24DBDA142813484700B4313E /* Sharing.swift in Sources */,
 				242F2E192813057E00E88ADF /* Photos+Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
