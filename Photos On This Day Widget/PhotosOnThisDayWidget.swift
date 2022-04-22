@@ -1,8 +1,6 @@
-import WidgetKit
-import SwiftUI
-import Intents
 import Photos
-import Vision
+import SwiftUI
+import WidgetKit
 
 struct Provider: IntentTimelineProvider {
 	private func getImage(asset: PHAsset, size: CGSize, callback: @escaping (UIImage?) -> Void) {

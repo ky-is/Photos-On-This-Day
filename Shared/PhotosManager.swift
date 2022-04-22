@@ -1,35 +1,59 @@
-import Foundation
 import Photos
 
 typealias DateScoreAsset = (date: Date, score: Float, asset: PHAsset)
 typealias YearScoreAssets = (yearsBack: Int, assets: [DateScoreAsset])
 
-struct PhotosFetch {
-	let scoreYearPhotoList: [[DateScoreAsset]]
+final class PhotosFetchSingleYear: Identifiable, ObservableObject {
+	@Published var assets: [PHAsset] = []
+
+	private var scoreYearPhotoList: [[DateScoreAsset]] = []
+
+	let date: Date
+	let yearsBack: Int
 
 	init(fromDate date: Date, yearsBack: Int) {
+		self.date = date
+		self.yearsBack = yearsBack
+		update()
+	}
+
+	func update() {
+		Task {
+			let fetch = PHAsset.fetchAssets(yearsBack: yearsBack, from: date, areDuplicatesAcceptable: true)
+			var fetchedAssets: [PHAsset] = []
+			fetch.enumerateObjects { asset, _, _ in
+				fetchedAssets.append(asset)
+			}
+			let assets = fetchedAssets
+			DispatchQueue.main.async {
+				self.assets = assets
+			}
+		}
+	}
+}
+
+struct PhotosFetchMultiYear {
+	var bestPhotos: [DateScoreAsset] = []
+
+	init(fromDate date: Date, yearsBack: Int, maxCount: Int) {
 		var scoreAssetsByYear: [Int: [DateScoreAsset]] = [:]
 		(1...yearsBack).forEach { yearsToSubtract in
-			let (startDate, endDate) = Calendar.current.date(byAdding: .year, value: -yearsToSubtract, to: date)!.getStartAndEndOfDay()
-			let fetchPhotosOptions = PHFetchOptions()
-			fetchPhotosOptions.predicate = \PHAsset.creationDate > startDate && \PHAsset.creationDate < endDate
-			fetchPhotosOptions.sortDescriptors = [NSSortDescriptor(key: #keyPath(PHAsset.creationDate), ascending: true)]
-			fetchPhotosOptions.includeAssetSourceTypes = [.typeCloudShared, .typeUserLibrary, .typeiTunesSynced]
-			let fetch = PHAsset.fetchAssets(with: fetchPhotosOptions)
-			fetch.enumerateObjects { asset, index, _ in
+			let startDate = Calendar.current.startOfDay(for: date)
+			PHAsset.fetchAssets(yearsBack: yearsToSubtract, from: date, areDuplicatesAcceptable: true).enumerateObjects { asset, index, _ in
 				if scoreAssetsByYear[yearsToSubtract] == nil {
 					scoreAssetsByYear[yearsToSubtract] = []
 				}
 				scoreAssetsByYear[yearsToSubtract]!.append((startDate, asset.isFavorite ? 1 : 0, asset))
 			}
 		}
-		self.scoreYearPhotoList = scoreAssetsByYear
+		let scoreYearPhotoList = scoreAssetsByYear
 			.map { (year, scoreAssets) -> YearScoreAssets in (year, scoreAssets.sorted { $0.score > $1.score }) }
 			.sorted { $0.yearsBack > $1.yearsBack }
 			.map(\.assets)
+		self.bestPhotos = getBestPhotos(scoreYearPhotoList: scoreYearPhotoList, maxCount: maxCount)
 	}
 
-	func getBestPhotos(maxCount: Int) -> [DateScoreAsset] {
+	private func getBestPhotos(scoreYearPhotoList: [[DateScoreAsset]], maxCount: Int) -> [DateScoreAsset] {
 		var results: [DateScoreAsset] = []
 		var photosByYear = scoreYearPhotoList
 		while (results.count < maxCount) {
@@ -51,7 +75,7 @@ struct PhotosFetch {
 final class PhotosManager: NSObject, ObservableObject, PHPhotoLibraryChangeObserver {
 	static let shared = PhotosManager()
 
-	var cache: [String: PhotosFetch] = [:]
+	var cache: [String: PhotosFetchMultiYear] = [:]
 
 	let formatter = Date.FormatStyle().year().month(.defaultDigits).day()
 
@@ -59,11 +83,15 @@ final class PhotosManager: NSObject, ObservableObject, PHPhotoLibraryChangeObser
 		print(#function, changeInstance)
 	}
 
-	func getPhotos(from date: Date, yearsBack: Int, maxCount: Int) -> [DateScoreAsset] {
+	private func getCache(from date: Date, yearsBack: Int, maxCount: Int) -> PhotosFetchMultiYear {
 		let key = "\(date.formatted(formatter))-\(yearsBack)"
 		if cache[key] == nil {
-			cache[key] = PhotosFetch(fromDate: date, yearsBack: yearsBack)
+			cache[key] = PhotosFetchMultiYear(fromDate: date, yearsBack: yearsBack, maxCount: maxCount)
 		}
-		return cache[key]!.getBestPhotos(maxCount: maxCount)
+		return cache[key]!
+	}
+
+	func getPhotos(from date: Date, yearsBack: Int, maxCount: Int) -> [DateScoreAsset] {
+		return getCache(from: date, yearsBack: yearsBack, maxCount: maxCount).bestPhotos
 	}
 }
