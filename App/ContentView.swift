@@ -27,10 +27,11 @@ struct ContentView: View {
 							Text("Photo Access Unavailable")
 								.font(.headline)
 								.padding(.bottom)
+							Text("Photos On This Day does not have permission to access your photo library, which prevents your photos from being show in the Widget or App.")
 							if PermissionsManager.shared.permission == .restricted {
-								Text("Photos On This Day does not have permission to access your photo library, which prevents your photos from being show in the Widget or App. Please enable apps to access photos with permission via Settings.app.")
+								Text("Please enable apps to access photos with permission via Settings.app.")
 							} else {
-								Text("Photos On This Day does not have permission to access your photo library, which prevents your photos from being show in the Widget or App. Please update the Photos permission in Settings.app.")
+								Text("Please update the Photos permission in Settings.app.")
 							}
 						}
 						Link("Go to Settings", destination: URL(string: UIApplication.openSettingsURLString)!)

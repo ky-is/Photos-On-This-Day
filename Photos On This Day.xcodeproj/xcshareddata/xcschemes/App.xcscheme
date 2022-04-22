@@ -15,7 +15,7 @@
 				<BuildableReference
 					BuildableIdentifier = "primary"
 					BlueprintIdentifier = "24721DC02811BE7C006EB593"
-					BuildableName = "On This Day.app"
+					BuildableName = "Photos On This Day.app"
 					BlueprintName = "Photos On This Day"
 					ReferencedContainer = "container:Photos On This Day.xcodeproj">
 				</BuildableReference>
@@ -45,7 +45,7 @@
 			<BuildableReference
 				BuildableIdentifier = "primary"
 				BlueprintIdentifier = "24721DC02811BE7C006EB593"
-				BuildableName = "On This Day.app"
+				BuildableName = "Photos On This Day.app"
 				BlueprintName = "Photos On This Day"
 				ReferencedContainer = "container:Photos On This Day.xcodeproj">
 			</BuildableReference>
@@ -62,7 +62,7 @@
 			<BuildableReference
 				BuildableIdentifier = "primary"
 				BlueprintIdentifier = "24721DC02811BE7C006EB593"
-				BuildableName = "On This Day.app"
+				BuildableName = "Photos On This Day.app"
 				BlueprintName = "Photos On This Day"
 				ReferencedContainer = "container:Photos On This Day.xcodeproj">
 			</BuildableReference>
