@@ -92,15 +92,6 @@ struct PhotosOnThisDayWidget: Widget {
 struct PhotosOnThisDayWidgetEntryView : View {
 	var entry: Provider.Entry
 
-//	let formatter: DateFormatter = {
-//		let currentLocale: Locale = Locale.current
-//		let dateComponents = "MMMMd"
-//		let dateFormat = DateFormatter.dateFormat(fromTemplate: dateComponents, options: 0, locale: currentLocale)
-//		let formatter = DateFormatter()
-//		formatter.dateFormat = dateFormat
-//		return formatter
-//	}()
-
 	var body: some View {
 		GeometryReader { geometry in
 			ZStack {
@@ -119,11 +110,17 @@ struct PhotosOnThisDayWidgetEntryView : View {
 					}
 				}
 					.overlay(alignment: .bottomLeading) {
-						Group {
-							if geometry.size.width < 256 {
-								Text(Calendar.current.component(.year, from: entry.photoDate ?? entry.date).description)
-							} else {
-								Text(entry.photoDate ?? entry.date, style: .date)
+						VStack(alignment: .leading) {
+							if geometry.size.width >= 256 {
+								if geometry.size.height >= 256 {
+									Text(entry.photoDate ?? entry.date, style: .date)
+								} else {
+									Text(entry.photoDate ?? entry.date, formatter: DateFormatter.monthDay)
+								}
+							}
+							if let date = entry.photoDate {
+								Text(date, format: .relative(presentation: .numeric, unitsStyle: .wide))
+									.font(.system(.body, design: .rounded).weight(.semibold))
 							}
 						}
 							.font(.system(.title2, design: .rounded).weight(.semibold))

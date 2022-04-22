@@ -8,3 +8,14 @@ extension Date {
 		return (startDate, endDate)
 	}
 }
+
+extension DateFormatter {
+	static let monthDay: DateFormatter = {
+		let currentLocale: Locale = Locale.current
+		let dateComponents = "MMMMd"
+		let dateFormat = DateFormatter.dateFormat(fromTemplate: dateComponents, options: 0, locale: currentLocale)
+		let formatter = DateFormatter()
+		formatter.dateFormat = dateFormat
+		return formatter
+	}()
+}
