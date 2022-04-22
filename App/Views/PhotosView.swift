@@ -15,6 +15,7 @@ struct PhotosView: View {
 				PhotosYearView(fetch: fetch)
 			}
 		}
+			.padding(.bottom, 32)
 	}
 }
 

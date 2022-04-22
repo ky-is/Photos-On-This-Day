@@ -40,7 +40,7 @@ struct Provider: IntentTimelineProvider {
 //		let timePerUpdate = timeForUpdates / photoAssets.results.count
 		let photosNeededCount = 24 - startHour
 		var entries: [PhotosOnThisDayEntry] = []
-		let photosFetch = manager.getPhotos(from: Date(), yearsBack: 16, maxCount: photosNeededCount)
+		let photosFetch = manager.getPhotos(from: Date(), yearsBack: 16, maxCount: photosNeededCount).shuffled()
 		var pendingRequests = 0
 		for (offset, scoreAsset) in photosFetch.enumerated() {
 			let entryDate = calendar.date(byAdding: .hour, value: offset, to: currentDate)!
@@ -93,6 +93,8 @@ struct PhotosOnThisDayWidget: Widget {
 struct PhotosOnThisDayWidgetEntryView : View {
 	var entry: Provider.Entry
 
+	@Environment(\.widgetFamily) private var widgetFamily
+
 	var body: some View {
 		GeometryReader { geometry in
 			ZStack {
@@ -117,20 +119,23 @@ struct PhotosOnThisDayWidgetEntryView : View {
 						VStack(alignment: .trailing) {
 							if entry.image != nil {
 								Group {
-									let isSmall = geometry.size.width < 256
+									let isSmall = widgetFamily == .systemSmall
+									let isLarge = !isSmall && widgetFamily != .systemMedium
 									if !isSmall {
-										if geometry.size.height >= 256 {
-											Text(entry.photoDate ?? entry.date, style: .date)
-										} else {
-											Text(entry.photoDate ?? entry.date, formatter: DateFormatter.monthDay)
+										Group {
+											if isLarge {
+												Text(entry.photoDate ?? entry.date, style: .date)
+											} else {
+												Text(entry.photoDate ?? entry.date, formatter: DateFormatter.monthDay)
+											}
 										}
+											.font(.system(isLarge ? .title : .title2, design: .rounded).weight(.semibold))
 									}
 									if let date = entry.photoDate {
 										Text(date, format: .relative(presentation: .numeric, unitsStyle: .wide))
 											.font(.system(.callout, design: .rounded).weight(.semibold))
 									}
 								}
-									.font(.system(geometry.size.width < 256 ? .title2 : .title, design: .rounded).weight(.semibold))
 									.foregroundColor(.white)
 									.shadow(color: .black, radius: 1.5, x: 0, y: 1)
 							} else {
