@@ -1,12 +1,12 @@
 import Photos
 
-typealias DateScoreAsset = (date: Date, score: Float, asset: PHAsset)
-typealias YearScoreAssets = (yearsBack: Int, assets: [DateScoreAsset])
+typealias ScoreAsset = (score: Float, asset: PHAsset)
+typealias YearScoreAssets = (yearsBack: Int, assets: [ScoreAsset])
 
 final class PhotosFetchSingleYear: Identifiable, ObservableObject {
 	@Published var assets: [PHAsset] = []
 
-	private var scoreYearPhotoList: [[DateScoreAsset]] = []
+	private var scoreYearPhotoList: [[ScoreAsset]] = []
 
 	let date: Date
 	let yearsBack: Int
@@ -33,17 +33,16 @@ final class PhotosFetchSingleYear: Identifiable, ObservableObject {
 }
 
 struct PhotosFetchMultiYear {
-	var bestPhotos: [DateScoreAsset] = []
+	var bestPhotos: [ScoreAsset] = []
 
 	init(fromDate date: Date, yearsBack: Int, maxCount: Int) {
-		var scoreAssetsByYear: [Int: [DateScoreAsset]] = [:]
+		var scoreAssetsByYear: [Int: [ScoreAsset]] = [:]
 		(1...yearsBack).forEach { yearsToSubtract in
-			let startDate = Calendar.current.startOfDay(for: date)
 			PHAsset.fetchAssets(yearsBack: yearsToSubtract, from: date, areDuplicatesAcceptable: true).enumerateObjects { asset, index, _ in
 				if scoreAssetsByYear[yearsToSubtract] == nil {
 					scoreAssetsByYear[yearsToSubtract] = []
 				}
-				scoreAssetsByYear[yearsToSubtract]!.append((startDate, asset.isFavorite ? 1 : 0, asset))
+				scoreAssetsByYear[yearsToSubtract]!.append((asset.isFavorite ? 1 : 0, asset))
 			}
 		}
 		let scoreYearPhotoList = scoreAssetsByYear
@@ -53,8 +52,8 @@ struct PhotosFetchMultiYear {
 		self.bestPhotos = getBestPhotos(scoreYearPhotoList: scoreYearPhotoList, maxCount: maxCount)
 	}
 
-	private func getBestPhotos(scoreYearPhotoList: [[DateScoreAsset]], maxCount: Int) -> [DateScoreAsset] {
-		var results: [DateScoreAsset] = []
+	private func getBestPhotos(scoreYearPhotoList: [[ScoreAsset]], maxCount: Int) -> [ScoreAsset] {
+		var results: [ScoreAsset] = []
 		var photosByYear = scoreYearPhotoList
 		while (results.count < maxCount) {
 			var foundPhoto = false
@@ -91,7 +90,7 @@ final class PhotosManager: NSObject, ObservableObject, PHPhotoLibraryChangeObser
 		return cache[key]!
 	}
 
-	func getPhotos(from date: Date, yearsBack: Int, maxCount: Int) -> [DateScoreAsset] {
+	func getPhotos(from date: Date, yearsBack: Int, maxCount: Int) -> [ScoreAsset] {
 		return getCache(from: date, yearsBack: yearsBack, maxCount: maxCount).bestPhotos
 	}
 }

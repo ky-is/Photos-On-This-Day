@@ -18,9 +18,9 @@ struct Provider: IntentTimelineProvider {
 	func getSnapshot(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (PhotosOnThisDayEntry) -> ()) {
 		let currentDate = Date()
 		let photosFetch = PhotosManager.shared.getPhotos(from: currentDate, yearsBack: 1, maxCount: 1)
-		if let (date, score, asset) = photosFetch.first {
+		if let (score, asset) = photosFetch.first {
 			getImage(asset: asset, size: context.displaySize) { image in
-				let entry = PhotosOnThisDayEntry(timelineDate: currentDate, photoDate: date, score: score, image: image, configuration: configuration)
+				let entry = PhotosOnThisDayEntry(timelineDate: currentDate, photoDate: asset.creationDate, score: score, image: image, configuration: configuration)
 				completion(entry)
 			}
 		} else {
@@ -46,7 +46,7 @@ struct Provider: IntentTimelineProvider {
 			let entryDate = calendar.date(byAdding: .hour, value: offset, to: currentDate)!
 			pendingRequests += 1
 			getImage(asset: scoreAsset.asset, size: context.displaySize) { image in
-				let entry = PhotosOnThisDayEntry(timelineDate: entryDate, photoDate: scoreAsset.date, score: scoreAsset.score, image: image, configuration: configuration)
+				let entry = PhotosOnThisDayEntry(timelineDate: entryDate, photoDate: scoreAsset.asset.creationDate, score: scoreAsset.score, image: image, configuration: configuration)
 				entries.append(entry)
 			}
 		}
