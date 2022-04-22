@@ -1,0 +1,570 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 55;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		24721DC52811BE7C006EB593 /* PhotosOnThisDayApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24721DC42811BE7C006EB593 /* PhotosOnThisDayApp.swift */; };
+		24721DC72811BE7C006EB593 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24721DC62811BE7C006EB593 /* ContentView.swift */; };
+		24721DC92811BE7D006EB593 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 24721DC82811BE7D006EB593 /* Assets.xcassets */; };
+		24721DCC2811BE7D006EB593 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 24721DCB2811BE7D006EB593 /* Preview Assets.xcassets */; };
+		24721DD52811C66D006EB593 /* Foundation+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24721DD42811C66D006EB593 /* Foundation+Extensions.swift */; };
+		24721DD72811CEAF006EB593 /* PhotosManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24721DD62811CEAF006EB593 /* PhotosManager.swift */; };
+		24721DDF2811DCBF006EB593 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24721DDE2811DCBF006EB593 /* WidgetKit.framework */; };
+		24721DE12811DCBF006EB593 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24721DE02811DCBF006EB593 /* SwiftUI.framework */; };
+		24721DE42811DCBF006EB593 /* PhotosOnThisDayWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24721DE32811DCBF006EB593 /* PhotosOnThisDayWidget.swift */; };
+		24721DE72811DCC0006EB593 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 24721DE62811DCC0006EB593 /* Assets.xcassets */; };
+		24721DE92811DCC0006EB593 /* PhotosOnThisDayWidget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 24721DE52811DCBF006EB593 /* PhotosOnThisDayWidget.intentdefinition */; };
+		24721DEA2811DCC0006EB593 /* PhotosOnThisDayWidget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 24721DE52811DCBF006EB593 /* PhotosOnThisDayWidget.intentdefinition */; };
+		24721DED2811DCC0006EB593 /* Photos On This Day WidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 24721DDC2811DCBF006EB593 /* Photos On This Day WidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		24721DF32811DE34006EB593 /* Foundation+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24721DD42811C66D006EB593 /* Foundation+Extensions.swift */; };
+		24721DF42811DE37006EB593 /* PhotosManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24721DD62811CEAF006EB593 /* PhotosManager.swift */; };
+		249F40CA2812374C002287F0 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 249F40C92812374C002287F0 /* Constants.swift */; };
+		249F40CB2812374C002287F0 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 249F40C92812374C002287F0 /* Constants.swift */; };
+		249F40CD28123C49002287F0 /* PermissionsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 249F40CC28123C49002287F0 /* PermissionsManager.swift */; };
+		249F40CF281245BF002287F0 /* UIKit+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 249F40CE281245BF002287F0 /* UIKit+Extensions.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		24721DEB2811DCC0006EB593 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 24721DB92811BE7C006EB593 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 24721DDB2811DCBF006EB593;
+			remoteInfo = "Photos On This Day WidgetExtension";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		24721DF12811DCC0006EB593 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				24721DED2811DCC0006EB593 /* Photos On This Day WidgetExtension.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		24721DC12811BE7C006EB593 /* Photos On This Day.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Photos On This Day.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		24721DC42811BE7C006EB593 /* PhotosOnThisDayApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosOnThisDayApp.swift; sourceTree = "<group>"; };
+		24721DC62811BE7C006EB593 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		24721DC82811BE7D006EB593 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		24721DCB2811BE7D006EB593 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		24721DD42811C66D006EB593 /* Foundation+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Foundation+Extensions.swift"; sourceTree = "<group>"; };
+		24721DD62811CEAF006EB593 /* PhotosManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosManager.swift; sourceTree = "<group>"; };
+		24721DDC2811DCBF006EB593 /* Photos On This Day WidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Photos On This Day WidgetExtension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		24721DDE2811DCBF006EB593 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		24721DE02811DCBF006EB593 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		24721DE32811DCBF006EB593 /* PhotosOnThisDayWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosOnThisDayWidget.swift; sourceTree = "<group>"; };
+		24721DE52811DCBF006EB593 /* PhotosOnThisDayWidget.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = PhotosOnThisDayWidget.intentdefinition; sourceTree = "<group>"; };
+		24721DE62811DCC0006EB593 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		24721DE82811DCC0006EB593 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		24721DF5281233F2006EB593 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		249F40C92812374C002287F0 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		249F40CC28123C49002287F0 /* PermissionsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionsManager.swift; sourceTree = "<group>"; };
+		249F40CE281245BF002287F0 /* UIKit+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIKit+Extensions.swift"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		24721DBE2811BE7C006EB593 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		24721DD92811DCBF006EB593 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				24721DE12811DCBF006EB593 /* SwiftUI.framework in Frameworks */,
+				24721DDF2811DCBF006EB593 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		24721DB82811BE7C006EB593 = {
+			isa = PBXGroup;
+			children = (
+				24721DC32811BE7C006EB593 /* App */,
+				24721DF22811DE23006EB593 /* Shared */,
+				24721DE22811DCBF006EB593 /* Photos On This Day Widget */,
+				24721DDD2811DCBF006EB593 /* Frameworks */,
+				24721DC22811BE7C006EB593 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		24721DC22811BE7C006EB593 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				24721DC12811BE7C006EB593 /* Photos On This Day.app */,
+				24721DDC2811DCBF006EB593 /* Photos On This Day WidgetExtension.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		24721DC32811BE7C006EB593 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				24721DC42811BE7C006EB593 /* PhotosOnThisDayApp.swift */,
+				24721DC62811BE7C006EB593 /* ContentView.swift */,
+				24721DC82811BE7D006EB593 /* Assets.xcassets */,
+				24721DF5281233F2006EB593 /* Info.plist */,
+				24721DCA2811BE7D006EB593 /* Preview Content */,
+				249F40CE281245BF002287F0 /* UIKit+Extensions.swift */,
+				249F40CC28123C49002287F0 /* PermissionsManager.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		24721DCA2811BE7D006EB593 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				24721DCB2811BE7D006EB593 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		24721DDD2811DCBF006EB593 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				24721DDE2811DCBF006EB593 /* WidgetKit.framework */,
+				24721DE02811DCBF006EB593 /* SwiftUI.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		24721DE22811DCBF006EB593 /* Photos On This Day Widget */ = {
+			isa = PBXGroup;
+			children = (
+				24721DE32811DCBF006EB593 /* PhotosOnThisDayWidget.swift */,
+				24721DE52811DCBF006EB593 /* PhotosOnThisDayWidget.intentdefinition */,
+				24721DE62811DCC0006EB593 /* Assets.xcassets */,
+				24721DE82811DCC0006EB593 /* Info.plist */,
+			);
+			path = "Photos On This Day Widget";
+			sourceTree = "<group>";
+		};
+		24721DF22811DE23006EB593 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				249F40C92812374C002287F0 /* Constants.swift */,
+				24721DD42811C66D006EB593 /* Foundation+Extensions.swift */,
+				24721DD62811CEAF006EB593 /* PhotosManager.swift */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		24721DC02811BE7C006EB593 /* Photos On This Day */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 24721DCF2811BE7D006EB593 /* Build configuration list for PBXNativeTarget "Photos On This Day" */;
+			buildPhases = (
+				24721DBD2811BE7C006EB593 /* Sources */,
+				24721DBE2811BE7C006EB593 /* Frameworks */,
+				24721DBF2811BE7C006EB593 /* Resources */,
+				24721DF12811DCC0006EB593 /* Embed App Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				24721DEC2811DCC0006EB593 /* PBXTargetDependency */,
+			);
+			name = "Photos On This Day";
+			productName = "Photos On This Day";
+			productReference = 24721DC12811BE7C006EB593 /* Photos On This Day.app */;
+			productType = "com.apple.product-type.application";
+		};
+		24721DDB2811DCBF006EB593 /* Photos On This Day WidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 24721DEE2811DCC0006EB593 /* Build configuration list for PBXNativeTarget "Photos On This Day WidgetExtension" */;
+			buildPhases = (
+				24721DD82811DCBF006EB593 /* Sources */,
+				24721DD92811DCBF006EB593 /* Frameworks */,
+				24721DDA2811DCBF006EB593 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Photos On This Day WidgetExtension";
+			productName = "Photos On This Day WidgetExtension";
+			productReference = 24721DDC2811DCBF006EB593 /* Photos On This Day WidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		24721DB92811BE7C006EB593 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1330;
+				LastUpgradeCheck = 1330;
+				TargetAttributes = {
+					24721DC02811BE7C006EB593 = {
+						CreatedOnToolsVersion = 13.3.1;
+					};
+					24721DDB2811DCBF006EB593 = {
+						CreatedOnToolsVersion = 13.3.1;
+					};
+				};
+			};
+			buildConfigurationList = 24721DBC2811BE7C006EB593 /* Build configuration list for PBXProject "Photos On This Day" */;
+			compatibilityVersion = "Xcode 13.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 24721DB82811BE7C006EB593;
+			productRefGroup = 24721DC22811BE7C006EB593 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				24721DC02811BE7C006EB593 /* Photos On This Day */,
+				24721DDB2811DCBF006EB593 /* Photos On This Day WidgetExtension */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		24721DBF2811BE7C006EB593 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				24721DCC2811BE7D006EB593 /* Preview Assets.xcassets in Resources */,
+				24721DC92811BE7D006EB593 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		24721DDA2811DCBF006EB593 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				24721DE72811DCC0006EB593 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		24721DBD2811BE7C006EB593 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				24721DC72811BE7C006EB593 /* ContentView.swift in Sources */,
+				24721DD72811CEAF006EB593 /* PhotosManager.swift in Sources */,
+				249F40CD28123C49002287F0 /* PermissionsManager.swift in Sources */,
+				24721DC52811BE7C006EB593 /* PhotosOnThisDayApp.swift in Sources */,
+				24721DEA2811DCC0006EB593 /* PhotosOnThisDayWidget.intentdefinition in Sources */,
+				249F40CF281245BF002287F0 /* UIKit+Extensions.swift in Sources */,
+				249F40CA2812374C002287F0 /* Constants.swift in Sources */,
+				24721DD52811C66D006EB593 /* Foundation+Extensions.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		24721DD82811DCBF006EB593 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				24721DE42811DCBF006EB593 /* PhotosOnThisDayWidget.swift in Sources */,
+				24721DF32811DE34006EB593 /* Foundation+Extensions.swift in Sources */,
+				24721DF42811DE37006EB593 /* PhotosManager.swift in Sources */,
+				24721DE92811DCC0006EB593 /* PhotosOnThisDayWidget.intentdefinition in Sources */,
+				249F40CB2812374C002287F0 /* Constants.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		24721DEC2811DCC0006EB593 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 24721DDB2811DCBF006EB593 /* Photos On This Day WidgetExtension */;
+			targetProxy = 24721DEB2811DCC0006EB593 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		24721DCD2811BE7D006EB593 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		24721DCE2811BE7D006EB593 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		24721DD02811BE7D006EB593 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"App/Preview Content\"";
+				DEVELOPMENT_TEAM = P3YWQG9C86;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = App/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "On This Day";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "This app requires access to your photo library in order to show you past photos. Photos never leave your device, or used for any other purpose.";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "is.ky.Photos-On-This-Day";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		24721DD12811BE7D006EB593 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"App/Preview Content\"";
+				DEVELOPMENT_TEAM = P3YWQG9C86;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = App/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "On This Day";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "This app requires access to your photo library in order to show you past photos. Photos never leave your device, or used for any other purpose.";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "is.ky.Photos-On-This-Day";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		24721DEF2811DCC0006EB593 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = P3YWQG9C86;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Photos On This Day Widget/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "On This Day";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "is.ky.Photos-On-This-Day.Photos-On-This-Day-Widget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		24721DF02811DCC0006EB593 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = P3YWQG9C86;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Photos On This Day Widget/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "On This Day";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "is.ky.Photos-On-This-Day.Photos-On-This-Day-Widget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		24721DBC2811BE7C006EB593 /* Build configuration list for PBXProject "Photos On This Day" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				24721DCD2811BE7D006EB593 /* Debug */,
+				24721DCE2811BE7D006EB593 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		24721DCF2811BE7D006EB593 /* Build configuration list for PBXNativeTarget "Photos On This Day" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				24721DD02811BE7D006EB593 /* Debug */,
+				24721DD12811BE7D006EB593 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		24721DEE2811DCC0006EB593 /* Build configuration list for PBXNativeTarget "Photos On This Day WidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				24721DEF2811DCC0006EB593 /* Debug */,
+				24721DF02811DCC0006EB593 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 24721DB92811BE7C006EB593 /* Project object */;
+}
