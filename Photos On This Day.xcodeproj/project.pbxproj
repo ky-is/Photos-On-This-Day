@@ -24,6 +24,7 @@
 		24721DF42811DE37006EB593 /* PhotosManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24721DD62811CEAF006EB593 /* PhotosManager.swift */; };
 		2473CBC028126DB000A5E34B /* Predicates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2473CBBF28126DB000A5E34B /* Predicates.swift */; };
 		2473CBC128126DB000A5E34B /* Predicates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2473CBBF28126DB000A5E34B /* Predicates.swift */; };
+		247BF61D2812766B0024B9F2 /* PermissionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 247BF61C2812766B0024B9F2 /* PermissionsView.swift */; };
 		249F40CA2812374C002287F0 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 249F40C92812374C002287F0 /* Constants.swift */; };
 		249F40CB2812374C002287F0 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 249F40C92812374C002287F0 /* Constants.swift */; };
 		249F40CD28123C49002287F0 /* PermissionsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 249F40CC28123C49002287F0 /* PermissionsManager.swift */; };
@@ -71,6 +72,7 @@
 		24721DE82811DCC0006EB593 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		24721DF5281233F2006EB593 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2473CBBF28126DB000A5E34B /* Predicates.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Predicates.swift; sourceTree = "<group>"; };
+		247BF61C2812766B0024B9F2 /* PermissionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionsView.swift; sourceTree = "<group>"; };
 		249F40C92812374C002287F0 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		249F40CC28123C49002287F0 /* PermissionsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionsManager.swift; sourceTree = "<group>"; };
 		249F40CE281245BF002287F0 /* UIKit+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIKit+Extensions.swift"; sourceTree = "<group>"; };
@@ -120,7 +122,7 @@
 			isa = PBXGroup;
 			children = (
 				24721DC42811BE7C006EB593 /* PhotosOnThisDayApp.swift */,
-				24721DC62811BE7C006EB593 /* ContentView.swift */,
+				247BF61E2812787B0024B9F2 /* Views */,
 				24721DC82811BE7D006EB593 /* Assets.xcassets */,
 				24721DF5281233F2006EB593 /* Info.plist */,
 				24721DCA2811BE7D006EB593 /* Preview Content */,
@@ -167,6 +169,15 @@
 				2473CBBF28126DB000A5E34B /* Predicates.swift */,
 			);
 			path = Shared;
+			sourceTree = "<group>";
+		};
+		247BF61E2812787B0024B9F2 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				24721DC62811BE7C006EB593 /* ContentView.swift */,
+				247BF61C2812766B0024B9F2 /* PermissionsView.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -273,6 +284,7 @@
 				24721DC72811BE7C006EB593 /* ContentView.swift in Sources */,
 				24721DD72811CEAF006EB593 /* PhotosManager.swift in Sources */,
 				2473CBC028126DB000A5E34B /* Predicates.swift in Sources */,
+				247BF61D2812766B0024B9F2 /* PermissionsView.swift in Sources */,
 				249F40CD28123C49002287F0 /* PermissionsManager.swift in Sources */,
 				24721DC52811BE7C006EB593 /* PhotosOnThisDayApp.swift in Sources */,
 				24721DEA2811DCC0006EB593 /* PhotosOnThisDayWidget.intentdefinition in Sources */,
