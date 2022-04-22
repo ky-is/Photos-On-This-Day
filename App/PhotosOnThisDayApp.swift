@@ -1,6 +1,5 @@
 import SwiftUI
 import Photos
-import WidgetKit
 
 @main
 struct PhotosOnThisDayApp: App {
@@ -24,8 +23,9 @@ final class AppDelegate: NSObject, UIApplicationDelegate, PHPhotoLibraryAvailabi
 
 		PHPhotoLibrary.shared().register(self)
 		Task {
-			PermissionsManager.shared.permission = await PHPhotoLibrary.requestAuthorization(for: .readWrite)
-			WidgetCenter.shared.reloadTimelines(ofKind: WidgetKind)
+			if PermissionsManager.shared.permission != .limited {
+				PermissionsManager.shared.permission = await PHPhotoLibrary.requestAuthorization(for: .readWrite)
+			}
 		}
 		return true
 	}

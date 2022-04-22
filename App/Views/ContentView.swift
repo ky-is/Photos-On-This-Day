@@ -1,13 +1,19 @@
 import SwiftUI
 
 struct ContentView: View {
+	@ObservedObject private var permissions = PermissionsManager.shared
+
 	var body: some View {
 		NavigationView {
 			ScrollView {
 				PermissionsView()
-				PhotosView()
+					.padding()
+				if permissions.permission == .authorized || permissions.permission == .limited {
+					PhotosView()
+				}
 			}
 		}
+			.navigationViewStyle(.stack)
 	}
 }
 

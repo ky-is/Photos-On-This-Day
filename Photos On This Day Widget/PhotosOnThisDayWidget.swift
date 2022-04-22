@@ -50,6 +50,9 @@ struct Provider: IntentTimelineProvider {
 				entries.append(entry)
 			}
 		}
+		if entries.isEmpty {
+			entries.append(PhotosOnThisDayEntry(timelineDate: currentDate, photoDate: nil, score: nil, image: nil, configuration: configuration))
+		}
 		let timeline = Timeline(entries: entries, policy: .after(nextDayStart))
 		completion(timeline)
 	}
@@ -94,36 +97,59 @@ struct PhotosOnThisDayWidgetEntryView : View {
 		GeometryReader { geometry in
 			ZStack {
 				Group {
-					let photosAuthStatus = PHPhotoLibrary.authorizationStatus(for: .readWrite)
-					if photosAuthStatus == .authorized {
-						if let image = entry.image {
-							Image(uiImage: image)
-								.resizable()
-								.aspectRatio(contentMode: .fill)
-								.frame(width: geometry.size.width, height: geometry.size.height)
+					if let image = entry.image {
+						Image(uiImage: image)
+							.resizable()
+							.aspectRatio(contentMode: .fill)
+							.frame(width: geometry.size.width, height: geometry.size.height)
+					} else {
+						let photosAuthStatus = PHPhotoLibrary.authorizationStatus(for: .readWrite)
+						if photosAuthStatus == .authorized {
+							Image(systemName: "photo")
+								.font(.system(size: 64))
+								.foregroundColor(.secondary)
 						} else {
-							Rectangle()
-								.fill(.black)
+							Spacer()
 						}
 					}
 				}
 					.overlay(alignment: .bottomLeading) {
 						VStack(alignment: .leading) {
-							if geometry.size.width >= 256 {
-								if geometry.size.height >= 256 {
-									Text(entry.photoDate ?? entry.date, style: .date)
-								} else {
-									Text(entry.photoDate ?? entry.date, formatter: DateFormatter.monthDay)
+							if entry.image != nil {
+								Group {
+									if geometry.size.width >= 256 {
+										if geometry.size.height >= 256 {
+											Text(entry.photoDate ?? entry.date, style: .date)
+										} else {
+											Text(entry.photoDate ?? entry.date, formatter: DateFormatter.monthDay)
+										}
+									}
+									if let date = entry.photoDate {
+										Text(date, format: .relative(presentation: .numeric, unitsStyle: .wide))
+											.font(.system(.body, design: .rounded).weight(.semibold))
+									}
 								}
-							}
-							if let date = entry.photoDate {
-								Text(date, format: .relative(presentation: .numeric, unitsStyle: .wide))
-									.font(.system(.body, design: .rounded).weight(.semibold))
+									.font(.system(.title2, design: .rounded).weight(.semibold))
+									.foregroundColor(.white)
+									.shadow(color: .black, radius: 1.5, x: 0, y: 1)
+							} else {
+								VStack(alignment: .leading, spacing: 4) {
+									let photosAuthStatus = PHPhotoLibrary.authorizationStatus(for: .readWrite)
+									if photosAuthStatus != .authorized {
+										Image(systemName: "photo")
+											.font(.system(size: 24))
+											.foregroundColor(.secondary)
+									}
+									Text(photosAuthStatus == .authorized ? "No photos yet" : "Access restricted")
+										.font(.system(.headline, design: .rounded))
+									if photosAuthStatus != .authorized {
+										Text("Tap to configure!")
+											.font(.system(.body, design: .rounded))
+									}
+								}
+									.foregroundColor(.primary)
 							}
 						}
-							.font(.system(.title2, design: .rounded).weight(.semibold))
-							.foregroundColor(.white)
-							.shadow(color: .black, radius: 1.5, x: 0, y: 1)
 							.padding()
 					}
 			}
