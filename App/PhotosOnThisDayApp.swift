@@ -1,5 +1,6 @@
 import Photos
 import SwiftUI
+import WidgetKit
 
 @main
 struct PhotosOnThisDayApp: App {
@@ -20,16 +21,19 @@ final class AppDelegate: NSObject, UIApplicationDelegate, PHPhotoLibraryAvailabi
 		print(#function, photoLibrary.unavailabilityReason?.localizedDescription ?? "nil")
 	}
 
-	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
 		UIView.appearance(whenContainedInInstancesOf: [UIAlertController.self]).tintColor = .accentColor
-		UINavigationBar.appearance().largeTitleTextAttributes = [.font : UIFont.rounded(style: .largeTitle, bold: true)]
-		UINavigationBar.appearance().titleTextAttributes = [.font : UIFont.rounded(style: .headline, bold: false)]
+		UINavigationBar.appearance().largeTitleTextAttributes = [.font: UIFont.rounded(style: .largeTitle, bold: true)]
+		UINavigationBar.appearance().titleTextAttributes = [.font: UIFont.rounded(style: .headline, bold: false)]
 
 		PHPhotoLibrary.shared().register(self)
 		if StateManager.shared.permission != .authorized && StateManager.shared.permission != .limited {
 			Task(priority: .userInitiated) {
 				StateManager.shared.permission = await PHPhotoLibrary.requestAuthorization(for: .readWrite)
 			}
+		}
+		if StateManager.shared.permission == .authorized || StateManager.shared.permission == .limited {
+			WidgetCenter.shared.reloadTimelines(ofKind: WidgetKind)
 		}
 		return true
 	}
