@@ -30,16 +30,15 @@ struct Provider: IntentTimelineProvider {
 
 		let calendar = Calendar.current
 		let currentDate = Date()
-		let startHour = calendar.component(.hour, from: currentDate)
 		let nextDayStart = calendar.startOfDay(for: calendar.date(byAdding: .day, value: 1, to: currentDate)!)
-//		let timeForUpdates = nextDayStart.timeIntervalSince(currentDate)
-//		let timePerUpdate = timeForUpdates / photoAssets.results.count
-		let photosNeededCount = 24 - startHour
+		let timeForUpdates = nextDayStart.timeIntervalSince(currentDate)
+		let maxEntries = Int((timeForUpdates / (15 * .minute)).rounded(.down))
 		var entries: [PhotosOnThisDayEntry] = []
-		let photosFetch = manager.getPhotos(from: Date(), yearsBack: 16, maxCount: photosNeededCount).shuffled()
+		let photosFetch = manager.getPhotos(from: Date(), yearsBack: 16, maxCount: maxEntries).shuffled()
+		let timePerUpdate = timeForUpdates / Double(photosFetch.count)
 		var pendingRequests = 0
 		for (offset, scoreAsset) in photosFetch.enumerated() {
-			let entryDate = calendar.date(byAdding: .hour, value: offset, to: currentDate)!
+			let entryDate = currentDate.addingTimeInterval(timePerUpdate * Double(offset))
 			pendingRequests += 1
 			getImage(asset: scoreAsset.asset, size: context.displaySize) { image, _ in
 				let entry = PhotosOnThisDayEntry(timelineDate: entryDate, photoDate: scoreAsset.asset.creationDate, score: scoreAsset.score, image: image, configuration: configuration)
