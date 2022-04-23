@@ -33,7 +33,7 @@ struct PhotosYearFullsize: View {
 				.edgesIgnoringSafeArea(.all)
 		}
 			.toolbar {
-				ToolbarItem(placement: .navigationBarLeading) {
+				ToolbarItemGroup(placement: .navigationBarLeading) {
 					Button {
 						dismiss()
 					} label: {
@@ -41,7 +41,9 @@ struct PhotosYearFullsize: View {
 							.font(.body.bold())
 					}
 				}
-				ToolbarItem(placement: .navigationBarTrailing) {
+				ToolbarItemGroup(placement: .navigationBarTrailing) {
+					ShareImageButton(image: fullQualityImage ?? image)
+						.disabled(fullQualityImage == nil)
 					Button {
 						PHPhotoLibrary.shared().performChanges {
 							let request = PHAssetChangeRequest(for: asset)
@@ -55,8 +57,6 @@ struct PhotosYearFullsize: View {
 					} label: {
 						Image(systemName: photoState.favorites[asset] == true ? "heart.fill" : "heart")
 					}
-					ShareImageButton(image: fullQualityImage ?? image)
-						.disabled(fullQualityImage == nil)
 				}
 				ToolbarItem(placement: .principal) {
 					VStack {
@@ -93,7 +93,7 @@ struct PhotosYearFullsize: View {
 										return
 									}
 									locationDescription = [placemark.thoroughfare, placemark.subLocality, placemark.locality, placemark.subAdministrativeArea, placemark.administrativeArea]
-										.compactMap({ $0 })[..<3]
+										.compactMap({ $0 })[..<2]
 										.joined(separator: ", ")
 								}
 							}
