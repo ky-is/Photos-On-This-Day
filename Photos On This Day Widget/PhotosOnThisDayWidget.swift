@@ -3,12 +3,8 @@ import SwiftUI
 import WidgetKit
 
 struct Provider: IntentTimelineProvider {
-	private func getImage(asset: PHAsset, size: CGSize, callback: @escaping (UIImage?) -> Void) {
-		let options = PHImageRequestOptions()
-		options.isSynchronous = true
-		PHImageManager.default().requestImage(for: asset, targetSize: size, contentMode: .aspectFill, options: options) { image, userInfo in
-			callback(image)
-		}
+	private func getImage(asset: PHAsset, size: CGSize, resultHandler: @escaping (UIImage?, [AnyHashable : Any]?) -> Void) {
+		PHImageManager.default().requestImage(for: asset, size: size, isSynchronous: true, highQuality: true, resultHandler: resultHandler)
 	}
 
 	func placeholder(in context: Context) -> PhotosOnThisDayEntry {
@@ -19,7 +15,7 @@ struct Provider: IntentTimelineProvider {
 		let currentDate = Date()
 		let photosFetch = PhotosManager.shared.getPhotos(from: currentDate, yearsBack: 1, maxCount: 1)
 		if let (score, asset) = photosFetch.first {
-			getImage(asset: asset, size: context.displaySize) { image in
+			getImage(asset: asset, size: context.displaySize) { image, _ in
 				let entry = PhotosOnThisDayEntry(timelineDate: currentDate, photoDate: asset.creationDate, score: score, image: image, configuration: configuration)
 				completion(entry)
 			}
@@ -45,7 +41,7 @@ struct Provider: IntentTimelineProvider {
 		for (offset, scoreAsset) in photosFetch.enumerated() {
 			let entryDate = calendar.date(byAdding: .hour, value: offset, to: currentDate)!
 			pendingRequests += 1
-			getImage(asset: scoreAsset.asset, size: context.displaySize) { image in
+			getImage(asset: scoreAsset.asset, size: context.displaySize) { image, _ in
 				let entry = PhotosOnThisDayEntry(timelineDate: entryDate, photoDate: scoreAsset.asset.creationDate, score: scoreAsset.score, image: image, configuration: configuration)
 				entries.append(entry)
 			}

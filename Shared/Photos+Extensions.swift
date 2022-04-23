@@ -1,4 +1,5 @@
 import Photos
+import UIKit
 
 extension PHAsset {
 	static func fetchAssets(yearsBack: Int, from date: Date, areDuplicatesAcceptable: Bool) -> PHFetchResult<PHAsset> {
@@ -11,5 +12,18 @@ extension PHAsset {
 		fetchPhotosOptions.includeAssetSourceTypes = areDuplicatesAcceptable ? [.typeCloudShared, .typeUserLibrary, .typeiTunesSynced] : [.typeUserLibrary, .typeiTunesSynced]
 		fetchPhotosOptions.includeAllBurstAssets = false
 		return PHAsset.fetchAssets(with: fetchPhotosOptions)
+	}
+}
+
+extension PHImageManager {
+	func requestImage(for asset: PHAsset, size: CGSize, isSynchronous: Bool, highQuality: Bool, resultHandler: @escaping (UIImage?, [AnyHashable : Any]?) -> Void) {
+		let options = PHImageRequestOptions()
+		options.isSynchronous = isSynchronous
+		options.deliveryMode = highQuality ? .opportunistic : .fastFormat
+		options.resizeMode = .fast
+		options.isNetworkAccessAllowed = true
+		let scale = UIScreen.main.scale
+		let targetSize = CGSize(width: size.width * scale, height: size.height * scale)
+		PHImageManager.default().requestImage(for: asset, targetSize: targetSize, contentMode: .aspectFill, options: options, resultHandler: resultHandler)
 	}
 }
