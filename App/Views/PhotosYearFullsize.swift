@@ -12,9 +12,16 @@ struct PhotosYearFullsize: View {
 	@Environment(\.screenSize) private var screenSize
 
 	var body: some View {
-		Image(uiImage: image)
-			.resizable()
-			.aspectRatio(contentMode: .fit)
+		GeometryReader { geometry in
+			ZoomScrollView {
+				Image(uiImage: image)
+					.resizable()
+					.aspectRatio(contentMode: .fit)
+					.padding(.top, -geometry.safeAreaInsets.top)
+					.padding(.bottom, geometry.safeAreaInsets.bottom)
+			}
+				.edgesIgnoringSafeArea(.all)
+		}
 			.toolbar {
 				ToolbarItem(placement: .navigationBarLeading) {
 					Button {

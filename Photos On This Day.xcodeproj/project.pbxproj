@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		24145AD7281362EC00022FB1 /* Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24145AD6281362EC00022FB1 /* Environment.swift */; };
 		24145AD92813686E00022FB1 /* PhotosYearFullsize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24145AD82813686E00022FB1 /* PhotosYearFullsize.swift */; };
+		24145ADB2813BC3C00022FB1 /* ZoomScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24145ADA2813BC3C00022FB1 /* ZoomScrollView.swift */; };
 		242F2E192813057E00E88ADF /* Photos+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 242F2E182813057E00E88ADF /* Photos+Extensions.swift */; };
 		242F2E1A2813057E00E88ADF /* Photos+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 242F2E182813057E00E88ADF /* Photos+Extensions.swift */; };
 		242F2E1C28130B2E00E88ADF /* PhotosYearThumbnail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 242F2E1B28130B2E00E88ADF /* PhotosYearThumbnail.swift */; };
@@ -69,6 +70,7 @@
 /* Begin PBXFileReference section */
 		24145AD6281362EC00022FB1 /* Environment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Environment.swift; sourceTree = "<group>"; };
 		24145AD82813686E00022FB1 /* PhotosYearFullsize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosYearFullsize.swift; sourceTree = "<group>"; };
+		24145ADA2813BC3C00022FB1 /* ZoomScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoomScrollView.swift; sourceTree = "<group>"; };
 		242F2E182813057E00E88ADF /* Photos+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Photos+Extensions.swift"; sourceTree = "<group>"; };
 		242F2E1B28130B2E00E88ADF /* PhotosYearThumbnail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosYearThumbnail.swift; sourceTree = "<group>"; };
 		24721DC12811BE7C006EB593 /* Photos On This Day.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Photos On This Day.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -215,6 +217,7 @@
 			isa = PBXGroup;
 			children = (
 				24DBDA112813468C00B4313E /* UIViewButton.swift */,
+				24145ADA2813BC3C00022FB1 /* ZoomScrollView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -337,6 +340,7 @@
 				24DBDA0F281344F100B4313E /* AboutView.swift in Sources */,
 				24DBDA12281347D400B4313E /* UIViewButton.swift in Sources */,
 				24145AD7281362EC00022FB1 /* Environment.swift in Sources */,
+				24145ADB2813BC3C00022FB1 /* ZoomScrollView.swift in Sources */,
 				247BF620281278910024B9F2 /* PermissionsView.swift in Sources */,
 				24DBDA142813484700B4313E /* Sharing.swift in Sources */,
 				242F2E192813057E00E88ADF /* Photos+Extensions.swift in Sources */,
