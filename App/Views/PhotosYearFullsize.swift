@@ -75,7 +75,7 @@ struct PhotosYearFullsize: View {
 			.navigationBarBackButtonHidden(true)
 			.navigationBarTitleDisplayMode(.inline)
 			.task {
-				PHImageManager.default().requestImage(for: asset, size: screenSize, isSynchronous: false, highQuality: true) { loadedImage, userInfo in
+				PHCachingImageManager.default().requestImage(for: asset, size: screenSize, isSynchronous: false, highQuality: true) { loadedImage, userInfo in
 					if let loadedImage = loadedImage {
 						let rotatedImage = UIDevice.current.userInterfaceIdiom == .phone && loadedImage.size.width > loadedImage.size.height ? UIImage(cgImage: loadedImage.cgImage!, scale:1, orientation: UIImage.Orientation.right) : loadedImage
 						DispatchQueue.main.async {
@@ -93,7 +93,8 @@ struct PhotosYearFullsize: View {
 										return
 									}
 									locationDescription = [placemark.thoroughfare, placemark.subLocality, placemark.locality, placemark.subAdministrativeArea, placemark.administrativeArea]
-										.compactMap({ $0 })[..<2]
+										.compactMap({ $0 })
+										.prefix(2)
 										.joined(separator: ", ")
 								}
 							}
