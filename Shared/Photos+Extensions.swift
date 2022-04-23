@@ -24,7 +24,7 @@ extension PHImageManager {
 //		options.resizeMode = .exact
 //		options.normalizedCropRect = CGRect(origin: .zero, size: size)
 		options.isNetworkAccessAllowed = true
-		let scale = size.width > 512 ? max(1, UIScreen.main.scale - 1) : UIScreen.main.scale //TODO full quality .systemExtraLarge
+		let scale = size.width > 512 ? max(1, UIScreen.main.scale - 1) : (size.width > 256 ? min(2, UIScreen.main.scale) : UIScreen.main.scale) //TODO full quality
 		let targetSize = CGSize(width: size.width * scale, height: size.height * scale)
 		requestImage(for: asset, targetSize: targetSize, contentMode: .aspectFill, options: options, resultHandler: resultHandler)
 	}
