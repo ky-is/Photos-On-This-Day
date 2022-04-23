@@ -24,6 +24,7 @@ struct ContentView: View {
 								state.daysChange -= 1
 							} label: {
 								Image(systemName: "chevron.left")
+									.font(.body.bold())
 							}
 								.keyboardShortcut(.leftArrow)
 							Button {
@@ -37,6 +38,7 @@ struct ContentView: View {
 								state.daysChange += 1
 							} label: {
 								Image(systemName: "chevron.right")
+									.font(.body.bold())
 							}
 								.keyboardShortcut(.rightArrow)
 						}

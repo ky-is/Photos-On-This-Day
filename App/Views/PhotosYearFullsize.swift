@@ -64,7 +64,6 @@ struct PhotosYearFullsize: View {
 							Text(locationDescription)
 								.font(.system(.caption, design: .rounded).bold())
 								.fixedSize(horizontal: true, vertical: false)
-								.background(.background)
 						}
 						if let date = asset.creationDate {
 							Text(date, format: .dateTime)
@@ -72,8 +71,6 @@ struct PhotosYearFullsize: View {
 						}
 					}
 				}
-//				ToolbarItem(placement: .bottomBar) {
-
 			}
 			.navigationBarBackButtonHidden(true)
 			.navigationBarTitleDisplayMode(.inline)
