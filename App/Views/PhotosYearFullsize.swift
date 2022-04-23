@@ -5,6 +5,16 @@ struct PhotosYearFullsize: View {
 	let asset: PHAsset
 	@State var image: UIImage
 
+	@ObservedObject private var photoState = PhotoStateManager.shared
+
+	init(asset: PHAsset, image: UIImage) {
+		self.asset = asset
+		self._image = State(initialValue: image)
+		if photoState.favorites[asset] == nil {
+			photoState.favorites[asset] = asset.isFavorite
+		}
+	}
+
 	@State private var fullQualityImage: UIImage?
 	@State private var locationDescription: String? = "..."
 
@@ -32,6 +42,19 @@ struct PhotosYearFullsize: View {
 					}
 				}
 				ToolbarItem(placement: .navigationBarTrailing) {
+					Button {
+						PHPhotoLibrary.shared().performChanges {
+							let request = PHAssetChangeRequest(for: asset)
+							let willFavorite = photoState.favorites[asset] != true
+							request.isFavorite = willFavorite
+						} completionHandler: { success, error in
+							DispatchQueue.main.async {
+								photoState.favorites[asset]!.toggle()
+							}
+						}
+					} label: {
+						Image(systemName: photoState.favorites[asset] == true ? "heart.fill" : "heart")
+					}
 					ShareImageButton(image: fullQualityImage ?? image)
 						.disabled(fullQualityImage == nil)
 				}
