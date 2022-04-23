@@ -11,23 +11,27 @@ struct PhotosYearThumbnail: View {
 		ZStack {
 			Group {
 				if let image = image {
-					Image(uiImage: image)
-						.resizable()
-						.aspectRatio(contentMode: .fill)
-						.frame(width: size.width, height: size.height)
-						.overlay(alignment: .bottomTrailing) {
-							Group {
-								if asset.sourceType == .typeCloudShared {
-									Image(systemName: "icloud") // rectangle.stack.badge.person.crop
+					NavigationLink {
+						PhotosYearFullsize(asset: asset, image: image)
+					} label: {
+						Image(uiImage: image)
+							.resizable()
+							.aspectRatio(contentMode: .fill)
+							.frame(width: size.width, height: size.height)
+							.overlay(alignment: .bottomTrailing) {
+								Group {
+									if asset.sourceType == .typeCloudShared {
+										Image(systemName: "icloud") // rectangle.stack.badge.person.crop
+									}
+									if asset.mediaSubtypes.contains(.photoScreenshot) {
+										Image(systemName: "iphone")
+									}
 								}
-								if asset.mediaSubtypes.contains(.photoScreenshot) {
-									Image(systemName: "iphone")
-								}
-							}
 								.foregroundColor(.white)
 								.shadow(color: .black, radius: 1, x: 0, y: 0.5)
 								.padding(2)
-						}
+							}
+					}
 				} else {
 					Image(systemName: "photo")
 						.font(.system(size: 64, weight: .black))

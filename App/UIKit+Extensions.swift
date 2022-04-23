@@ -1,5 +1,9 @@
 import UIKit
 
+extension Bundle {
+	static let iTunesIdentifier = "" //TODO
+}
+
 extension UIApplication {
 	var windowScene: UIWindowScene? {
 		let scene = connectedScenes.first { ($0 as? UIWindowScene) != nil } as? UIWindowScene
@@ -32,6 +36,13 @@ extension UIFont {
 	}
 }
 
-extension Bundle {
-	static let iTunesIdentifier = "" //TODO
+extension UINavigationController: UIGestureRecognizerDelegate {
+	override open func viewDidLoad() {
+		super.viewDidLoad()
+		interactivePopGestureRecognizer?.delegate = self
+	}
+
+	public func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+		return viewControllers.count > 1
+	}
 }

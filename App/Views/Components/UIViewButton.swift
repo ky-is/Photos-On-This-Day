@@ -34,3 +34,19 @@ struct UIViewBacking: UIViewRepresentable {
 	}
 	func updateUIView(_ uiView: UIView, context: Context) {}
 }
+
+struct ShareImageButton: View {
+	let image: UIImage
+
+	var body: some View {
+		UIViewButton { backing in
+			if let vc = UIApplication.shared.frontViewController {
+				let activityController = UIActivityViewController(activityItems: [image], applicationActivities: nil)
+				activityController.popoverPresentationController?.sourceView = backing.uiView
+				vc.present(activityController, animated: true, completion: nil)
+			}
+		} label: {
+			Label("Share", systemImage: "square.and.arrow.up")
+		}
+	}
+}
