@@ -12,7 +12,7 @@ struct AboutView: View {
 					NavigationLink {
 						HelpAddWidgetView(inSheet: false)
 					} label: {
-						Text("How to add a widget")
+						Text("How to add a Widget")
 					}
 				}
 				Section("About") {

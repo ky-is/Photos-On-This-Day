@@ -9,13 +9,13 @@ struct HelpAddWidgetView: View {
 
 	var body: some View {
 		ScrollView {
-			VStack(alignment: .leading) {
-				Text("1.  Long press in an empty spot on your Home Screen.")
-				Text("2.  Tap the \"+\" button in the top-left.")
-				Text("3.  Search for \"On This Day\" or find it in the list.")
-				Text("4.  Choose a size. You can configure the widget by tapping it while edit mode is active!")
+			VStack(alignment: .leading, spacing: 16) {
+				Text("**1.** Long press in an empty spot on your Home Screen.")
+				Text("**2.** Tap the \"+\" button in the top-left.")
+				Text("**3.** Search for \"On This Day\" or find it in the list.")
+				Text("**4.** Swipe left to choose a size, then press the \"Add Widget\" button at the bottom.")//You can configure the Widget by tapping it while edit mode is active!")
 			}
-				.padding(8)
+				.padding()
 		}
 			.navigationTitle("Add a Widget")
 			.toolbar {

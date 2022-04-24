@@ -59,7 +59,7 @@ struct PermissionsView: View {
 						.font(.system(.headline, design: .rounded))
 						.labelStyle(.titleAndIcon)
 				} message: {
-					Text("Your privacy is of the utmost importance. Photos are only used to display in the widget and app UI. This app never stores or uploads your photos anywhere, nor does it make any changes to your photo library.")
+					Text("Your privacy is of the utmost importance. Photos are only used to display in the Widget and App UI. This app never stores or uploads your photos anywhere, nor does it make any changes to your photo library.")
 				}
 		}
 	}

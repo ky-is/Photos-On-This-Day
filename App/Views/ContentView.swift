@@ -20,11 +20,11 @@ struct ContentView: View {
 				PermissionsView()
 					.padding()
 				if canShowPhotos {
-					if dismissedAddWidget {
+					if !dismissedAddWidget {
 						Button {
 							showAddWidgetHelp.toggle()
 						} label: {
-							Text("Add a widget to your home screen!")
+							Text("Add a Widget to your Home Screen!")
 								.font(.system(.title3, design: .rounded).weight(.medium))
 								.padding(8)
 						}
