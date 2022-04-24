@@ -14,7 +14,7 @@ struct Provider: IntentTimelineProvider {
 	}
 
 	func placeholder(in context: Context) -> PhotosOnThisDayEntry {
-		return PhotosOnThisDayEntry(timelineDate: Date(), photoDate: nil, score: nil, imageURL: nil, configuration: ConfigurationIntent())
+		return PhotosOnThisDayEntry(timelineDate: Calendar.current.date(byAdding: .year, value: -1, to: Date())!, photoDate: nil, score: 0, imageURL: nil, configuration: ConfigurationIntent())
 	}
 
 	func getSnapshot(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (PhotosOnThisDayEntry) -> ()) {
@@ -27,7 +27,7 @@ struct Provider: IntentTimelineProvider {
 				entry = PhotosOnThisDayEntry(timelineDate: currentDate, photoDate: asset.creationDate, score: score, imageURL: url, configuration: configuration)
 			}
 		}
-		completion(entry ?? PhotosOnThisDayEntry(timelineDate: Date(), photoDate: nil, score: nil, imageURL: nil, configuration: configuration))
+		completion(entry ?? PhotosOnThisDayEntry(timelineDate: Date(), photoDate: nil, score: -1, imageURL: nil, configuration: configuration))
 	}
 
 	private let cacheContainerURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("widget")
@@ -87,7 +87,7 @@ struct Provider: IntentTimelineProvider {
 			}
 		}
 		if entries.isEmpty {
-			entries.append(PhotosOnThisDayEntry(timelineDate: currentDate, photoDate: nil, score: nil, imageURL: nil, configuration: configuration))
+			entries.append(PhotosOnThisDayEntry(timelineDate: currentDate, photoDate: nil, score: -1, imageURL: nil, configuration: configuration))
 		}
 		let timeline = Timeline(entries: entries, policy: .after(nextDayStart))
 		completion(timeline)
@@ -101,11 +101,11 @@ struct PhotosOnThisDayEntry: TimelineEntry {
 	var relevance: TimelineEntryRelevance?
 	let configuration: ConfigurationIntent
 
-	init(timelineDate: Date, photoDate: Date?, score: Float?, imageURL: URL?, configuration: ConfigurationIntent) {
+	init(timelineDate: Date, photoDate: Date?, score: Float, imageURL: URL?, configuration: ConfigurationIntent) {
 		self.date = timelineDate
 		self.photoDate = photoDate
 		self.imageURL = imageURL
-		self.relevance = .init(score: score ?? 0)
+		self.relevance = .init(score: score + 1)
 		self.configuration = configuration
 	}
 }
@@ -128,6 +128,8 @@ struct PhotoWidgetView: View {
 	var entry: Provider.Entry
 	var size: CGSize
 
+	@Environment(\.colorScheme) var colorScheme
+
 	var body: some View {
 		Group {
 			if let imageURL = entry.imageURL, let image = UIImage(contentsOfFile: imageURL.path) {
@@ -139,7 +141,7 @@ struct PhotoWidgetView: View {
 				if entry.photoDate == nil {
 					Image(systemName: "photo")
 						.font(.system(size: size.height * 0.75))
-						.foregroundColor(.primary.opacity(0.06))
+						.foregroundColor(colorScheme == .dark ? .init(white: 0.125) : .init(white: 0.97))
 						.frame(width: size.width, height: size.height)
 						.unredacted()
 				} else {
@@ -170,7 +172,7 @@ struct PhotosOnThisDayWidgetEntryView: View {
 				PhotoWidgetView(entry: entry, size: geometry.size)
 					.overlay(alignment: .bottomTrailing) {
 						VStack(alignment: .trailing) {
-							if entry.imageURL != nil || entry.photoDate == nil {
+							if entry.imageURL != nil || (entry.photoDate == nil && entry.relevance != nil && entry.relevance!.score > 0) {
 								Group {
 									let isSmall = widgetFamily == .systemSmall
 									let isLarge = !isSmall && widgetFamily != .systemMedium
@@ -197,15 +199,20 @@ struct PhotosOnThisDayWidgetEntryView: View {
 										Image(systemName: "photo")
 											.font(.system(size: 24))
 											.foregroundColor(.secondary)
+										Text("Access restricted")
+											.font(.system(.headline, design: .rounded))
 									}
-									Text(photosAuthStatus == .authorized ? "No photos yet" : "Access restricted")
-										.font(.system(.headline, design: .rounded))
-									if photosAuthStatus != .authorized {
+									if photosAuthStatus == .authorized {
+										Text("No photos from this day")
+											.font(.system(.headline, design: .rounded))
+											.foregroundColor(.secondary)
+									} else {
 										Text("Tap to configure!")
 											.font(.system(.body, design: .rounded))
 									}
 								}
 									.foregroundColor(.primary)
+									.multilineTextAlignment(.trailing)
 							}
 						}
 							.padding()
@@ -220,7 +227,7 @@ struct PhotosOnThisDayWidget_Previews: PreviewProvider {
 	static let photosFetch = PhotosManager.shared.getPhotos(from: Date(), yearsBack: 1, maxCount: 1).first
 
 	static var previews: some View {
-		PhotosOnThisDayWidgetEntryView(entry: PhotosOnThisDayEntry(timelineDate: Date(), photoDate: nil, score: photosFetch?.score, imageURL: nil, configuration: ConfigurationIntent()))
+		PhotosOnThisDayWidgetEntryView(entry: PhotosOnThisDayEntry(timelineDate: Date(), photoDate: nil, score: photosFetch?.score ?? -1, imageURL: nil, configuration: ConfigurationIntent()))
 			.previewContext(WidgetPreviewContext(family: .systemSmall))
 	}
 }
