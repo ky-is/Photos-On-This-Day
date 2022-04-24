@@ -4,13 +4,6 @@ struct ContentView: View {
 	@ObservedObject private var state = StateManager.shared
 
 	@State private var showAbout = false
-	@State private var showAddWidgetHelp = false
-
-	@AppStorage(UserDefaults.Key.dismissedAddWidget) private var dismissedAddWidget = false
-
-	init() {
-		print(#function)
-	}
 
 	var body: some View {
 		NavigationView {
@@ -20,18 +13,7 @@ struct ContentView: View {
 				PermissionsView()
 					.padding()
 				if canShowPhotos {
-					if !dismissedAddWidget {
-						Button {
-							showAddWidgetHelp.toggle()
-						} label: {
-							Text("Add a Widget to your Home Screen!")
-								.font(.system(.title3, design: .rounded).weight(.medium))
-								.padding(8)
-						}
-							.buttonStyle(.bordered)
-//							.frame(maxWidth: .greatestFiniteMagnitude, alignment: .leading)
-							.padding(.horizontal)
-					}
+					ShowHelpView()
 					PhotosView(date: date)
 				}
 			}
@@ -75,12 +57,6 @@ struct ContentView: View {
 				}
 				.sheet(isPresented: $showAbout) {
 					AboutView()
-				}
-				.sheet(isPresented: $showAddWidgetHelp) {
-					NavigationView {
-						HelpAddWidgetView(inSheet: true)
-					}
-						.navigationViewStyle(.stack)
 				}
 		}
 			.navigationViewStyle(.stack)

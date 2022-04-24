@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		2404CDE52814CBE700E20C48 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2404CDE42814CBE700E20C48 /* UserDefaults.swift */; };
 		2404CDE72814CF4F00E20C48 /* HelpAddWidgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2404CDE62814CF4F00E20C48 /* HelpAddWidgetView.swift */; };
+		2404CDE928150D5900E20C48 /* ShowHelpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2404CDE828150D5900E20C48 /* ShowHelpView.swift */; };
 		24145AD7281362EC00022FB1 /* Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24145AD6281362EC00022FB1 /* Environment.swift */; };
 		24145AD92813686E00022FB1 /* PhotosYearFullsize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24145AD82813686E00022FB1 /* PhotosYearFullsize.swift */; };
 		24145ADB2813BC3C00022FB1 /* ZoomScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24145ADA2813BC3C00022FB1 /* ZoomScrollView.swift */; };
@@ -73,6 +74,7 @@
 /* Begin PBXFileReference section */
 		2404CDE42814CBE700E20C48 /* UserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 		2404CDE62814CF4F00E20C48 /* HelpAddWidgetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpAddWidgetView.swift; sourceTree = "<group>"; };
+		2404CDE828150D5900E20C48 /* ShowHelpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowHelpView.swift; sourceTree = "<group>"; };
 		24145AD6281362EC00022FB1 /* Environment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Environment.swift; sourceTree = "<group>"; };
 		24145AD82813686E00022FB1 /* PhotosYearFullsize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosYearFullsize.swift; sourceTree = "<group>"; };
 		24145ADA2813BC3C00022FB1 /* ZoomScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoomScrollView.swift; sourceTree = "<group>"; };
@@ -216,6 +218,7 @@
 				242F2E1B28130B2E00E88ADF /* PhotosYearThumbnail.swift */,
 				24145AD82813686E00022FB1 /* PhotosYearFullsize.swift */,
 				24DBDA0E281344F100B4313E /* AboutView.swift */,
+				2404CDE828150D5900E20C48 /* ShowHelpView.swift */,
 				2404CDE62814CF4F00E20C48 /* HelpAddWidgetView.swift */,
 				24DBDA102813468300B4313E /* Components */,
 			);
@@ -346,6 +349,7 @@
 				249F40CF281245BF002287F0 /* UIKit+Extensions.swift in Sources */,
 				249F40CA2812374C002287F0 /* Constants.swift in Sources */,
 				242F2E1C28130B2E00E88ADF /* PhotosYearThumbnail.swift in Sources */,
+				2404CDE928150D5900E20C48 /* ShowHelpView.swift in Sources */,
 				24721DD52811C66D006EB593 /* Foundation+Extensions.swift in Sources */,
 				2404CDE52814CBE700E20C48 /* UserDefaults.swift in Sources */,
 				24DBDA0F281344F100B4313E /* AboutView.swift in Sources */,
