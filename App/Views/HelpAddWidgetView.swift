@@ -12,9 +12,12 @@ struct HelpAddWidgetView: View {
 			VStack(alignment: .leading, spacing: 16) {
 				Text("**1.** Long press in an empty spot on your Home Screen.")
 				Text("**2.** Tap the \"+\" button in the top-left.")
-				Text("**3.** Search for \"On This Day\" or find it in the list.")
+				Text("**3.** Search for \"On This Day\" (it's been copied to your clipboard), or find it in the list.")
 				Text("**4.** Swipe left to choose a size, then press the \"Add Widget\" button at the bottom.")//You can configure the Widget by tapping it while edit mode is active!")
 			}
+				.onAppear {
+					UIPasteboard.general.string = "On This Day"
+				}
 				.padding()
 		}
 			.navigationTitle("Add a Widget")
