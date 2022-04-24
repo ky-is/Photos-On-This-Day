@@ -10,7 +10,7 @@ struct PhotosYearFullsize: View {
 	init(asset: PHAsset, image: UIImage) {
 		self.asset = asset
 		self._image = State(initialValue: image)
-		if photoState.favorites[asset] == nil {
+		if asset.sourceType == .typeUserLibrary && photoState.favorites[asset] == nil {
 			photoState.favorites[asset] = asset.isFavorite
 		}
 	}
@@ -45,18 +45,20 @@ struct PhotosYearFullsize: View {
 				ToolbarItemGroup(placement: .navigationBarTrailing) {
 					ShareImageButton(image: fullQualityImage ?? image)
 						.disabled(fullQualityImage == nil)
-					Button {
-						PHPhotoLibrary.shared().performChanges {
-							let request = PHAssetChangeRequest(for: asset)
-							let willFavorite = photoState.favorites[asset] != true
-							request.isFavorite = willFavorite
-						} completionHandler: { success, error in
-							DispatchQueue.main.async {
-								photoState.favorites[asset]!.toggle()
+					if asset.sourceType == .typeUserLibrary {
+						Button {
+							PHPhotoLibrary.shared().performChanges {
+								let request = PHAssetChangeRequest(for: asset)
+								let willFavorite = photoState.favorites[asset] != true
+								request.isFavorite = willFavorite
+							} completionHandler: { success, error in
+								DispatchQueue.main.async {
+									photoState.favorites[asset]!.toggle()
+								}
 							}
+						} label: {
+							Image(systemName: photoState.favorites[asset] == true ? "heart.fill" : "heart")
 						}
-					} label: {
-						Image(systemName: photoState.favorites[asset] == true ? "heart.fill" : "heart")
 					}
 				}
 				ToolbarItem(placement: .principal) {
