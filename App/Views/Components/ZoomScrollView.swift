@@ -14,6 +14,8 @@ struct ZoomScrollView<Content: View>: UIViewRepresentable {
 		scrollView.maximumZoomScale = 8
 		scrollView.minimumZoomScale = 1
 		scrollView.bouncesZoom = true
+		scrollView.showsVerticalScrollIndicator = false
+		scrollView.showsHorizontalScrollIndicator = false
 
 		let hostedView = context.coordinator.hostingController.view!
 		hostedView.translatesAutoresizingMaskIntoConstraints = true

@@ -24,11 +24,12 @@ struct PhotosYearFullsize: View {
 	var body: some View {
 		GeometryReader { geometry in
 			ZoomScrollView {
+				let shouldInset = UIDevice.current.userInterfaceIdiom == .phone
 				Image(uiImage: image)
 					.resizable()
 					.aspectRatio(contentMode: .fit)
-					.padding(.top, -geometry.safeAreaInsets.top)
-					.padding(.bottom, geometry.safeAreaInsets.bottom)
+					.padding(.top, shouldInset ? -geometry.safeAreaInsets.top : nil)
+					.padding(.bottom, shouldInset ? geometry.safeAreaInsets.bottom : nil)
 			}
 				.edgesIgnoringSafeArea(.all)
 		}
