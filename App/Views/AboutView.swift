@@ -8,29 +8,38 @@ struct AboutView: View {
 	var body: some View {
 		NavigationView {
 			Form {
-				UIViewButton { backing in
-					openReviews()
-				} label: {
-					HStack {
-						Text("Rate _Photos On This Day_")
-						Image(systemName: "arrow.up.forward.square")
+				Section("Help") {
+					NavigationLink {
+						HelpAddWidgetView(inSheet: false)
+					} label: {
+						Text("How to add a widget")
 					}
 				}
-				UIViewButton { backing in
-					loading = true
-					let url = URL(string: "https://apps.apple.com/app/kotoha/id\(Bundle.iTunesIdentifier)")!
-					if let vc = UIApplication.shared.frontViewController {
-						let activityController = UIActivityViewController(activityItems: [url], applicationActivities: nil)
-						activityController.popoverPresentationController?.sourceView = backing.uiView
-						vc.present(activityController, animated: true, completion: nil)
-					} else {
-						UIPasteboard.general.url = url
+				Section("About") {
+					UIViewButton { backing in
+						openReviews()
+					} label: {
+						HStack {
+							Text("Rate _Photos On This Day_")
+							Image(systemName: "arrow.up.forward.square")
+						}
 					}
-					loading = false
-				} label: {
-					Text("Share with a friend...")
+					UIViewButton { backing in
+						loading = true
+						let url = URL(string: "https://apps.apple.com/app/kotoha/id\(Bundle.iTunesIdentifier)")!
+						if let vc = UIApplication.shared.frontViewController {
+							let activityController = UIActivityViewController(activityItems: [url], applicationActivities: nil)
+							activityController.popoverPresentationController?.sourceView = backing.uiView
+							vc.present(activityController, animated: true, completion: nil)
+						} else {
+							UIPasteboard.general.url = url
+						}
+						loading = false
+					} label: {
+						Text("Share with a friend...")
+					}
+						.disabled(loading)
 				}
-					.disabled(loading)
 			}
 				.navigationTitle("About")
 				.toolbar {
@@ -42,6 +51,7 @@ struct AboutView: View {
 					}
 				}
 		}
+			.navigationViewStyle(.stack)
 	}
 }
 
