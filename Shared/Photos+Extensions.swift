@@ -2,14 +2,21 @@ import Photos
 import UIKit
 
 extension PHAsset {
-	static func fetchAssets(yearsBack: Int, from date: Date, areDuplicatesAcceptable: Bool) -> PHFetchResult<PHAsset> {
+	static func fetchAssets(yearsBack: Int, from date: Date) -> PHFetchResult<PHAsset> {
+		let includeScreenshots = UserDefaults.shared.bool(forKey: UserDefaults.Key.filterShowScreenshots)
+		let includeShared = UserDefaults.shared.filterShowShared
+
 		let (startDate, endDate) = Calendar.current.date(byAdding: .year, value: -yearsBack, to: date)!.getStartAndEndOfDay()
 		let fetchPhotosOptions = PHFetchOptions()
 		let creationPredicate: NSPredicate = \PHAsset.creationDate > startDate && \PHAsset.creationDate < endDate
-		let sourceTypePredicate = NSPredicate(format: "NOT ((%K & %d) != 0)", #keyPath(PHAsset.mediaSubtypes), PHAssetMediaSubtype.photoScreenshot.rawValue)
-		fetchPhotosOptions.predicate = CompoundPredicate<PHAsset>(type: .and, subpredicates: [creationPredicate, sourceTypePredicate])
+		if includeScreenshots {
+			fetchPhotosOptions.predicate = creationPredicate
+		} else {
+			let sourceTypePredicate = NSPredicate(format: "NOT ((%K & %d) != 0)", #keyPath(PHAsset.mediaSubtypes), PHAssetMediaSubtype.photoScreenshot.rawValue)
+			fetchPhotosOptions.predicate = CompoundPredicate<PHAsset>(type: .and, subpredicates: [creationPredicate, sourceTypePredicate])
+		}
 		fetchPhotosOptions.sortDescriptors = [NSSortDescriptor(key: #keyPath(PHAsset.creationDate), ascending: true)]
-		fetchPhotosOptions.includeAssetSourceTypes = areDuplicatesAcceptable ? [.typeCloudShared, .typeUserLibrary, .typeiTunesSynced] : [.typeUserLibrary, .typeiTunesSynced]
+		fetchPhotosOptions.includeAssetSourceTypes = includeShared ? [.typeCloudShared, .typeUserLibrary, .typeiTunesSynced] : [.typeUserLibrary, .typeiTunesSynced]
 		fetchPhotosOptions.includeAllBurstAssets = false
 		return PHAsset.fetchAssets(with: fetchPhotosOptions)
 	}

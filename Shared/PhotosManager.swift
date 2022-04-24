@@ -19,7 +19,7 @@ final class PhotosFetchSingleYear: Identifiable, ObservableObject {
 
 	func update() {
 		Task(priority: .userInitiated) {
-			let fetch = PHAsset.fetchAssets(yearsBack: yearsBack, from: date, areDuplicatesAcceptable: true)
+			let fetch = PHAsset.fetchAssets(yearsBack: yearsBack, from: date)
 			var fetchedAssets: [PHAsset] = []
 			fetch.enumerateObjects { asset, _, _ in
 				fetchedAssets.append(asset)
@@ -38,7 +38,7 @@ struct PhotosFetchMultiYear {
 	init(fromDate date: Date, yearsBack: Int, maxCount: Int) {
 		var scoreAssetsByYear: [Int: [ScoreAsset]] = [:]
 		(1...yearsBack).forEach { yearsToSubtract in
-			PHAsset.fetchAssets(yearsBack: yearsToSubtract, from: date, areDuplicatesAcceptable: true).enumerateObjects { asset, index, _ in
+			PHAsset.fetchAssets(yearsBack: yearsToSubtract, from: date).enumerateObjects { asset, index, _ in
 				if scoreAssetsByYear[yearsToSubtract] == nil {
 					scoreAssetsByYear[yearsToSubtract] = []
 				}

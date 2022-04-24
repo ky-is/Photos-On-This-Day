@@ -5,19 +5,22 @@ struct ContentView: View {
 
 	@State private var showAbout = false
 
+	init() {
+		state.updateDate()
+	}
+
 	var body: some View {
 		NavigationView {
-			let date = Calendar.current.date(byAdding: .init(day: state.daysChange), to: Date())!
 			let canShowPhotos = state.permission == .authorized || state.permission == .limited
 			ScrollView {
 				PermissionsView()
 					.padding()
 				if canShowPhotos {
 					ShowHelpView()
-					PhotosView(date: date)
+					PhotosView(date: state.date)
 				}
 			}
-				.navigationTitle(DateFormatter.monthDay.string(from: date))
+				.navigationTitle(DateFormatter.monthDay.string(from: state.date))
 				.toolbar {
 					ToolbarItemGroup(placement: .navigationBarLeading) {
 						Group {
@@ -47,6 +50,7 @@ struct ContentView: View {
 					}
 					ToolbarItemGroup(placement: .navigationBarTrailing) {
 						if canShowPhotos {
+							FilterLibraryMenu()
 							Button {
 								showAbout.toggle()
 							} label: {
@@ -60,6 +64,19 @@ struct ContentView: View {
 				}
 		}
 			.navigationViewStyle(.stack)
+	}
+}
+
+struct FilterLibraryMenu: View {
+	@ObservedObject private var filters = FilterStateManager.shared
+
+	var body: some View {
+		Menu {
+			Toggle("Show iCloud Shared", isOn: $filters.showShared)
+			Toggle("Show Screenshots", isOn: $filters.showScreenshots)
+		} label: {
+			Image(systemName: "line.3.horizontal.decrease.circle")
+		}
 	}
 }
 

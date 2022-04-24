@@ -5,6 +5,12 @@ extension UserDefaults {
 
 	struct Key {
 		static let dismissedAddWidget = "dismissedAddWidget"
+		static let filterShowShared = "filterShowShared"
+		static let filterShowScreenshots = "filterShowScreenshots"
+	}
+
+	var filterShowShared: Bool {
+		UserDefaults.shared.object(forKey: UserDefaults.Key.filterShowShared) as? Bool ?? true
 	}
 
 	func updateAddedWidget() {
