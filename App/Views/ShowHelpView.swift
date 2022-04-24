@@ -27,7 +27,7 @@ struct ShowHelpView: View {
 					.onChange(of: scenePhase) { newPhase in
 						switch newPhase {
 						case .active:
-							UserDefaults.shared.updateAddedWidget()
+							UserDefaults.standard.updateAddedWidget()
 						default: break
 						}
 					}

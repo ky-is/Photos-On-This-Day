@@ -68,12 +68,12 @@ struct ContentView: View {
 }
 
 struct FilterLibraryMenu: View {
-	@ObservedObject private var filters = FilterStateManager.shared
+	@ObservedObject private var syncStorage = SyncStorage.shared
 
 	var body: some View {
 		Menu {
-			Toggle("Show iCloud Shared", isOn: $filters.showShared)
-			Toggle("Show Screenshots", isOn: $filters.showScreenshots)
+			Toggle("Show iCloud Shared", isOn: $syncStorage.filterShowShared)
+			Toggle("Show Screenshots", isOn: $syncStorage.filterShowScreenshots)
 		} label: {
 			Image(systemName: "line.3.horizontal.decrease.circle")
 		}

@@ -3,7 +3,7 @@ import UIKit
 
 extension PHAsset {
 	static func fetchAssets(yearsBack: Int, from date: Date) -> PHFetchResult<PHAsset> {
-		let includeScreenshots = UserDefaults.shared.bool(forKey: UserDefaults.Key.filterShowScreenshots)
+		let includeScreenshots = UserDefaults.shared.filterShowScreenshots
 		let includeShared = UserDefaults.shared.filterShowShared
 
 		let (startDate, endDate) = Calendar.current.date(byAdding: .year, value: -yearsBack, to: date)!.getStartAndEndOfDay()

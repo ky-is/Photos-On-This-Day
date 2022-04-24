@@ -25,7 +25,7 @@ struct HelpAddWidgetView: View {
 				ToolbarItem(placement: .destructiveAction) {
 					if inSheet {
 						Button("Don't show again") {
-							UserDefaults.shared.set(true, forKey: UserDefaults.Key.dismissedAddWidget)
+							UserDefaults.standard.set(true, forKey: UserDefaults.Key.dismissedAddWidget)
 							dismiss()
 						}
 					}

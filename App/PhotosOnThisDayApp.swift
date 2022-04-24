@@ -35,7 +35,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, PHPhotoLibraryAvailabi
 		if StateManager.shared.permission == .authorized || StateManager.shared.permission == .limited {
 			WidgetCenter.shared.reloadTimelines(ofKind: WidgetKind)
 		}
-		UserDefaults.shared.updateAddedWidget()
+		UserDefaults.standard.updateAddedWidget()
 		return true
 	}
 }
