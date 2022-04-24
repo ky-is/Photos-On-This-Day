@@ -22,7 +22,7 @@ struct HelpAddWidgetView: View {
 				ToolbarItem(placement: .destructiveAction) {
 					if inSheet {
 						Button("Don't show again") {
-							UserDefaults.standard.set(true, forKey: UserDefaults.Key.dismissedAddWidget)
+							UserDefaults.shared.set(true, forKey: UserDefaults.Key.dismissedAddWidget)
 							dismiss()
 						}
 					}

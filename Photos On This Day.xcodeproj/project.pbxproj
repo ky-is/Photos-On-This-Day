@@ -10,6 +10,7 @@
 		2404CDE52814CBE700E20C48 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2404CDE42814CBE700E20C48 /* UserDefaults.swift */; };
 		2404CDE72814CF4F00E20C48 /* HelpAddWidgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2404CDE62814CF4F00E20C48 /* HelpAddWidgetView.swift */; };
 		2404CDE928150D5900E20C48 /* ShowHelpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2404CDE828150D5900E20C48 /* ShowHelpView.swift */; };
+		2404CDEC28159AB700E20C48 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2404CDE42814CBE700E20C48 /* UserDefaults.swift */; };
 		24145AD7281362EC00022FB1 /* Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24145AD6281362EC00022FB1 /* Environment.swift */; };
 		24145AD92813686E00022FB1 /* PhotosYearFullsize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24145AD82813686E00022FB1 /* PhotosYearFullsize.swift */; };
 		24145ADB2813BC3C00022FB1 /* ZoomScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24145ADA2813BC3C00022FB1 /* ZoomScrollView.swift */; };
@@ -75,6 +76,8 @@
 		2404CDE42814CBE700E20C48 /* UserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 		2404CDE62814CF4F00E20C48 /* HelpAddWidgetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpAddWidgetView.swift; sourceTree = "<group>"; };
 		2404CDE828150D5900E20C48 /* ShowHelpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowHelpView.swift; sourceTree = "<group>"; };
+		2404CDED28159D9E00E20C48 /* Entitlements.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Entitlements.entitlements; sourceTree = "<group>"; };
+		2404CDEE28159DB700E20C48 /* Entitlements.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Entitlements.entitlements; sourceTree = "<group>"; };
 		24145AD6281362EC00022FB1 /* Environment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Environment.swift; sourceTree = "<group>"; };
 		24145AD82813686E00022FB1 /* PhotosYearFullsize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosYearFullsize.swift; sourceTree = "<group>"; };
 		24145ADA2813BC3C00022FB1 /* ZoomScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoomScrollView.swift; sourceTree = "<group>"; };
@@ -129,6 +132,27 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2404CDEF28159E6B00E20C48 /* Assets */ = {
+			isa = PBXGroup;
+			children = (
+				2404CDEE28159DB700E20C48 /* Entitlements.entitlements */,
+				24721DE62811DCC0006EB593 /* Assets.xcassets */,
+				24721DE82811DCC0006EB593 /* Info.plist */,
+			);
+			path = Assets;
+			sourceTree = "<group>";
+		};
+		2404CDF028159E7600E20C48 /* Assets */ = {
+			isa = PBXGroup;
+			children = (
+				24721DC82811BE7D006EB593 /* Assets.xcassets */,
+				2404CDED28159D9E00E20C48 /* Entitlements.entitlements */,
+				24721DF5281233F2006EB593 /* Info.plist */,
+				24721DCA2811BE7D006EB593 /* Preview Content */,
+			);
+			path = Assets;
+			sourceTree = "<group>";
+		};
 		24721DB82811BE7C006EB593 = {
 			isa = PBXGroup;
 			children = (
@@ -154,16 +178,13 @@
 			children = (
 				24721DC42811BE7C006EB593 /* PhotosOnThisDayApp.swift */,
 				247BF61E2812787B0024B9F2 /* Views */,
-				24721DC82811BE7D006EB593 /* Assets.xcassets */,
-				24721DF5281233F2006EB593 /* Info.plist */,
-				24721DCA2811BE7D006EB593 /* Preview Content */,
+				2404CDF028159E7600E20C48 /* Assets */,
 				249F40CE281245BF002287F0 /* UIKit+Extensions.swift */,
 				249F40CC28123C49002287F0 /* StateManager.swift */,
 				24145ADC2813C1C000022FB1 /* PhotoStateManager.swift */,
 				24DBDA0C2813400300B4313E /* Colors.swift */,
 				24145AD6281362EC00022FB1 /* Environment.swift */,
 				24DBDA132813484700B4313E /* Sharing.swift */,
-				2404CDE42814CBE700E20C48 /* UserDefaults.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -190,8 +211,7 @@
 			children = (
 				24721DE32811DCBF006EB593 /* PhotosOnThisDayWidget.swift */,
 				24721DE52811DCBF006EB593 /* PhotosOnThisDayWidget.intentdefinition */,
-				24721DE62811DCC0006EB593 /* Assets.xcassets */,
-				24721DE82811DCC0006EB593 /* Info.plist */,
+				2404CDEF28159E6B00E20C48 /* Assets */,
 			);
 			path = "Photos On This Day Widget";
 			sourceTree = "<group>";
@@ -204,6 +224,7 @@
 				242F2E182813057E00E88ADF /* Photos+Extensions.swift */,
 				24721DD62811CEAF006EB593 /* PhotosManager.swift */,
 				2473CBBF28126DB000A5E34B /* Predicates.swift */,
+				2404CDE42814CBE700E20C48 /* UserDefaults.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -371,6 +392,7 @@
 				24721DF32811DE34006EB593 /* Foundation+Extensions.swift in Sources */,
 				24721DF42811DE37006EB593 /* PhotosManager.swift in Sources */,
 				24721DE92811DCC0006EB593 /* PhotosOnThisDayWidget.intentdefinition in Sources */,
+				2404CDEC28159AB700E20C48 /* UserDefaults.swift in Sources */,
 				249F40CB2812374C002287F0 /* Constants.swift in Sources */,
 				2473CBC128126DB000A5E34B /* Predicates.swift in Sources */,
 				242F2E1A2813057E00E88ADF /* Photos+Extensions.swift in Sources */,
@@ -514,12 +536,13 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = App/Assets/Entitlements.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_ASSET_PATHS = "\"App/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"App/Assets/Preview Content\"";
 				DEVELOPMENT_TEAM = P3YWQG9C86;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = App/Info.plist;
+				INFOPLIST_FILE = App/Assets/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "On This Day";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "This app requires access to your photo library in order to show you past photos. Photos never leave your device, nor used for any other purpose.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -544,12 +567,13 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = App/Assets/Entitlements.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_ASSET_PATHS = "\"App/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"App/Assets/Preview Content\"";
 				DEVELOPMENT_TEAM = P3YWQG9C86;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = App/Info.plist;
+				INFOPLIST_FILE = App/Assets/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "On This Day";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "This app requires access to your photo library in order to show you past photos. Photos never leave your device, nor used for any other purpose.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -573,10 +597,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = "Photos On This Day Widget/Assets/Entitlements.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = P3YWQG9C86;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "Photos On This Day Widget/Info.plist";
+				INFOPLIST_FILE = "Photos On This Day Widget/Assets/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "On This Day";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -598,10 +623,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = "Photos On This Day Widget/Assets/Entitlements.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = P3YWQG9C86;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "Photos On This Day Widget/Info.plist";
+				INFOPLIST_FILE = "Photos On This Day Widget/Assets/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "On This Day";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
