@@ -421,7 +421,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -484,7 +484,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -521,7 +521,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = App/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "On This Day";
-				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "This app requires access to your photo library in order to show you past photos. Photos never leave your device, or used for any other purpose.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "This app requires access to your photo library in order to show you past photos. Photos never leave your device, nor used for any other purpose.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -551,7 +551,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = App/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "On This Day";
-				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "This app requires access to your photo library in order to show you past photos. Photos never leave your device, or used for any other purpose.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "This app requires access to your photo library in order to show you past photos. Photos never leave your device, nor used for any other purpose.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
