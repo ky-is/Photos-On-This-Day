@@ -30,9 +30,10 @@ struct Provider: IntentTimelineProvider {
 		completion(entry ?? PhotosOnThisDayEntry(timelineDate: Date(), photoDate: nil, score: -1, imageURL: nil, configuration: configuration))
 	}
 
-	private let cacheContainerURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("widget")
+	private let cacheContainerURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!.appendingPathComponent("widget")
 
 	private func clearCacheDirectory(for date: Date) -> URL {
+		try? FileManager.default.removeItem(at: FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("widget")) //TODO remove next build
 		let datePath = DateFormatter.monthDay.string(from: date)
 		let cacheURL = cacheContainerURL.appendingPathComponent(datePath)
 		let fileManager = FileManager.default
