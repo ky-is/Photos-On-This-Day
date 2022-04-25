@@ -19,7 +19,7 @@ struct Provider: IntentTimelineProvider {
 
 	func getSnapshot(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (PhotosOnThisDayEntry) -> ()) {
 		let currentDate = Date()
-		let photosFetch = PhotosManager.shared.getPhotos(from: currentDate, yearsBack: 1, maxCount: 1)
+		let photosFetch = PhotosManager.shared.getPhotos(from: currentDate, yearsBack: 1, maxCount: 1, onlyFavorites: false)
 		var entry: PhotosOnThisDayEntry?
 		if let (score, asset) = photosFetch.first {
 			let cacheURL = clearCacheDirectory(for: currentDate)
@@ -76,7 +76,7 @@ struct Provider: IntentTimelineProvider {
 		let minutesPerUpdate: Double = context.family == .systemExtraLarge ? 60 : 30 //TODO improve memory handling
 		let maxEntries = Int((timeForUpdates / (minutesPerUpdate * .minute)).rounded(.down))
 		var entries: [PhotosOnThisDayEntry] = []
-		let photosFetch = manager.getPhotos(from: Date(), yearsBack: MaxYearsBack, maxCount: maxEntries).shuffled()
+		let photosFetch = manager.getPhotos(from: Date(), yearsBack: MaxYearsBack, maxCount: maxEntries, onlyFavorites: configuration.onlyShowFavorites == 1).shuffled()
 		let timePerUpdate = timeForUpdates / Double(photosFetch.count)
 		for (offset, scoreAsset) in photosFetch.enumerated() {
 			autoreleasepool {
@@ -225,10 +225,10 @@ struct PhotosOnThisDayWidgetEntryView: View {
 }
 
 struct PhotosOnThisDayWidget_Previews: PreviewProvider {
-	static let photosFetch = PhotosManager.shared.getPhotos(from: Date(), yearsBack: 1, maxCount: 1).first
+	static let photosFetch = PhotosManager.shared.getPhotos(from: Date(), yearsBack: 1, maxCount: 1, onlyFavorites: false).first
 
 	static var previews: some View {
-		PhotosOnThisDayWidgetEntryView(entry: PhotosOnThisDayEntry(timelineDate: Date(), photoDate: nil, score: photosFetch?.score ?? -1, imageURL: nil, configuration: ConfigurationIntent()))
+		PhotosOnThisDayWidgetEntryView(entry: PhotosOnThisDayEntry(timelineDate: Date(), photoDate: photosFetch?.asset.creationDate, score: photosFetch?.score ?? -1, imageURL: nil, configuration: ConfigurationIntent()))
 			.previewContext(WidgetPreviewContext(family: .systemSmall))
 	}
 }

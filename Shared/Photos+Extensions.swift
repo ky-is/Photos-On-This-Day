@@ -2,22 +2,26 @@ import Photos
 import UIKit
 
 extension PHAsset {
-	static func fetchAssets(yearsBack: Int, from date: Date) -> PHFetchResult<PHAsset> {
+	static func fetchAssets(yearsBack: Int, from date: Date, onlyFavorites: Bool) -> PHFetchResult<PHAsset> {
 		let includeScreenshots = UserDefaults.shared.filterShowScreenshots
 		let includeShared = UserDefaults.shared.filterShowShared
 
 		let (startDate, endDate) = Calendar.current.date(byAdding: .year, value: -yearsBack, to: date)!.getStartAndEndOfDay()
 		let fetchPhotosOptions = PHFetchOptions()
 		let creationPredicate: NSPredicate = \PHAsset.creationDate > startDate && \PHAsset.creationDate < endDate
-		if includeScreenshots {
-			fetchPhotosOptions.predicate = creationPredicate
-		} else {
-			let sourceTypePredicate = NSPredicate(format: "NOT ((%K & %d) != 0)", #keyPath(PHAsset.mediaSubtypes), PHAssetMediaSubtype.photoScreenshot.rawValue)
-			fetchPhotosOptions.predicate = CompoundPredicate<PHAsset>(type: .and, subpredicates: [creationPredicate, sourceTypePredicate])
+		var subpredicates = [creationPredicate]
+		if onlyFavorites {
+			subpredicates.append(\PHAsset.isFavorite == true)
 		}
+		if !includeScreenshots {
+			let sourceTypePredicate = NSPredicate(format: "NOT ((%K & %d) != 0)", #keyPath(PHAsset.mediaSubtypes), PHAssetMediaSubtype.photoScreenshot.rawValue)
+			subpredicates.append(sourceTypePredicate)
+		}
+		fetchPhotosOptions.predicate = CompoundPredicate<PHAsset>(type: .and, subpredicates: subpredicates)
 		fetchPhotosOptions.sortDescriptors = [NSSortDescriptor(key: #keyPath(PHAsset.creationDate), ascending: true)]
 		fetchPhotosOptions.includeAssetSourceTypes = includeShared ? [.typeCloudShared, .typeUserLibrary, .typeiTunesSynced] : [.typeUserLibrary, .typeiTunesSynced]
 		fetchPhotosOptions.includeAllBurstAssets = false
+		fetchPhotosOptions.includeHiddenAssets = false
 		return PHAsset.fetchAssets(with: fetchPhotosOptions)
 	}
 }

@@ -19,7 +19,7 @@ final class PhotosFetchSingleYear: Identifiable, ObservableObject {
 
 	func update() {
 		Task(priority: .userInitiated) {
-			let fetch = PHAsset.fetchAssets(yearsBack: yearsBack, from: date)
+			let fetch = PHAsset.fetchAssets(yearsBack: yearsBack, from: date, onlyFavorites: false)
 			var fetchedAssets: [PHAsset] = []
 			fetch.enumerateObjects { asset, _, _ in
 				fetchedAssets.append(asset)
@@ -35,10 +35,10 @@ final class PhotosFetchSingleYear: Identifiable, ObservableObject {
 struct PhotosFetchMultiYear {
 	var bestPhotos: [ScoreAsset] = []
 
-	init(fromDate date: Date, yearsBack: Int, maxCount: Int) {
+	init(fromDate date: Date, yearsBack: Int, maxCount: Int, onlyFavorites: Bool) {
 		var scoreAssetsByYear: [Int: [ScoreAsset]] = [:]
 		(1...yearsBack).forEach { yearsToSubtract in
-			PHAsset.fetchAssets(yearsBack: yearsToSubtract, from: date).enumerateObjects { asset, index, _ in
+			PHAsset.fetchAssets(yearsBack: yearsToSubtract, from: date, onlyFavorites: onlyFavorites).enumerateObjects { asset, index, _ in
 				if scoreAssetsByYear[yearsToSubtract] == nil {
 					scoreAssetsByYear[yearsToSubtract] = []
 				}
@@ -89,15 +89,11 @@ final class PhotosManager: NSObject, ObservableObject, PHPhotoLibraryChangeObser
 		print(#function, changeInstance)
 	}
 
-	private func getCache(from date: Date, yearsBack: Int, maxCount: Int) -> PhotosFetchMultiYear {
+	func getPhotos(from date: Date, yearsBack: Int, maxCount: Int, onlyFavorites: Bool) -> [ScoreAsset] {
 		let key = "\(date.formatted(formatter))-\(yearsBack)"
 		if cache[key] == nil {
-			cache[key] = PhotosFetchMultiYear(fromDate: date, yearsBack: yearsBack, maxCount: maxCount)
+			cache[key] = PhotosFetchMultiYear(fromDate: date, yearsBack: yearsBack, maxCount: maxCount, onlyFavorites: onlyFavorites)
 		}
-		return cache[key]!
-	}
-
-	func getPhotos(from date: Date, yearsBack: Int, maxCount: Int) -> [ScoreAsset] {
-		return getCache(from: date, yearsBack: yearsBack, maxCount: maxCount).bestPhotos
+		return cache[key]!.bestPhotos
 	}
 }
