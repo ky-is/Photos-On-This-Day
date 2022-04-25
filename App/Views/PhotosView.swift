@@ -6,7 +6,7 @@ struct PhotosView: View {
 
 	init(date: Date) {
 		self.date = date
-		self.fetches = (1...64).map { PhotosFetchSingleYear(fromDate: date, yearsBack: $0) }
+		self.fetches = (1...MaxYearsBack).map { PhotosFetchSingleYear(fromDate: date, yearsBack: $0) }
 	}
 
 	var body: some View {

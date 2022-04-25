@@ -75,7 +75,7 @@ struct Provider: IntentTimelineProvider {
 		let minutesPerUpdate: Double = context.family == .systemExtraLarge ? 60 : 30 //TODO improve memory handling
 		let maxEntries = Int((timeForUpdates / (minutesPerUpdate * .minute)).rounded(.down))
 		var entries: [PhotosOnThisDayEntry] = []
-		let photosFetch = manager.getPhotos(from: Date(), yearsBack: 16, maxCount: maxEntries).shuffled()
+		let photosFetch = manager.getPhotos(from: Date(), yearsBack: MaxYearsBack, maxCount: maxEntries).shuffled()
 		let timePerUpdate = timeForUpdates / Double(photosFetch.count)
 		for (offset, scoreAsset) in photosFetch.enumerated() {
 			autoreleasepool {
