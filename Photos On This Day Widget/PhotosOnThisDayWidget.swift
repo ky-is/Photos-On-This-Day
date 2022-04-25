@@ -3,7 +3,7 @@ import SwiftUI
 import WidgetKit
 
 struct Provider: IntentTimelineProvider {
-	private func getImageURL(cacheURL: URL, asset: PHAsset, size: CGSize, resultHandler: @escaping (URL) -> Void) {
+	private static func getImageURL(cacheURL: URL, asset: PHAsset, size: CGSize, resultHandler: @escaping (URL) -> Void) {
 		PHImageManager.default().requestImage(for: asset, size: size, isSynchronous: true, highQuality: true) { image, _ in
 			autoreleasepool {
 				if let url = saveImageToCache(cacheURL: cacheURL, asset: asset, image: image) {
@@ -17,22 +17,26 @@ struct Provider: IntentTimelineProvider {
 		return PhotosOnThisDayEntry(timelineDate: Calendar.current.date(byAdding: .year, value: -1, to: Date())!, photoDate: nil, score: 0, imageURL: nil, configuration: ConfigurationIntent())
 	}
 
-	func getSnapshot(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (PhotosOnThisDayEntry) -> ()) {
+	fileprivate static func getSnapshotEntry(for configuration: ConfigurationIntent, size: CGSize) -> PhotosOnThisDayEntry {
 		let currentDate = Date()
-		let photosFetch = PhotosManager.shared.getPhotos(from: currentDate, yearsBack: 1, maxCount: 1, onlyFavorites: false)
+		let photosFetch = getBestPhotos(fromDate: currentDate, yearDiffs: [1], maxCount: 1, onlyFavorites: false)
 		var entry: PhotosOnThisDayEntry?
 		if let (score, asset) = photosFetch.first {
 			let cacheURL = clearCacheDirectory(for: currentDate)
-			getImageURL(cacheURL: cacheURL, asset: asset, size: context.displaySize) { url in
+			getImageURL(cacheURL: cacheURL, asset: asset, size: size) { url in
 				entry = PhotosOnThisDayEntry(timelineDate: currentDate, photoDate: asset.creationDate, score: score, imageURL: url, configuration: configuration)
 			}
 		}
-		completion(entry ?? PhotosOnThisDayEntry(timelineDate: Date(), photoDate: nil, score: -1, imageURL: nil, configuration: configuration))
+		return entry ?? PhotosOnThisDayEntry(timelineDate: Date(), photoDate: nil, score: -1, imageURL: nil, configuration: configuration)
 	}
 
-	private let cacheContainerURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!.appendingPathComponent("widget")
+	func getSnapshot(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (PhotosOnThisDayEntry) -> ()) {
+		completion(Self.getSnapshotEntry(for: configuration, size: context.displaySize))
+	}
 
-	private func clearCacheDirectory(for date: Date) -> URL {
+	private static let cacheContainerURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!.appendingPathComponent("widget")
+
+	private static func clearCacheDirectory(for date: Date) -> URL {
 		try? FileManager.default.removeItem(at: FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("widget")) //TODO remove next build
 		let datePath = DateFormatter.monthDay.string(from: date)
 		let cacheURL = cacheContainerURL.appendingPathComponent(datePath)
@@ -51,7 +55,7 @@ struct Provider: IntentTimelineProvider {
 		return cacheURL
 	}
 
-	private func saveImageToCache(cacheURL: URL, asset: PHAsset, image: UIImage?) -> URL? {
+	private static func saveImageToCache(cacheURL: URL, asset: PHAsset, image: UIImage?) -> URL? {
 		let id = String(asset.localIdentifier.split(separator: "/")[0])
 		let imageURL = cacheURL.appendingPathComponent(id)
 		if let data = image?.jpegData(compressionQuality: 1) {
@@ -67,8 +71,7 @@ struct Provider: IntentTimelineProvider {
 
 	func getTimeline(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
 		let currentDate = Date()
-		let cacheURL = clearCacheDirectory(for: currentDate)
-		let manager = PhotosManager()
+		let cacheURL = Self.clearCacheDirectory(for: currentDate)
 
 		let calendar = Calendar.current
 		let nextDayStart = calendar.startOfDay(for: calendar.date(byAdding: .day, value: 1, to: currentDate)!)
@@ -76,12 +79,15 @@ struct Provider: IntentTimelineProvider {
 		let minutesPerUpdate: Double = context.family == .systemExtraLarge ? 60 : 30 //TODO improve memory handling
 		let maxEntries = Int((timeForUpdates / (minutesPerUpdate * .minute)).rounded(.down))
 		var entries: [PhotosOnThisDayEntry] = []
-		let photosFetch = manager.getPhotos(from: Date(), yearsBack: MaxYearsBack, maxCount: maxEntries, onlyFavorites: configuration.onlyShowFavorites == 1).shuffled()
+
+		let customYearDiffs = configuration.onlyShowYears?.compactMap { $0.yearsAgo as? Int } ?? []
+		let yearDiffs = !customYearDiffs.isEmpty ? customYearDiffs : (1...MaxYearsBack).map { $0 }
+		let photosFetch = getBestPhotos(fromDate: Date(), yearDiffs: yearDiffs, maxCount: maxEntries, onlyFavorites: configuration.onlyShowFavorites == 1).shuffled()
 		let timePerUpdate = timeForUpdates / Double(photosFetch.count)
 		for (offset, scoreAsset) in photosFetch.enumerated() {
 			autoreleasepool {
 				let entryDate = currentDate.addingTimeInterval(timePerUpdate * Double(offset))
-				getImageURL(cacheURL: cacheURL, asset: scoreAsset.asset, size: context.displaySize) { url in
+				Self.getImageURL(cacheURL: cacheURL, asset: scoreAsset.asset, size: context.displaySize) { url in
 					let entry = PhotosOnThisDayEntry(timelineDate: entryDate, photoDate: scoreAsset.asset.creationDate, score: scoreAsset.score, imageURL: url, configuration: configuration)
 					entries.append(entry)
 				}
@@ -225,10 +231,10 @@ struct PhotosOnThisDayWidgetEntryView: View {
 }
 
 struct PhotosOnThisDayWidget_Previews: PreviewProvider {
-	static let photosFetch = PhotosManager.shared.getPhotos(from: Date(), yearsBack: 1, maxCount: 1, onlyFavorites: false).first
+	static let photosFetch = getBestPhotos(fromDate: Date(), yearDiffs: [1], maxCount: 1, onlyFavorites: false).first
 
 	static var previews: some View {
-		PhotosOnThisDayWidgetEntryView(entry: PhotosOnThisDayEntry(timelineDate: Date(), photoDate: photosFetch?.asset.creationDate, score: photosFetch?.score ?? -1, imageURL: nil, configuration: ConfigurationIntent()))
+		PhotosOnThisDayWidgetEntryView(entry: Provider.getSnapshotEntry(for: ConfigurationIntent(), size: CGSize(width: 128, height: 128))) //NOTE size
 			.previewContext(WidgetPreviewContext(family: .systemSmall))
 	}
 }
