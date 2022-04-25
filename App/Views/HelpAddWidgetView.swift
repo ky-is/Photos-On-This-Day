@@ -14,6 +14,10 @@ struct HelpAddWidgetView: View {
 				Text("**2.** Tap the \"+\" button in the top-left.")
 				Text("**3.** Search for \"On This Day\" (it's been copied to your clipboard), or find it in the list.")
 				Text("**4.** Swipe left to choose a size, then press the \"Add Widget\" button at the bottom.")//You can configure the Widget by tapping it while edit mode is active!")
+				Text("Tip: If your photo library is sparse, try dragging the Widget into a Stack. For days it finds a photo, the _On This Day_ Widget can automatically show at the top!")
+					.italic()
+					.padding()
+					.multilineTextAlignment(.center)
 			}
 				.onAppear {
 					UIPasteboard.general.string = "On This Day"

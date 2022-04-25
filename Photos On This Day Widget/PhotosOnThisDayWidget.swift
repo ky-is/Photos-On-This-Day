@@ -118,7 +118,7 @@ struct PhotosOnThisDayWidget: Widget {
 			PhotosOnThisDayWidgetEntryView(entry: entry)
 		}
 			.configurationDisplayName("On This Day")
-			.description("Photo frame of your library and shared photos from this day in years past.")
+			.description("See photos on this day from years past.")
 			.supportedFamilies([.systemSmall, .systemMedium, .systemLarge, .systemExtraLarge])
 	}
 }
