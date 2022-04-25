@@ -37,9 +37,9 @@ struct PhotosYearThumbnail: View {
 										Image(systemName: "iphone")
 									}
 								}
-								.foregroundColor(.white)
-								.shadow(color: .black, radius: 1, x: 0, y: 0.5)
-								.padding(2)
+									.foregroundColor(.white)
+									.shadow(color: .black, radius: 1, x: 0, y: 0.5)
+									.padding(3)
 							}
 					}
 				} else {
