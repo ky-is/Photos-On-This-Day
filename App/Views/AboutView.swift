@@ -13,9 +13,11 @@ struct AboutView: View {
 						HelpAddWidgetView(inSheet: false)
 					} label: {
 						Text("How to add a Widget")
+							.font(.system(.headline, design: .rounded))
 					}
 				}
-				Section("About") {
+				Section("Share") {
+					#if DEBUG //RELEASE
 					UIViewButton { backing in
 						openReviews()
 					} label: {
@@ -39,6 +41,19 @@ struct AboutView: View {
 						Text("Share with a friend...")
 					}
 						.disabled(loading)
+					#endif
+				}
+				Section {
+				} header: {
+					Text("About")
+				} footer: {
+					VStack(alignment: .leading) {
+						Text("Photos On This Day")
+							.font(.system(.headline, design: .rounded))
+						Text("v\(Bundle.main.versionName) build \(Bundle.main.versionNumber)")
+							.font(.system(.subheadline, design: .rounded))
+
+					}
 				}
 			}
 				.navigationTitle("About")

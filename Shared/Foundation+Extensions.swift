@@ -1,5 +1,16 @@
 import Foundation
 
+extension Bundle {
+	var versionName: String {
+		Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
+	}
+
+	var versionNumber: Int {
+		guard let string = object(forInfoDictionaryKey: kCFBundleVersionKey as String) as? String else { return 0 }
+		return Int(string) ?? 0
+	}
+}
+
 extension Date {
 	func getStartAndEndOfDay() -> (startDate: Date, endDate: Date) {
 		let calendar = Calendar.current
