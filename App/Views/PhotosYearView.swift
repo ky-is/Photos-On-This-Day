@@ -1,7 +1,7 @@
 import SwiftUI
 
 private struct PhotosYearHeader: View {
-	let fetch: PhotosFetchSingleYear
+	let fetch: PhotosFetch
 
 	var body: some View {
 		Text((Calendar.current.component(.year, from: fetch.date) - fetch.yearsBack).description)
@@ -14,7 +14,7 @@ private struct PhotosYearHeader: View {
 }
 
 struct PhotosYearView: View {
-	@ObservedObject var fetch: PhotosFetchSingleYear
+	@ObservedObject var fetch: PhotosFetch
 
 	@Environment(\.screenSize) private var screenSize
 
@@ -38,7 +38,7 @@ struct PhotosYearView: View {
 
 struct PhotosYearView_Previews: PreviewProvider {
 	static var previews: some View {
-		PhotosYearView(fetch: PhotosFetchSingleYear(fromDate: Date(), yearsBack: 1))
+		PhotosYearView(fetch: PhotosFetch(fromDate: Date(), yearsBack: 1))
 			.environment(\.screenSize, UIScreen.main.bounds.size)
 	}
 }

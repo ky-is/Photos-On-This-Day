@@ -19,7 +19,7 @@ struct Provider: IntentTimelineProvider {
 
 	fileprivate static func getSnapshotEntry(for configuration: ConfigurationIntent, size: CGSize) -> PhotosOnThisDayEntry {
 		let currentDate = Date()
-		let photosFetch = getBestPhotos(fromDate: currentDate, yearDiffs: [1], maxCount: 1, onlyFavorites: false)
+		let photosFetch = PhotosFetch.getBestPhotos(fromDate: currentDate, yearDiffs: [1], maxCount: 1, onlyFavorites: false)
 		var entry: PhotosOnThisDayEntry?
 		if let (score, asset) = photosFetch.first {
 			let cacheURL = clearCacheDirectory(for: currentDate)
@@ -82,7 +82,7 @@ struct Provider: IntentTimelineProvider {
 
 		let customYearDiffs = configuration.onlyShowYears?.compactMap { $0.yearsAgo as? Int } ?? []
 		let yearDiffs = !customYearDiffs.isEmpty ? customYearDiffs : (1...MaxYearsBack).map { $0 }
-		let photosFetch = getBestPhotos(fromDate: Date(), yearDiffs: yearDiffs, maxCount: maxEntries, onlyFavorites: configuration.onlyShowFavorites == 1).shuffled()
+		let photosFetch = PhotosFetch.getBestPhotos(fromDate: Date(), yearDiffs: yearDiffs, maxCount: maxEntries, onlyFavorites: configuration.onlyShowFavorites == 1).shuffled()
 		let timePerUpdate = timeForUpdates / Double(photosFetch.count)
 		for (offset, scoreAsset) in photosFetch.enumerated() {
 			autoreleasepool {
@@ -231,8 +231,6 @@ struct PhotosOnThisDayWidgetEntryView: View {
 }
 
 struct PhotosOnThisDayWidget_Previews: PreviewProvider {
-	static let photosFetch = getBestPhotos(fromDate: Date(), yearDiffs: [1], maxCount: 1, onlyFavorites: false).first
-
 	static var previews: some View {
 		PhotosOnThisDayWidgetEntryView(entry: Provider.getSnapshotEntry(for: ConfigurationIntent(), size: CGSize(width: 128, height: 128))) //NOTE size
 			.previewContext(WidgetPreviewContext(family: .systemSmall))

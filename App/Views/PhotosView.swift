@@ -2,11 +2,11 @@ import SwiftUI
 
 struct PhotosView: View {
 	let date: Date
-	let fetches: [PhotosFetchSingleYear]
+	let fetches: [PhotosFetch]
 
 	init(date: Date) {
 		self.date = date
-		self.fetches = (1...MaxYearsBack).map { PhotosFetchSingleYear(fromDate: date, yearsBack: $0) }
+		self.fetches = (1...MaxYearsBack).map { PhotosFetch(fromDate: date, yearsBack: $0) }
 	}
 
 	var body: some View {
