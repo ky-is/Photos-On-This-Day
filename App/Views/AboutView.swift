@@ -26,7 +26,7 @@ struct AboutView: View {
 					}
 					UIViewButton { backing in
 						loading = true
-						let url = URL(string: "https://apps.apple.com/app/kotoha/id\(Bundle.iTunesIdentifier)")!
+						let url = URL(string: "https://apps.apple.com/app/photos-on-this-day/id\(Bundle.iTunesIdentifier)")!
 						if let vc = UIApplication.shared.frontViewController {
 							let activityController = UIActivityViewController(activityItems: [url], applicationActivities: nil)
 							activityController.popoverPresentationController?.sourceView = backing.uiView

@@ -1,7 +1,7 @@
 import UIKit
 
 extension Bundle {
-	static let iTunesIdentifier = "" //TODO
+	static let iTunesIdentifier = "1620659723"
 }
 
 extension UIApplication {

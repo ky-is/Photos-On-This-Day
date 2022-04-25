@@ -5,7 +5,7 @@ import UIKit
 private var storeVC: SKStoreProductViewController?
 
 func openReviews() {
-	UIApplication.shared.open(URL(string: "https://apps.apple.com/app/id\(Bundle.iTunesIdentifier)?action=write-review")!)
+	UIApplication.shared.open(URL(string: "https://apps.apple.com/app/photos-on-this-day/id\(Bundle.iTunesIdentifier)?action=write-review")!)
 }
 
 func openStoreListing(backing: UIViewBacking) async {
