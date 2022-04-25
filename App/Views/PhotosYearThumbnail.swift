@@ -5,15 +5,13 @@ struct PhotosYearThumbnail: View {
 	let asset: PHAsset
 	let size: CGSize
 
-	@ObservedObject private var photoState = PhotoStateManager.shared
-
 	@State private var image: UIImage?
 
 	init(asset: PHAsset, size: CGSize) {
 		self.asset = asset
 		self.size = size
-		if asset.sourceType == .typeUserLibrary && photoState.favorites[asset] == nil {
-			photoState.favorites[asset] = asset.isFavorite
+		if asset.sourceType == .typeUserLibrary && PhotoStateManager.shared.favorites[asset] == nil {
+			PhotoStateManager.shared.favorites[asset] = asset.isFavorite
 		}
 	}
 
@@ -32,7 +30,7 @@ struct PhotosYearThumbnail: View {
 								Group {
 									if asset.sourceType == .typeCloudShared {
 										Image(systemName: "icloud") // rectangle.stack.badge.person.crop
-									} else if photoState.favorites[asset] == true {
+									} else if PhotoStateManager.shared.favorites[asset] == true {
 										Image(systemName: "heart.fill")
 									}
 									if asset.mediaSubtypes.contains(.photoScreenshot) {
@@ -55,7 +53,7 @@ struct PhotosYearThumbnail: View {
 				.clipped()
 		}
 			.task {
-				PHImageManager.default().requestImage(for: asset, size: size, isSynchronous: false, highQuality: true) { image, userInfo in
+				PHCachingImageManager.default().requestImage(for: asset, size: size, isSynchronous: false, highQuality: true) { image, userInfo in
 					DispatchQueue.main.async {
 						self.image = image
 					}
