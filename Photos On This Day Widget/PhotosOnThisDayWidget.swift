@@ -105,7 +105,7 @@ struct PhotosOnThisDayEntry: TimelineEntry {
 		self.date = timelineDate
 		self.photoDate = photoDate
 		self.imageURL = imageURL
-		self.relevance = .init(score: score + 1)
+		self.relevance = .init(score: score)
 		self.configuration = configuration
 	}
 }

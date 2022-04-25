@@ -42,7 +42,14 @@ struct PhotosFetchMultiYear {
 				if scoreAssetsByYear[yearsToSubtract] == nil {
 					scoreAssetsByYear[yearsToSubtract] = []
 				}
-				scoreAssetsByYear[yearsToSubtract]!.append((asset.isFavorite ? 1 : 0, asset))
+				var score: Float = 0
+				if asset.mediaType == .image {
+					score += 1
+				}
+				if asset.isFavorite {
+					score += 1
+				}
+				scoreAssetsByYear[yearsToSubtract]!.append((score, asset))
 			}
 		}
 		let scoreYearPhotoList = scoreAssetsByYear
