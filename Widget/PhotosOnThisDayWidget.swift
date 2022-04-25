@@ -123,7 +123,7 @@ struct PhotosOnThisDayWidget: Widget {
 		IntentConfiguration(kind: WidgetKind, intent: ConfigurationIntent.self, provider: Provider()) { entry in
 			PhotosOnThisDayWidgetEntryView(entry: entry)
 		}
-			.configurationDisplayName("On This Day")
+			.configurationDisplayName("Photos On This Day")
 			.description("See photos on this day from years past.")
 			.supportedFamilies([.systemSmall, .systemMedium, .systemLarge, .systemExtraLarge])
 	}
