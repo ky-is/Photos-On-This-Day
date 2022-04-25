@@ -20,6 +20,11 @@
 		242F2E192813057E00E88ADF /* Photos+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 242F2E182813057E00E88ADF /* Photos+Extensions.swift */; };
 		242F2E1A2813057E00E88ADF /* Photos+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 242F2E182813057E00E88ADF /* Photos+Extensions.swift */; };
 		242F2E1C28130B2E00E88ADF /* PhotosYearThumbnail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 242F2E1B28130B2E00E88ADF /* PhotosYearThumbnail.swift */; };
+		24398671281730540055F7C4 /* Intents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24398670281730540055F7C4 /* Intents.framework */; };
+		24398674281730540055F7C4 /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24398673281730540055F7C4 /* IntentHandler.swift */; };
+		24398678281730540055F7C4 /* WidgetIntent.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 2439866F281730540055F7C4 /* WidgetIntent.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		2439867C281730860055F7C4 /* ConfigurationIntent.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 24721DE52811DCBF006EB593 /* ConfigurationIntent.intentdefinition */; };
+		2439867F281731900055F7C4 /* ConfigurationIntent.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 24721DE52811DCBF006EB593 /* ConfigurationIntent.intentdefinition */; };
 		24721DC52811BE7C006EB593 /* PhotosOnThisDayApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24721DC42811BE7C006EB593 /* PhotosOnThisDayApp.swift */; };
 		24721DC72811BE7C006EB593 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24721DC62811BE7C006EB593 /* ContentView.swift */; };
 		24721DC92811BE7D006EB593 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 24721DC82811BE7D006EB593 /* Assets.xcassets */; };
@@ -31,7 +36,6 @@
 		24721DE42811DCBF006EB593 /* PhotosOnThisDayWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24721DE32811DCBF006EB593 /* PhotosOnThisDayWidget.swift */; };
 		24721DE72811DCC0006EB593 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 24721DE62811DCC0006EB593 /* Assets.xcassets */; };
 		24721DE92811DCC0006EB593 /* ConfigurationIntent.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 24721DE52811DCBF006EB593 /* ConfigurationIntent.intentdefinition */; };
-		24721DEA2811DCC0006EB593 /* ConfigurationIntent.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 24721DE52811DCBF006EB593 /* ConfigurationIntent.intentdefinition */; };
 		24721DED2811DCC0006EB593 /* Photos On This Day WidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 24721DDC2811DCBF006EB593 /* Photos On This Day WidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		24721DF32811DE34006EB593 /* Foundation+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24721DD42811C66D006EB593 /* Foundation+Extensions.swift */; };
 		24721DF42811DE37006EB593 /* PhotosManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24721DD62811CEAF006EB593 /* PhotosManager.swift */; };
@@ -51,6 +55,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		24398676281730540055F7C4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 24721DB92811BE7C006EB593 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2439866E281730540055F7C4;
+			remoteInfo = WidgetIntent;
+		};
 		24721DEB2811DCC0006EB593 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 24721DB92811BE7C006EB593 /* Project object */;
@@ -67,6 +78,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
+				24398678281730540055F7C4 /* WidgetIntent.appex in Embed App Extensions */,
 				24721DED2811DCC0006EB593 /* Photos On This Day WidgetExtension.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
@@ -87,6 +99,10 @@
 		24145ADC2813C1C000022FB1 /* PhotoStateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoStateManager.swift; sourceTree = "<group>"; };
 		242F2E182813057E00E88ADF /* Photos+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Photos+Extensions.swift"; sourceTree = "<group>"; };
 		242F2E1B28130B2E00E88ADF /* PhotosYearThumbnail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosYearThumbnail.swift; sourceTree = "<group>"; };
+		2439866F281730540055F7C4 /* WidgetIntent.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = WidgetIntent.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		24398670281730540055F7C4 /* Intents.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Intents.framework; path = System/Library/Frameworks/Intents.framework; sourceTree = SDKROOT; };
+		24398673281730540055F7C4 /* IntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentHandler.swift; sourceTree = "<group>"; };
+		24398675281730540055F7C4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		24721DC12811BE7C006EB593 /* Photos On This Day.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Photos On This Day.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		24721DC42811BE7C006EB593 /* PhotosOnThisDayApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosOnThisDayApp.swift; sourceTree = "<group>"; };
 		24721DC62811BE7C006EB593 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -116,6 +132,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		2439866C281730540055F7C4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				24398671281730540055F7C4 /* Intents.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		24721DBE2811BE7C006EB593 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -156,12 +180,22 @@
 			path = Assets;
 			sourceTree = "<group>";
 		};
+		24398672281730540055F7C4 /* WidgetIntent */ = {
+			isa = PBXGroup;
+			children = (
+				24398673281730540055F7C4 /* IntentHandler.swift */,
+				24398675281730540055F7C4 /* Info.plist */,
+			);
+			path = WidgetIntent;
+			sourceTree = "<group>";
+		};
 		24721DB82811BE7C006EB593 = {
 			isa = PBXGroup;
 			children = (
 				24721DC32811BE7C006EB593 /* App */,
 				24721DF22811DE23006EB593 /* Shared */,
 				24721DE22811DCBF006EB593 /* Photos On This Day Widget */,
+				24398672281730540055F7C4 /* WidgetIntent */,
 				24721DDD2811DCBF006EB593 /* Frameworks */,
 				24721DC22811BE7C006EB593 /* Products */,
 			);
@@ -172,6 +206,7 @@
 			children = (
 				24721DC12811BE7C006EB593 /* Photos On This Day.app */,
 				24721DDC2811DCBF006EB593 /* Photos On This Day WidgetExtension.appex */,
+				2439866F281730540055F7C4 /* WidgetIntent.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -205,6 +240,7 @@
 			children = (
 				24721DDE2811DCBF006EB593 /* WidgetKit.framework */,
 				24721DE02811DCBF006EB593 /* SwiftUI.framework */,
+				24398670281730540055F7C4 /* Intents.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -262,6 +298,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		2439866E281730540055F7C4 /* WidgetIntent */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 24398679281730540055F7C4 /* Build configuration list for PBXNativeTarget "WidgetIntent" */;
+			buildPhases = (
+				2439866B281730540055F7C4 /* Sources */,
+				2439866C281730540055F7C4 /* Frameworks */,
+				2439866D281730540055F7C4 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = WidgetIntent;
+			productName = WidgetIntent;
+			productReference = 2439866F281730540055F7C4 /* WidgetIntent.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		24721DC02811BE7C006EB593 /* Photos On This Day */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 24721DCF2811BE7D006EB593 /* Build configuration list for PBXNativeTarget "Photos On This Day" */;
@@ -275,6 +328,7 @@
 			);
 			dependencies = (
 				24721DEC2811DCC0006EB593 /* PBXTargetDependency */,
+				24398677281730540055F7C4 /* PBXTargetDependency */,
 			);
 			name = "Photos On This Day";
 			productName = "Photos On This Day";
@@ -308,6 +362,9 @@
 				LastSwiftUpdateCheck = 1330;
 				LastUpgradeCheck = 1330;
 				TargetAttributes = {
+					2439866E281730540055F7C4 = {
+						CreatedOnToolsVersion = 13.3.1;
+					};
 					24721DC02811BE7C006EB593 = {
 						CreatedOnToolsVersion = 13.3.1;
 					};
@@ -331,11 +388,19 @@
 			targets = (
 				24721DC02811BE7C006EB593 /* Photos On This Day */,
 				24721DDB2811DCBF006EB593 /* Photos On This Day WidgetExtension */,
+				2439866E281730540055F7C4 /* WidgetIntent */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		2439866D281730540055F7C4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		24721DBF2811BE7C006EB593 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -356,6 +421,15 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		2439866B281730540055F7C4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				24398674281730540055F7C4 /* IntentHandler.swift in Sources */,
+				2439867C281730860055F7C4 /* ConfigurationIntent.intentdefinition in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		24721DBD2811BE7C006EB593 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -365,11 +439,11 @@
 				24DBDA0D2813400300B4313E /* Colors.swift in Sources */,
 				24145AD92813686E00022FB1 /* PhotosYearFullsize.swift in Sources */,
 				24721DD72811CEAF006EB593 /* PhotosManager.swift in Sources */,
+				2439867F281731900055F7C4 /* ConfigurationIntent.intentdefinition in Sources */,
 				2473CBC028126DB000A5E34B /* Predicates.swift in Sources */,
 				247BF61D2812766B0024B9F2 /* PhotosYearView.swift in Sources */,
 				249F40CD28123C49002287F0 /* StateManager.swift in Sources */,
 				24721DC52811BE7C006EB593 /* PhotosOnThisDayApp.swift in Sources */,
-				24721DEA2811DCC0006EB593 /* ConfigurationIntent.intentdefinition in Sources */,
 				247BF62228127D930024B9F2 /* PhotosView.swift in Sources */,
 				249F40CF281245BF002287F0 /* UIKit+Extensions.swift in Sources */,
 				2404CDF32815A8EC00E20C48 /* SyncStorage.swift in Sources */,
@@ -408,6 +482,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		24398677281730540055F7C4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 2439866E281730540055F7C4 /* WidgetIntent */;
+			targetProxy = 24398676281730540055F7C4 /* PBXContainerItemProxy */;
+		};
 		24721DEC2811DCC0006EB593 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 24721DDB2811DCBF006EB593 /* Photos On This Day WidgetExtension */;
@@ -416,6 +495,52 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		2439867A281730540055F7C4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = P3YWQG9C86;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = WidgetIntent/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = WidgetIntent;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "is.ky.Photos-On-This-Day.WidgetIntent";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		2439867B281730540055F7C4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = P3YWQG9C86;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = WidgetIntent/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = WidgetIntent;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "is.ky.Photos-On-This-Day.WidgetIntent";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		24721DCD2811BE7D006EB593 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -653,6 +778,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		24398679281730540055F7C4 /* Build configuration list for PBXNativeTarget "WidgetIntent" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2439867A281730540055F7C4 /* Debug */,
+				2439867B281730540055F7C4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		24721DBC2811BE7C006EB593 /* Build configuration list for PBXProject "Photos On This Day" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
