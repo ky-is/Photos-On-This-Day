@@ -6,6 +6,8 @@ import WidgetKit
 struct PhotosOnThisDayApp: App {
 	@UIApplicationDelegateAdaptor(AppDelegate.self) private var delegate
 
+	@Environment(\.scenePhase) private var scenePhase
+
 	var body: some Scene {
 		WindowGroup {
 			GeometryReader { geometryProxy in
@@ -13,6 +15,17 @@ struct PhotosOnThisDayApp: App {
 					.environment(\.screenSize, geometryProxy.size)
 			}
 		}
+			.onChange(of: scenePhase) { newPhase in
+				switch newPhase {
+				case .active:
+					let newDay = Calendar.current.component(.day, from: Date())
+					let oldDay = Calendar.current.component(.day, from: StateManager.shared.date)
+					if newDay != oldDay {
+						StateManager.shared.daysChange = 0
+					}
+				default: break
+				}
+			}
 	}
 }
 
