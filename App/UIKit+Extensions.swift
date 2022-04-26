@@ -18,8 +18,8 @@ extension UIApplication {
 		#if DEBUG
 		if viewController == nil { print("No rootViewController for app", windowScene?.windows ?? "nil") }
 		#endif
-		while viewController?.presentedViewController != nil {
-			viewController = viewController?.presentedViewController
+		while let presentedViewController = viewController?.presentedViewController {
+			viewController = presentedViewController
 		}
 		return viewController
 	}
