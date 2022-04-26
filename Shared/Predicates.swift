@@ -36,7 +36,6 @@ prefix func ! <TP: TypedPredicateProtocol>(p: TP) -> CompoundPredicate<TP.Root> 
 func == <E: Equatable, R, K: KeyPath<R, E>>(keyPath: K, value: E) -> ComparisonPredicate<R> {
 	ComparisonPredicate(keyPath, .equalTo, value)
 }
-
 func != <E: Equatable, R, K: KeyPath<R, E>>(keyPath: K, value: E) -> ComparisonPredicate<R> {
 	ComparisonPredicate(keyPath, .notEqualTo, value)
 }
@@ -44,7 +43,6 @@ func != <E: Equatable, R, K: KeyPath<R, E>>(keyPath: K, value: E) -> ComparisonP
 func > <C: Equatable, R, K: KeyPath<R, C>>(keyPath: K, value: C) -> ComparisonPredicate<R> {
 	ComparisonPredicate(keyPath, .greaterThan, value)
 }
-
 func < <C: Equatable, R, K: KeyPath<R, C>>(keyPath: K, value: C) -> ComparisonPredicate<R> {
 	ComparisonPredicate(keyPath, .lessThan, value)
 }
@@ -52,11 +50,13 @@ func < <C: Equatable, R, K: KeyPath<R, C>>(keyPath: K, value: C) -> ComparisonPr
 func <= <C: Equatable, R, K: KeyPath<R, C>>(keyPath: K, value: C) -> ComparisonPredicate<R> {
 	ComparisonPredicate(keyPath, .lessThanOrEqualTo, value)
 }
-
 func >= <C: Equatable, R, K: KeyPath<R, C>>(keyPath: K, value: C) -> ComparisonPredicate<R> {
 	ComparisonPredicate(keyPath, .greaterThanOrEqualTo, value)
 }
 
 func === <S: Sequence, R, K: KeyPath<R, S.Element>>(keyPath: K, values: S) -> ComparisonPredicate<R> where S.Element: Equatable {
 	ComparisonPredicate(keyPath, .in, values)
+}
+func !== <S: Sequence, R, K: KeyPath<R, S.Element>>(keyPath: K, values: S) -> CompoundPredicate<R> where S.Element: Equatable {
+	CompoundPredicate<R>(type: .not, subpredicates: [ComparisonPredicate(keyPath, .in, values)])
 }
