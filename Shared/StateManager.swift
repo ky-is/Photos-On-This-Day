@@ -10,7 +10,7 @@ final class StateManager: ObservableObject {
 		}
 	}
 
-	@Published var date = Calendar.current.date(byAdding: .init(day: 0), to: Date())!
+	@Published var date = Date()
 
 	func updateDate() {
 		date = Calendar.current.date(byAdding: .init(day: daysChange), to: Date())!
