@@ -45,6 +45,7 @@
 		247BF620281278910024B9F2 /* PermissionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 247BF61F281278910024B9F2 /* PermissionsView.swift */; };
 		247BF62228127D930024B9F2 /* PhotosView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 247BF62128127D930024B9F2 /* PhotosView.swift */; };
 		249853CA28183E9800315C86 /* PhotoButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 249853C928183E9800315C86 /* PhotoButtons.swift */; };
+		249853CB2818527100315C86 /* PhotoStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24145ADC2813C1C000022FB1 /* PhotoStateManager.swift */; };
 		249F40CA2812374C002287F0 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 249F40C92812374C002287F0 /* Constants.swift */; };
 		249F40CB2812374C002287F0 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 249F40C92812374C002287F0 /* Constants.swift */; };
 		249F40CD28123C49002287F0 /* StateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 249F40CC28123C49002287F0 /* StateManager.swift */; };
@@ -220,7 +221,6 @@
 				247BF61E2812787B0024B9F2 /* Views */,
 				2404CDF028159E7600E20C48 /* Assets */,
 				249F40CE281245BF002287F0 /* UIKit+Extensions.swift */,
-				24145ADC2813C1C000022FB1 /* PhotoStateManager.swift */,
 				24DBDA0C2813400300B4313E /* Colors.swift */,
 				24145AD6281362EC00022FB1 /* Environment.swift */,
 				24DBDA132813484700B4313E /* Sharing.swift */,
@@ -263,6 +263,7 @@
 				249F40C92812374C002287F0 /* Constants.swift */,
 				24721DD42811C66D006EB593 /* Foundation+Extensions.swift */,
 				242F2E182813057E00E88ADF /* Photos+Extensions.swift */,
+				24145ADC2813C1C000022FB1 /* PhotoStateManager.swift */,
 				24721DD62811CEAF006EB593 /* PhotosManager.swift */,
 				2473CBBF28126DB000A5E34B /* Predicates.swift */,
 				2404CDE42814CBE700E20C48 /* UserDefaults.swift */,
@@ -477,6 +478,7 @@
 				24721DF42811DE37006EB593 /* PhotosManager.swift in Sources */,
 				24721DE92811DCC0006EB593 /* ConfigurationIntent.intentdefinition in Sources */,
 				2404CDEC28159AB700E20C48 /* UserDefaults.swift in Sources */,
+				249853CB2818527100315C86 /* PhotoStateManager.swift in Sources */,
 				249F40CB2812374C002287F0 /* Constants.swift in Sources */,
 				2473CBC128126DB000A5E34B /* Predicates.swift in Sources */,
 				242F2E1A2813057E00E88ADF /* Photos+Extensions.swift in Sources */,

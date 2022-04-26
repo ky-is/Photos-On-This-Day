@@ -2,7 +2,7 @@ import Photos
 import UIKit
 
 extension PHAsset {
-	static func fetchAssets(yearsBack: Int, from date: Date, onlyFavorites: Bool) -> PHFetchResult<PHAsset> {
+	static func fetchAssets(yearsBack: Int, from date: Date, dateID: String, onlyFavorites: Bool) -> PHFetchResult<PHAsset> {
 		let includeScreenshots = UserDefaults.shared.filterShowScreenshots
 		let includeShared = UserDefaults.shared.filterShowShared
 
@@ -12,6 +12,9 @@ extension PHAsset {
 		var subpredicates = [creationPredicate]
 		if onlyFavorites {
 			subpredicates.append(\PHAsset.isFavorite == true)
+		}
+		if let skipIDs = UserDefaults.shared.filterPhotos[dateID], !skipIDs.isEmpty {
+			subpredicates.append(\PHAsset.localIdentifier !== skipIDs)
 		}
 		if !includeScreenshots {
 			let sourceTypePredicate = NSPredicate(format: "NOT ((%K & %d) != 0)", #keyPath(PHAsset.mediaSubtypes), PHAssetMediaSubtype.photoScreenshot.rawValue)

@@ -13,7 +13,7 @@ final class PhotosFetch: Identifiable, ObservableObject {
 	let dateID: String
 
 	init(fromDate date: Date, yearsBack: Int) {
-		self.dateID = "\(Calendar.current.component(.month, from: date))-\(Calendar.current.component(.day, from: date))"
+		self.dateID = Self.getDateID(from: date)
 		self.date = date
 		self.yearsBack = yearsBack
 		update()
@@ -21,19 +21,23 @@ final class PhotosFetch: Identifiable, ObservableObject {
 
 	func update() {
 		Task(priority: .userInitiated) {
-			let fetch = PHAsset.fetchAssets(yearsBack: yearsBack, from: date, onlyFavorites: false)
+			let fetch = PHAsset.fetchAssets(yearsBack: yearsBack, from: date, dateID: dateID, onlyFavorites: false)
 			var fetchedAssets: [PHAsset] = []
-			let filteredIDs = UserDefaults.shared.filterPhotos[dateID] ?? []
 			fetch.enumerateObjects { asset, _, _ in
-				if !filteredIDs.contains(asset.localIdentifier) {
-					fetchedAssets.append(asset)
-				}
+				fetchedAssets.append(asset)
 			}
 			let assets = fetchedAssets
 			DispatchQueue.main.async {
+				if assets.isEmpty {
+					PhotoStateManager.shared.emptyYearsBack[self.yearsBack - 1] = true
+				}
 				self.assets = assets
 			}
 		}
+	}
+
+	private static func getDateID(from date: Date) -> String {
+		return "\(Calendar.current.component(.month, from: date))-\(Calendar.current.component(.day, from: date))"
 	}
 
 	func updateFilters() {
@@ -47,8 +51,9 @@ final class PhotosFetch: Identifiable, ObservableObject {
 
 	static func getBestPhotos(fromDate date: Date, yearDiffs: [Int], maxCount: Int, onlyFavorites: Bool) -> [ScoreAsset] {
 		var scoreAssetsByYear: [Int: [ScoreAsset]] = [:]
+		let dateID = Self.getDateID(from: date)
 		yearDiffs.forEach { yearsToSubtract in
-			PHAsset.fetchAssets(yearsBack: yearsToSubtract, from: date, onlyFavorites: onlyFavorites).enumerateObjects { asset, index, _ in
+			PHAsset.fetchAssets(yearsBack: yearsToSubtract, from: date, dateID: dateID, onlyFavorites: onlyFavorites).enumerateObjects { asset, index, _ in
 				if scoreAssetsByYear[yearsToSubtract] == nil {
 					scoreAssetsByYear[yearsToSubtract] = []
 				}
