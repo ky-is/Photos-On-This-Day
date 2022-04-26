@@ -3,6 +3,7 @@ import SwiftUI
 
 struct PhotosYearThumbnail: View {
 	let asset: PHAsset
+	let dateID: String
 	let size: CGSize
 
 	@State private var image: UIImage?
@@ -51,11 +52,15 @@ struct PhotosYearThumbnail: View {
 					}
 				}
 			}
+			.contextMenu {
+				PhotoFavoriteToggle(asset: asset)
+				PhotoHideToggle(asset: asset, dateID: dateID)
+			}
 	}
 }
 
 struct PhotosYearThumbnail_Previews: PreviewProvider {
 	static var previews: some View {
-		PhotosYearThumbnail(asset: PHAsset(), size: CGSize(width: 128, height: 128))
+		PhotosYearThumbnail(asset: PHAsset(), dateID: "", size: CGSize(width: 128, height: 128))
 	}
 }

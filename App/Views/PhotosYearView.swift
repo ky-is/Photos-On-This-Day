@@ -19,13 +19,13 @@ struct PhotosYearView: View {
 	@Environment(\.screenSize) private var screenSize
 
 	var body: some View {
-		if !fetch.assets.isEmpty {
+		if let assets = fetch.assets, !assets.isEmpty {
 			Section(header: PhotosYearHeader(fetch: fetch)) {
 				let columns: [GridItem] = Array(repeating: .init(.flexible(minimum: 64, maximum: 256), spacing: 1, alignment: .leading), count: Int(ceil(screenSize.width / 187)))
 				LazyVGrid(columns: columns, alignment: .leading, spacing: 1) {
-					ForEach(fetch.assets, id: \.localIdentifier) { asset in
+					ForEach(assets, id: \.localIdentifier) { asset in
 						GeometryReader { geometry in
-							PhotosYearThumbnail(asset: asset, size: geometry.size)
+							PhotosYearThumbnail(asset: asset, dateID: fetch.dateID, size: geometry.size)
 						}
 							.aspectRatio(1, contentMode: .fill)
 					}

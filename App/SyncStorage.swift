@@ -6,16 +6,22 @@ final class SyncStorage: ObservableObject {
 
 	let localDefaults = UserDefaults.shared
 
+	@Published var filterPhotos: [String: [String]] {
+		didSet(newValue) {
+			localDefaults.set(filterPhotos, forKey: UserDefaults.Key.filterPhotos)
+			StateManager.shared.updateDate()
+			WidgetCenter.shared.reloadTimelines(ofKind: WidgetKind)
+		}
+	}
 	@Published var filterShowScreenshots: Bool {
-		willSet {
+		didSet(newValue) {
 			localDefaults.set(newValue, forKey: UserDefaults.Key.filterShowScreenshots)
 			StateManager.shared.updateDate()
 			WidgetCenter.shared.reloadTimelines(ofKind: WidgetKind)
 		}
-
 	}
 	@Published var filterShowShared: Bool {
-		willSet {
+		didSet(newValue) {
 			localDefaults.set(newValue, forKey: UserDefaults.Key.filterShowShared)
 			StateManager.shared.updateDate()
 			WidgetCenter.shared.reloadTimelines(ofKind: WidgetKind)
@@ -25,11 +31,21 @@ final class SyncStorage: ObservableObject {
 	private var observers: [NSKeyValueObservation] = []
 
 	private init() {
+		filterPhotos = localDefaults.filterPhotos
 		filterShowScreenshots = localDefaults.filterShowScreenshots
 		filterShowShared = localDefaults.filterShowShared
 
 		NotificationCenter.default.addObserver(self, selector: #selector(didChangeExternally), name: NSUbiquitousKeyValueStore.didChangeExternallyNotification, object: nil)
 
+		observers.append(localDefaults.observe(\.filterPhotos) { (defaults, change) in
+			DispatchQueue.main.async {
+				self.filterPhotos = self.localDefaults.filterPhotos
+				NSUbiquitousKeyValueStore.default.set(self.filterPhotos, forKey: UserDefaults.Key.filterPhotos)
+#if DEBUG
+				NSUbiquitousKeyValueStore.default.synchronize()
+#endif
+			}
+		})
 		observers.append(localDefaults.observe(\.filterShowScreenshots) { (defaults, change) in
 			DispatchQueue.main.async {
 				self.filterShowScreenshots = self.localDefaults.filterShowScreenshots
@@ -55,6 +71,8 @@ final class SyncStorage: ObservableObject {
 		DispatchQueue.main.async {
 			for key in keys {
 				switch key {
+				case UserDefaults.Key.filterPhotos:
+					self.localDefaults.set(NSUbiquitousKeyValueStore.default.dictionary(forKey: key), forKey: key)
 				case UserDefaults.Key.filterShowScreenshots:
 					self.localDefaults.set(NSUbiquitousKeyValueStore.default.bool(forKey: key), forKey: key)
 				case UserDefaults.Key.filterShowShared:

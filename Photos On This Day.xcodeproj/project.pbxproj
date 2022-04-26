@@ -44,7 +44,7 @@
 		247BF61D2812766B0024B9F2 /* PhotosYearView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 247BF61C2812766B0024B9F2 /* PhotosYearView.swift */; };
 		247BF620281278910024B9F2 /* PermissionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 247BF61F281278910024B9F2 /* PermissionsView.swift */; };
 		247BF62228127D930024B9F2 /* PhotosView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 247BF62128127D930024B9F2 /* PhotosView.swift */; };
-		249853CA28183E9800315C86 /* PhotoFavoriteButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 249853C928183E9800315C86 /* PhotoFavoriteButton.swift */; };
+		249853CA28183E9800315C86 /* PhotoButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 249853C928183E9800315C86 /* PhotoButtons.swift */; };
 		249F40CA2812374C002287F0 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 249F40C92812374C002287F0 /* Constants.swift */; };
 		249F40CB2812374C002287F0 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 249F40C92812374C002287F0 /* Constants.swift */; };
 		249F40CD28123C49002287F0 /* StateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 249F40CC28123C49002287F0 /* StateManager.swift */; };
@@ -123,7 +123,7 @@
 		247BF61C2812766B0024B9F2 /* PhotosYearView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosYearView.swift; sourceTree = "<group>"; };
 		247BF61F281278910024B9F2 /* PermissionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionsView.swift; sourceTree = "<group>"; };
 		247BF62128127D930024B9F2 /* PhotosView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosView.swift; sourceTree = "<group>"; };
-		249853C928183E9800315C86 /* PhotoFavoriteButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoFavoriteButton.swift; sourceTree = "<group>"; };
+		249853C928183E9800315C86 /* PhotoButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoButtons.swift; sourceTree = "<group>"; };
 		249F40C92812374C002287F0 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		249F40CC28123C49002287F0 /* StateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateManager.swift; sourceTree = "<group>"; };
 		249F40CE281245BF002287F0 /* UIKit+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIKit+Extensions.swift"; sourceTree = "<group>"; };
@@ -291,7 +291,7 @@
 		24DBDA102813468300B4313E /* Components */ = {
 			isa = PBXGroup;
 			children = (
-				249853C928183E9800315C86 /* PhotoFavoriteButton.swift */,
+				249853C928183E9800315C86 /* PhotoButtons.swift */,
 				24DBDA112813468C00B4313E /* UIViewButton.swift */,
 				24145ADA2813BC3C00022FB1 /* ZoomScrollView.swift */,
 			);
@@ -452,7 +452,7 @@
 				2404CDF32815A8EC00E20C48 /* SyncStorage.swift in Sources */,
 				249F40CA2812374C002287F0 /* Constants.swift in Sources */,
 				242F2E1C28130B2E00E88ADF /* PhotosYearThumbnail.swift in Sources */,
-				249853CA28183E9800315C86 /* PhotoFavoriteButton.swift in Sources */,
+				249853CA28183E9800315C86 /* PhotoButtons.swift in Sources */,
 				2404CDE928150D5900E20C48 /* ShowHelpView.swift in Sources */,
 				24721DD52811C66D006EB593 /* Foundation+Extensions.swift in Sources */,
 				2404CDE52814CBE700E20C48 /* UserDefaults.swift in Sources */,

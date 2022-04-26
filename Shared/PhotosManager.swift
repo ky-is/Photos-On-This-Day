@@ -4,14 +4,16 @@ typealias ScoreAsset = (score: Float, asset: PHAsset)
 typealias YearScoreAssets = (yearsBack: Int, assets: [ScoreAsset])
 
 final class PhotosFetch: Identifiable, ObservableObject {
-	@Published var assets: [PHAsset] = []
+	@Published var assets: [PHAsset]?
 
 	private var scoreYearPhotoList: [[ScoreAsset]] = []
 
 	let date: Date
 	let yearsBack: Int
+	let dateID: String
 
 	init(fromDate date: Date, yearsBack: Int) {
+		self.dateID = "\(Calendar.current.component(.month, from: date))-\(Calendar.current.component(.day, from: date))"
 		self.date = date
 		self.yearsBack = yearsBack
 		update()
@@ -21,13 +23,25 @@ final class PhotosFetch: Identifiable, ObservableObject {
 		Task(priority: .userInitiated) {
 			let fetch = PHAsset.fetchAssets(yearsBack: yearsBack, from: date, onlyFavorites: false)
 			var fetchedAssets: [PHAsset] = []
+			let filteredIDs = UserDefaults.shared.filterPhotos[dateID] ?? []
 			fetch.enumerateObjects { asset, _, _ in
-				fetchedAssets.append(asset)
+				if !filteredIDs.contains(asset.localIdentifier) {
+					fetchedAssets.append(asset)
+				}
 			}
 			let assets = fetchedAssets
 			DispatchQueue.main.async {
 				self.assets = assets
 			}
+		}
+	}
+
+	func updateFilters() {
+		guard let assets = assets else { return }
+		let filteredIDs = UserDefaults.shared.filterPhotos[dateID] ?? []
+		let newAssets = assets.filter { !filteredIDs.contains($0.localIdentifier) }
+		if newAssets.count != assets.count {
+			self.assets = newAssets
 		}
 	}
 

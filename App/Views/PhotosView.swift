@@ -16,6 +16,9 @@ struct PhotosView: View {
 			}
 		}
 			.padding(.bottom, 32)
+			.onChange(of: SyncStorage.shared.filterPhotos) { newValue in
+				fetches.forEach { $0.updateFilters() }
+			}
 	}
 }
 

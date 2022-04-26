@@ -62,6 +62,30 @@ struct PhotoFavoriteToggle: View {
 	}
 }
 
+
+struct PhotoHideToggle: View {
+	let asset: PHAsset
+	let dateID: String
+
+	@ObservedObject private var syncStorage = SyncStorage.shared
+
+	var body: some View {
+		let id = asset.localIdentifier
+		Toggle("Hide from On This Day", isOn: Binding(get: {
+			UserDefaults.shared.filterPhotos[dateID]?.contains(id) ?? false
+		}, set: { isOn in
+			if syncStorage.filterPhotos[dateID] == nil {
+				syncStorage.filterPhotos[dateID] = []
+			}
+			if isOn {
+				syncStorage.filterPhotos[dateID]?.append(id)
+			} else {
+				syncStorage.filterPhotos[dateID] = syncStorage.filterPhotos[dateID]?.filter { $0 != id }
+			}
+		}))
+	}
+}
+
 struct PhotoFavoriteIcon: View {
 	let asset: PHAsset
 

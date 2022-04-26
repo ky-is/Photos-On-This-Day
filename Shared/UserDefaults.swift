@@ -5,10 +5,14 @@ extension UserDefaults {
 
 	struct Key {
 		static let dismissedAddWidget = "dismissedAddWidget"
+		static let filterPhotos = "filterPhotos"
 		static let filterShowShared = "filterShowShared"
 		static let filterShowScreenshots = "filterShowScreenshots"
 	}
 
+	@objc dynamic var filterPhotos: [String: [String]] {
+		dictionary(forKey: UserDefaults.Key.filterPhotos) as? [String: [String]] ?? [:]
+	}
 	@objc dynamic var filterShowShared: Bool {
 		object(forKey: UserDefaults.Key.filterShowShared) as? Bool ?? true
 	}
