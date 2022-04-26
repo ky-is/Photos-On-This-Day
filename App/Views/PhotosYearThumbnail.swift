@@ -7,14 +7,6 @@ struct PhotosYearThumbnail: View {
 
 	@State private var image: UIImage?
 
-	init(asset: PHAsset, size: CGSize) {
-		self.asset = asset
-		self.size = size
-		if asset.sourceType == .typeUserLibrary && PhotoStateManager.shared.favorites[asset] == nil {
-			PhotoStateManager.shared.favorites[asset] = asset.isFavorite
-		}
-	}
-
 	var body: some View {
 		ZStack {
 			Group {
@@ -30,8 +22,8 @@ struct PhotosYearThumbnail: View {
 								Group {
 									if asset.sourceType == .typeCloudShared {
 										Image(systemName: "icloud") // rectangle.stack.badge.person.crop
-									} else if PhotoStateManager.shared.favorites[asset] == true {
-										Image(systemName: "heart.fill")
+									} else {
+										PhotoFavoriteIcon(asset: asset)
 									}
 									if asset.mediaSubtypes.contains(.photoScreenshot) {
 										Image(systemName: "iphone")
