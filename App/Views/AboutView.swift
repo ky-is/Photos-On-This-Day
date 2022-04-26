@@ -4,6 +4,7 @@ struct AboutView: View {
 	@Environment(\.dismiss) private var dismiss
 
 	@State private var loading = false
+	@ObservedObject private var syncStorage = SyncStorage.shared
 
 	var body: some View {
 		NavigationView {
@@ -14,6 +15,15 @@ struct AboutView: View {
 					} label: {
 						Text("How to add a Widget")
 							.font(.system(.headline, design: .rounded))
+					}
+				}
+				if !syncStorage.filterPhotos.isEmpty {
+					Section("Manage") {
+						NavigationLink {
+							HelpHiddenPhotos()
+						} label: {
+							Text("Hidden photos")
+						}
 					}
 				}
 				Section("Share") {

@@ -46,6 +46,7 @@
 		247BF62228127D930024B9F2 /* PhotosView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 247BF62128127D930024B9F2 /* PhotosView.swift */; };
 		249853CA28183E9800315C86 /* PhotoButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 249853C928183E9800315C86 /* PhotoButtons.swift */; };
 		249853CB2818527100315C86 /* PhotoStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24145ADC2813C1C000022FB1 /* PhotoStateManager.swift */; };
+		249853CD2818580800315C86 /* HelpHiddenPhotos.swift in Sources */ = {isa = PBXBuildFile; fileRef = 249853CC2818580800315C86 /* HelpHiddenPhotos.swift */; };
 		249F40CA2812374C002287F0 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 249F40C92812374C002287F0 /* Constants.swift */; };
 		249F40CB2812374C002287F0 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 249F40C92812374C002287F0 /* Constants.swift */; };
 		249F40CD28123C49002287F0 /* StateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 249F40CC28123C49002287F0 /* StateManager.swift */; };
@@ -125,6 +126,7 @@
 		247BF61F281278910024B9F2 /* PermissionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionsView.swift; sourceTree = "<group>"; };
 		247BF62128127D930024B9F2 /* PhotosView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosView.swift; sourceTree = "<group>"; };
 		249853C928183E9800315C86 /* PhotoButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoButtons.swift; sourceTree = "<group>"; };
+		249853CC2818580800315C86 /* HelpHiddenPhotos.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpHiddenPhotos.swift; sourceTree = "<group>"; };
 		249F40C92812374C002287F0 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		249F40CC28123C49002287F0 /* StateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateManager.swift; sourceTree = "<group>"; };
 		249F40CE281245BF002287F0 /* UIKit+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIKit+Extensions.swift"; sourceTree = "<group>"; };
@@ -284,6 +286,7 @@
 				24DBDA0E281344F100B4313E /* AboutView.swift */,
 				2404CDE828150D5900E20C48 /* ShowHelpView.swift */,
 				2404CDE62814CF4F00E20C48 /* HelpAddWidgetView.swift */,
+				249853CC2818580800315C86 /* HelpHiddenPhotos.swift */,
 				24DBDA102813468300B4313E /* Components */,
 			);
 			path = Views;
@@ -453,6 +456,7 @@
 				2404CDF32815A8EC00E20C48 /* SyncStorage.swift in Sources */,
 				249F40CA2812374C002287F0 /* Constants.swift in Sources */,
 				242F2E1C28130B2E00E88ADF /* PhotosYearThumbnail.swift in Sources */,
+				249853CD2818580800315C86 /* HelpHiddenPhotos.swift in Sources */,
 				249853CA28183E9800315C86 /* PhotoButtons.swift in Sources */,
 				2404CDE928150D5900E20C48 /* ShowHelpView.swift in Sources */,
 				24721DD52811C66D006EB593 /* Foundation+Extensions.swift in Sources */,
