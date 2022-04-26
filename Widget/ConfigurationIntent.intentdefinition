@@ -79,7 +79,7 @@
 					<key>INIntentParameterConfigurable</key>
 					<true/>
 					<key>INIntentParameterDisplayName</key>
-					<string>Only Show Years</string>
+					<string>Only show selected years</string>
 					<key>INIntentParameterDisplayNameID</key>
 					<string>jtqLWl</string>
 					<key>INIntentParameterDisplayPriority</key>

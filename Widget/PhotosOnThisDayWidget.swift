@@ -135,10 +135,8 @@ struct PhotoWidgetView: View {
 	var entry: Provider.Entry
 	var size: CGSize
 
-	@Environment(\.colorScheme) var colorScheme
-
 	var body: some View {
-		Group {
+		ZStack {
 			if let imageURL = entry.imageURL, let image = UIImage(contentsOfFile: imageURL.path) {
 				Image(uiImage: image)
 					.resizable()
@@ -146,22 +144,12 @@ struct PhotoWidgetView: View {
 					.frame(width: size.width, height: size.height)
 			} else {
 				if entry.photoDate == nil {
+					Color.black
 					Image(systemName: "photo")
-						.font(.system(size: size.height * 0.75))
-						.foregroundColor(colorScheme == .dark ? .init(white: 0.125) : .init(white: 0.97))
+						.font(.system(size: max(size.width * 1.05, size.height * 1.36)))
+						.foregroundColor(.init(white: 0.07))
 						.frame(width: size.width, height: size.height)
 						.unredacted()
-				} else {
-					Group {
-						let photosAuthStatus = PHPhotoLibrary.authorizationStatus(for: .readWrite)
-						if photosAuthStatus == .authorized {
-							Image(systemName: "photo")
-								.font(.system(size: 64))
-								.foregroundColor(.secondary)
-						} else {
-							Spacer()
-						}
-					}
 				}
 			}
 		}
@@ -179,44 +167,36 @@ struct PhotosOnThisDayWidgetEntryView: View {
 				PhotoWidgetView(entry: entry, size: geometry.size)
 					.overlay(alignment: .bottomTrailing) {
 						VStack(alignment: .trailing) {
-							if entry.imageURL != nil || (entry.photoDate == nil && entry.relevance != nil && entry.relevance!.score > 0) {
+							if PHPhotoLibrary.authorizationStatus(for: .readWrite) == .authorized {
 								Group {
 									let isSmall = widgetFamily == .systemSmall
 									let isLarge = !isSmall && widgetFamily != .systemMedium
-									let displayDate = entry.photoDate ?? entry.date
-									if !isSmall {
+									if !isSmall || entry.photoDate == nil {
 										Group {
-											if isLarge {
-												Text(displayDate, style: .date)
+											if isLarge, let photoDate = entry.photoDate {
+												Text(photoDate, style: .date)
 											} else {
-												Text(displayDate, formatter: DateFormatter.monthDay)
+												Text(entry.photoDate ?? entry.date, formatter: DateFormatter.monthDay)
 											}
 										}
 											.font(.system(isLarge ? .title : .title2, design: .rounded).weight(.semibold))
 									}
-									Text(displayDate, format: .relative(presentation: .numeric, unitsStyle: .wide))
-										.font(.system(.callout, design: .rounded).weight(.semibold))
+									if let photoDate = entry.photoDate {
+										Text(photoDate, format: .relative(presentation: .numeric, unitsStyle: .wide))
+											.font(.system(.callout, design: .rounded).weight(.semibold))
+									}
 								}
 									.foregroundColor(.white)
 									.shadow(color: .black, radius: 1.5, x: 0, y: 1)
 							} else {
 								VStack(alignment: .trailing, spacing: 4) {
-									let photosAuthStatus = PHPhotoLibrary.authorizationStatus(for: .readWrite)
-									if photosAuthStatus != .authorized {
-										Image(systemName: "photo")
-											.font(.system(size: 24))
-											.foregroundColor(.secondary)
-										Text("Access restricted")
-											.font(.system(.headline, design: .rounded))
-									}
-									if photosAuthStatus == .authorized {
-										Text("No photos from this day")
-											.font(.system(.headline, design: .rounded))
-											.foregroundColor(.secondary)
-									} else {
-										Text("Tap to configure!")
-											.font(.system(.body, design: .rounded))
-									}
+									Image(systemName: "photo")
+										.font(.system(size: 24))
+										.foregroundColor(.secondary)
+									Text("Access restricted")
+										.font(.system(.headline, design: .rounded))
+									Text("Tap to configure!")
+										.font(.system(.body, design: .rounded))
 								}
 									.foregroundColor(.primary)
 									.multilineTextAlignment(.trailing)
