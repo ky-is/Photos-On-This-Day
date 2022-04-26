@@ -19,6 +19,8 @@
 		<dict>
 			<key>INIntentCategory</key>
 			<string>information</string>
+			<key>INIntentDescription</key>
+			<string>Filter the photos shown in this Widget</string>
 			<key>INIntentDescriptionID</key>
 			<string>tVvJ9c</string>
 			<key>INIntentEligibleForWidgets</key>
@@ -101,26 +103,6 @@
 							<true/>
 							<key>INIntentParameterPromptDialogType</key>
 							<string>Primary</string>
-						</dict>
-						<dict>
-							<key>INIntentParameterPromptDialogCustom</key>
-							<true/>
-							<key>INIntentParameterPromptDialogFormatString</key>
-							<string>There are ${count} options matching ‘${onlyShowYears}’.</string>
-							<key>INIntentParameterPromptDialogFormatStringID</key>
-							<string>dfGlHi</string>
-							<key>INIntentParameterPromptDialogType</key>
-							<string>DisambiguationIntroduction</string>
-						</dict>
-						<dict>
-							<key>INIntentParameterPromptDialogCustom</key>
-							<true/>
-							<key>INIntentParameterPromptDialogFormatString</key>
-							<string>Just to confirm, you wanted ‘${onlyShowYears}’?</string>
-							<key>INIntentParameterPromptDialogFormatStringID</key>
-							<string>FKDyTO</string>
-							<key>INIntentParameterPromptDialogType</key>
-							<string>Confirmation</string>
 						</dict>
 					</array>
 					<key>INIntentParameterSupportsDynamicEnumeration</key>

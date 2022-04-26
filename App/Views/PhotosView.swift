@@ -27,13 +27,14 @@ struct PhotosView: View {
 			VStack {
 				Text("No photos from past years on this day")
 					.font(.system(.title3, design: .rounded).weight(.medium))
-				if SyncStorage.shared.filterShowShared {
+					.fixedSize(horizontal: false, vertical: true)
+					.padding(.vertical)
+				if !SyncStorage.shared.filterShowShared {
 					Text("Try enabling iCloud Shared photos from the filter button at the top to include photos from friends and family!")
-						.multilineTextAlignment(.center)
-						.padding()
 				}
 			}
 				.foregroundColor(.secondary)
+				.multilineTextAlignment(.center)
 				.frame(maxWidth: 512)
 				.padding()
 		} else {
