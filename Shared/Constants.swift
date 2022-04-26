@@ -1,2 +1,3 @@
-let MaxYearsBack = 32
+let MaxYearsBack = 64
+
 let WidgetKind = "PhotosOnThisDayWidget"
