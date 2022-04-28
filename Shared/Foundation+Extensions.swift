@@ -31,6 +31,16 @@ extension DateFormatter {
 	}()
 }
 
+public extension String {
+	func pluralized(_ count: Int) -> String {
+		return count == 1 ? self : "\(self)s"
+	}
+
+	func pluralize(_ count: Int) -> String {
+		return "\(count) \(pluralized(count))"
+	}
+}
+
 extension TimeInterval {
 	static let second: Self = 1
 	static let minute = .second * 60

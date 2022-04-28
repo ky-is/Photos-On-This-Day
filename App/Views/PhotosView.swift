@@ -23,31 +23,44 @@ struct PhotosView: View {
 	}
 
 	var body: some View {
-		if photoState.emptyYearsBack.allSatisfy({ $0 }) {
-			VStack {
-				Text("No photos from past years on this day")
-					.font(.system(.title3, design: .rounded).weight(.medium))
-					.fixedSize(horizontal: false, vertical: true)
-					.padding(.vertical)
-				if !SyncStorage.shared.filterShowShared {
-					Text("Try enabling iCloud Shared photos from the filter button at the top to include photos from friends and family!")
+		VStack {
+			if photoState.emptyYearsBack.allSatisfy({ $0 }) {
+				VStack {
+					Text("No photos from past years on this day")
+						.font(.system(.title3, design: .rounded).weight(.medium))
+						.fixedSize(horizontal: false, vertical: true)
+						.padding(.vertical)
+					if !SyncStorage.shared.filterShowShared {
+						Text("Try enabling iCloud Shared photos from the filter button at the top to include photos from friends and family!")
+					}
 				}
+					.foregroundColor(.secondary)
+					.multilineTextAlignment(.center)
+					.frame(maxWidth: 512)
+					.padding()
+			} else {
+				LazyVStack(alignment: .leading, spacing: 0, pinnedViews: [.sectionHeaders]) {
+					ForEach(fetches) { fetch in
+						PhotosYearView(fetch: fetch)
+					}
+				}
+					.onChange(of: SyncStorage.shared.filterPhotos) { newValue in
+						fetches.forEach { $0.updateFilters() }
+					}
 			}
-				.foregroundColor(.secondary)
-				.multilineTextAlignment(.center)
-				.frame(maxWidth: 512)
-				.padding()
-		} else {
-			LazyVStack(alignment: .leading, spacing: 0, pinnedViews: [.sectionHeaders]) {
-				ForEach(fetches) { fetch in
-					PhotosYearView(fetch: fetch)
+			if let fetch = fetches.first, let hiddenPhotosCount = SyncStorage.shared.filterPhotos[fetch.dateID]?.count, hiddenPhotosCount > 0 {
+				Button {
+					SyncStorage.shared.filterPhotos[fetch.dateID] = nil
+				} label: {
+					Text("Restore \("hidden photo".pluralize(hiddenPhotosCount))")
+						.font(.system(.title3, design: .rounded))
+						.padding(8)
 				}
+					.buttonStyle(.bordered)
+					.padding(.top)
 			}
-				.padding(.bottom, 32)
-				.onChange(of: SyncStorage.shared.filterPhotos) { newValue in
-					fetches.forEach { $0.updateFilters() }
-				}
 		}
+			.padding(.bottom, 32)
 	}
 }
 
