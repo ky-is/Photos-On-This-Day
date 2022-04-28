@@ -9,24 +9,30 @@ struct AboutView: View {
 	var body: some View {
 		NavigationView {
 			Form {
-				Section("Help") {
+				Section {
 					NavigationLink {
 						HelpAddWidgetView(inSheet: false)
 					} label: {
 						Text("How to add a Widget")
 							.font(.system(.headline, design: .rounded))
 					}
+				} header: {
+					Text("Help")
+						.font(.system(.footnote, design: .rounded))
 				}
 				if !syncStorage.filterPhotos.isEmpty {
-					Section("Manage") {
+					Section {
 						NavigationLink {
 							HelpHiddenPhotos()
 						} label: {
 							Text("Hidden photos")
 						}
+					} header: {
+						Text("Manage")
+							.font(.system(.footnote, design: .rounded))
 					}
 				}
-				Section("Share") {
+				Section {
 					#if DEBUG //RELEASE
 					UIViewButton { backing in
 						openReviews()
@@ -52,10 +58,14 @@ struct AboutView: View {
 					}
 						.disabled(loading)
 					#endif
+				} header: {
+					Text("Share")
+						.font(.system(.footnote, design: .rounded))
 				}
 				Section {
 				} header: {
 					Text("About")
+						.font(.system(.footnote, design: .rounded))
 				} footer: {
 					VStack(alignment: .leading) {
 						Text("Photos On This Day")
