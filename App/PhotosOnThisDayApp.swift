@@ -30,10 +30,6 @@ struct PhotosOnThisDayApp: App {
 }
 
 final class AppDelegate: NSObject, UIApplicationDelegate, PHPhotoLibraryAvailabilityObserver {
-	func photoLibraryDidBecomeUnavailable(_ photoLibrary: PHPhotoLibrary) {
-		print(#function, photoLibrary.unavailabilityReason?.localizedDescription ?? "nil")
-	}
-
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
 		UIView.appearance(whenContainedInInstancesOf: [UIAlertController.self]).tintColor = .accentColor
 		UINavigationBar.appearance().largeTitleTextAttributes = [.font: UIFont.rounded(style: .largeTitle, bold: true)]
@@ -50,5 +46,9 @@ final class AppDelegate: NSObject, UIApplicationDelegate, PHPhotoLibraryAvailabi
 		}
 		UserDefaults.standard.updateAddedWidget()
 		return true
+	}
+
+	func photoLibraryDidBecomeUnavailable(_ photoLibrary: PHPhotoLibrary) {
+		print(#function, photoLibrary.unavailabilityReason?.localizedDescription ?? "nil")
 	}
 }

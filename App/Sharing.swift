@@ -14,7 +14,7 @@ func openStoreListing(backing: UIViewBacking) async {
 		let success = try await vc.loadProduct(withParameters: [SKStoreProductParameterITunesItemIdentifier: Bundle.iTunesIdentifier, SKStoreProductParameterCustomProductPageIdentifier: "write-review"])
 		if let frontViewController = await UIApplication.shared.frontViewController {
 			if success {
-				DispatchQueue.main.async {
+				await MainActor.run {
 					vc.popoverPresentationController?.sourceView = backing.uiView
 					storeVC = vc
 					frontViewController.present(vc, animated: true) {

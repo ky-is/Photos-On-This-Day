@@ -59,7 +59,7 @@ struct PhotosYearFullsize: View {
 			.navigationBarBackButtonHidden(true)
 			.navigationBarTitleDisplayMode(.inline)
 			.task {
-				PHCachingImageManager.default().requestImage(for: asset, size: screenSize, isSynchronous: false, highQuality: true) { loadedImage, userInfo in
+				PHImageManager.default().requestImage(for: asset, size: screenSize, isSynchronous: false, highQuality: true) { loadedImage, userInfo in
 					if let loadedImage = loadedImage {
 						let rotatedImage = UIDevice.current.userInterfaceIdiom == .phone && loadedImage.size.width > loadedImage.size.height ? UIImage(cgImage: loadedImage.cgImage!, scale:1, orientation: UIImage.Orientation.right) : loadedImage
 						DispatchQueue.main.async {
