@@ -48,7 +48,6 @@
 		249853CB2818527100315C86 /* PhotoStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24145ADC2813C1C000022FB1 /* PhotoStateManager.swift */; };
 		249853CD2818580800315C86 /* HelpHiddenPhotos.swift in Sources */ = {isa = PBXBuildFile; fileRef = 249853CC2818580800315C86 /* HelpHiddenPhotos.swift */; };
 		249853CE2818739D00315C86 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 24721DE62811DCC0006EB593 /* Assets.xcassets */; };
-		249853D02818751800315C86 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 249853CF281874EC00315C86 /* Assets.xcassets */; };
 		249F40CA2812374C002287F0 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 249F40C92812374C002287F0 /* Constants.swift */; };
 		249F40CB2812374C002287F0 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 249F40C92812374C002287F0 /* Constants.swift */; };
 		249F40CD28123C49002287F0 /* StateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 249F40CC28123C49002287F0 /* StateManager.swift */; };
@@ -57,6 +56,7 @@
 		24DBDA0F281344F100B4313E /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24DBDA0E281344F100B4313E /* AboutView.swift */; };
 		24DBDA12281347D400B4313E /* UIViewButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24DBDA112813468C00B4313E /* UIViewButton.swift */; };
 		24DBDA142813484700B4313E /* Sharing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24DBDA132813484700B4313E /* Sharing.swift */; };
+		24DDC166281B56AB00E0ED62 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 24DDC165281B56AB00E0ED62 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -129,7 +129,6 @@
 		247BF62128127D930024B9F2 /* PhotosView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosView.swift; sourceTree = "<group>"; };
 		249853C928183E9800315C86 /* PhotoButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoButtons.swift; sourceTree = "<group>"; };
 		249853CC2818580800315C86 /* HelpHiddenPhotos.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpHiddenPhotos.swift; sourceTree = "<group>"; };
-		249853CF281874EC00315C86 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		249F40C92812374C002287F0 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		249F40CC28123C49002287F0 /* StateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateManager.swift; sourceTree = "<group>"; };
 		249F40CE281245BF002287F0 /* UIKit+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIKit+Extensions.swift"; sourceTree = "<group>"; };
@@ -137,6 +136,7 @@
 		24DBDA0E281344F100B4313E /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
 		24DBDA112813468C00B4313E /* UIViewButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewButton.swift; sourceTree = "<group>"; };
 		24DBDA132813484700B4313E /* Sharing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sharing.swift; sourceTree = "<group>"; };
+		24DDC165281B56AB00E0ED62 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -170,6 +170,7 @@
 		2404CDEF28159E6B00E20C48 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
+				24DDC165281B56AB00E0ED62 /* Assets.xcassets */,
 				2404CDEE28159DB700E20C48 /* Entitlements.entitlements */,
 				24721DE82811DCC0006EB593 /* Info.plist */,
 			);
@@ -254,7 +255,6 @@
 		24721DE22811DCBF006EB593 /* Widget */ = {
 			isa = PBXGroup;
 			children = (
-				249853CF281874EC00315C86 /* Assets.xcassets */,
 				24721DE32811DCBF006EB593 /* PhotosOnThisDayWidget.swift */,
 				24721DE52811DCBF006EB593 /* ConfigurationIntent.intentdefinition */,
 				2404CDEF28159E6B00E20C48 /* Assets */,
@@ -426,7 +426,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				249853D02818751800315C86 /* Assets.xcassets in Resources */,
+				24DDC166281B56AB00E0ED62 /* Assets.xcassets in Resources */,
 				24721DE72811DCC0006EB593 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
