@@ -52,6 +52,7 @@
 		249F40CB2812374C002287F0 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 249F40C92812374C002287F0 /* Constants.swift */; };
 		249F40CD28123C49002287F0 /* StateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 249F40CC28123C49002287F0 /* StateManager.swift */; };
 		249F40CF281245BF002287F0 /* UIKit+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 249F40CE281245BF002287F0 /* UIKit+Extensions.swift */; };
+		24CF9C86281C668500BE0A84 /* ToolbarButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24CF9C85281C668500BE0A84 /* ToolbarButtons.swift */; };
 		24DBDA0D2813400300B4313E /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24DBDA0C2813400300B4313E /* Colors.swift */; };
 		24DBDA0F281344F100B4313E /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24DBDA0E281344F100B4313E /* AboutView.swift */; };
 		24DBDA12281347D400B4313E /* UIViewButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24DBDA112813468C00B4313E /* UIViewButton.swift */; };
@@ -132,6 +133,7 @@
 		249F40C92812374C002287F0 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		249F40CC28123C49002287F0 /* StateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateManager.swift; sourceTree = "<group>"; };
 		249F40CE281245BF002287F0 /* UIKit+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIKit+Extensions.swift"; sourceTree = "<group>"; };
+		24CF9C85281C668500BE0A84 /* ToolbarButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarButtons.swift; sourceTree = "<group>"; };
 		24DBDA0C2813400300B4313E /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		24DBDA0E281344F100B4313E /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
 		24DBDA112813468C00B4313E /* UIViewButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewButton.swift; sourceTree = "<group>"; };
@@ -300,6 +302,7 @@
 			isa = PBXGroup;
 			children = (
 				249853C928183E9800315C86 /* PhotoButtons.swift */,
+				24CF9C85281C668500BE0A84 /* ToolbarButtons.swift */,
 				24DBDA112813468C00B4313E /* UIViewButton.swift */,
 				24145ADA2813BC3C00022FB1 /* ZoomScrollView.swift */,
 			);
@@ -450,6 +453,7 @@
 				2404CDE72814CF4F00E20C48 /* HelpAddWidgetView.swift in Sources */,
 				24721DC72811BE7C006EB593 /* ContentView.swift in Sources */,
 				24DBDA0D2813400300B4313E /* Colors.swift in Sources */,
+				24CF9C86281C668500BE0A84 /* ToolbarButtons.swift in Sources */,
 				24145AD92813686E00022FB1 /* PhotosYearFullsize.swift in Sources */,
 				24721DD72811CEAF006EB593 /* PhotosManager.swift in Sources */,
 				2439867F281731900055F7C4 /* ConfigurationIntent.intentdefinition in Sources */,

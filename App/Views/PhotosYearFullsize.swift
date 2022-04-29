@@ -35,6 +35,7 @@ struct PhotosYearFullsize: View {
 					} label: {
 						Image(systemName: "chevron.left")
 							.font(.body.bold())
+							.modifier(ToolbarButtonModifier())
 					}
 				}
 				ToolbarItemGroup(placement: .navigationBarTrailing) {
@@ -54,6 +55,7 @@ struct PhotosYearFullsize: View {
 								.font(.system(.caption2, design: .rounded))
 						}
 					}
+//						.frame(maxWidth: .greatestFiniteMagnitude)
 				}
 			}
 			.navigationBarBackButtonHidden(true)

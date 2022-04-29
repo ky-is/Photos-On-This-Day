@@ -29,12 +29,11 @@ struct ContentView: View {
 							} label: {
 								Image(systemName: "chevron.left")
 									.font(.body.bold())
+									.modifier(ToolbarButtonModifier())
 							}
 								.keyboardShortcut(.leftArrow)
-							Button {
+							ToolbarButton("Today", imageName: "calendar.badge.clock") {
 								state.daysChange = 0
-							} label: {
-								Image(systemName: "calendar.badge.clock")
 							}
 								.keyboardShortcut(.cancelAction)
 								.disabled(state.daysChange == 0)
@@ -43,6 +42,7 @@ struct ContentView: View {
 							} label: {
 								Image(systemName: "chevron.right")
 									.font(.body.bold())
+									.modifier(ToolbarButtonModifier())
 							}
 								.keyboardShortcut(.rightArrow)
 						}
@@ -51,10 +51,8 @@ struct ContentView: View {
 					ToolbarItemGroup(placement: .navigationBarTrailing) {
 						if canShowPhotos {
 							FilterLibraryMenu()
-							Button {
+							ToolbarButton("About", imageName: "questionmark.circle") {
 								showAbout.toggle()
-							} label: {
-								Image(systemName: "questionmark.circle")
 							}
 						}
 					}
@@ -76,6 +74,7 @@ struct FilterLibraryMenu: View {
 			Toggle("Show Screenshots", isOn: $syncStorage.filterShowScreenshots)
 		} label: {
 			Image(systemName: "line.3.horizontal.decrease.circle")
+				.modifier(ToolbarButtonModifier())
 		}
 	}
 }

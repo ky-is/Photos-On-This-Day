@@ -28,7 +28,7 @@ struct HelpAddWidgetView: View {
 			.toolbar {
 				ToolbarItem(placement: .destructiveAction) {
 					if inSheet {
-						Button("Don't show again") {
+						ToolbarButton("Don't show again") {
 							UserDefaults.standard.set(true, forKey: UserDefaults.Key.dismissedAddWidget)
 							dismiss()
 						}
@@ -36,7 +36,7 @@ struct HelpAddWidgetView: View {
 				}
 				ToolbarItem(placement: .cancellationAction) {
 					if inSheet {
-						Button("Close") {
+						ToolbarButton("Close") {
 							dismiss()
 						}
 							.keyboardShortcut(.cancelAction)

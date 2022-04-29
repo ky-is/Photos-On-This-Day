@@ -79,7 +79,7 @@ struct AboutView: View {
 				.navigationTitle("About")
 				.toolbar {
 					ToolbarItem(placement: .cancellationAction) {
-						Button("Close") {
+						ToolbarButton("Close") {
 							dismiss()
 						}
 							.keyboardShortcut(.cancelAction)
