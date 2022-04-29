@@ -37,7 +37,6 @@ struct Provider: IntentTimelineProvider {
 	private static let cacheContainerURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!.appendingPathComponent("widget")
 
 	private static func clearCacheDirectory(for date: Date) -> URL {
-		try? FileManager.default.removeItem(at: FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("widget")) //TODO remove next build
 		let datePath = DateFormatter.monthDay.string(from: date)
 		let cacheURL = cacheContainerURL.appendingPathComponent(datePath)
 		let fileManager = FileManager.default
@@ -58,7 +57,7 @@ struct Provider: IntentTimelineProvider {
 	private static func saveImageToCache(cacheURL: URL, asset: PHAsset, image: UIImage?) -> URL? {
 		let id = String(asset.localIdentifier.split(separator: "/")[0])
 		let imageURL = cacheURL.appendingPathComponent(id)
-		if let data = image?.jpegData(compressionQuality: 1) {
+		if let data = image?.jpegData(compressionQuality: 0.8) {
 			do {
 				try data.write(to: imageURL)
 				return imageURL
@@ -76,7 +75,7 @@ struct Provider: IntentTimelineProvider {
 		let calendar = Calendar.current
 		let nextDayStart = calendar.startOfDay(for: calendar.date(byAdding: .day, value: 1, to: currentDate)!)
 		let timeForUpdates = nextDayStart.timeIntervalSince(currentDate)
-		let minutesPerUpdate: Double = context.family == .systemExtraLarge ? 60 : 30 //TODO improve memory handling
+		let minutesPerUpdate: Double = 30
 		let maxEntries = Int((timeForUpdates / (minutesPerUpdate * .minute)).rounded(.down))
 		var entries: [PhotosOnThisDayEntry] = []
 
