@@ -7,15 +7,18 @@ private func cacheFavorite(asset: PHAsset) {
 	}
 }
 
-private func toggleFavorite(asset: PHAsset, isOn: Bool?) {
-	PHPhotoLibrary.shared().performChanges {
-		let request = PHAssetChangeRequest(for: asset)
-		let willFavorite = isOn ?? PhotoStateManager.shared.favorites[asset] != true
-		request.isFavorite = willFavorite
-	} completionHandler: { success, error in
-		DispatchQueue.main.async {
+private func toggleFavorite(asset: PHAsset, isOn: Bool?) async {
+	do {
+		try await PHPhotoLibrary.shared().performChanges {
+			let request = PHAssetChangeRequest(for: asset)
+			let willFavorite = isOn ?? PhotoStateManager.shared.favorites[asset] != true
+			request.isFavorite = willFavorite
+		}
+		await MainActor.run {
 			PhotoStateManager.shared.favorites[asset]!.toggle()
 		}
+	} catch {
+		print(#function, error.localizedDescription)
 	}
 }
 
@@ -32,7 +35,9 @@ struct PhotoFavoriteButton: View {
 	var body: some View {
 		if asset.sourceType == .typeUserLibrary {
 			Button {
-				toggleFavorite(asset: asset, isOn: nil)
+				Task(priority: .userInitiated) {
+					await toggleFavorite(asset: asset, isOn: nil)
+				}
 			} label: {
 				Image(systemName: photoState.favorites[asset] == true ? "heart.fill" : "heart")
 			}
@@ -55,7 +60,9 @@ struct PhotoFavoriteToggle: View {
 			let binding = Binding(get: {
 				photoState.favorites[asset] ?? false
 			}, set: { isOn in
-				toggleFavorite(asset: asset, isOn: isOn)
+				Task(priority: .userInitiated) {
+					await toggleFavorite(asset: asset, isOn: isOn)
+				}
 			})
 			Toggle("Favorite", isOn: binding)
 		}
