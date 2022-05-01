@@ -1,3 +1,4 @@
+import AVKit
 import SwiftUI
 
 struct HelpAddWidgetView: View {
@@ -5,11 +6,45 @@ struct HelpAddWidgetView: View {
 
 	@Environment(\.dismiss) private var dismiss
 
+	@ObservedObject private var state = StateManager.shared
+
 	@State private var loading = false
+
+	private let player: AVQueuePlayer
+	private let looper: AVPlayerLooper
+
+	init(inSheet: Bool) {
+		self.inSheet = inSheet
+		let item = AVPlayerItem(url: URL(string: "https://kcdn.netlify.app/widget.mov")!)
+		player = AVQueuePlayer(playerItem: item)
+		player.externalPlaybackVideoGravity = .resizeAspect
+		player.audiovisualBackgroundPlaybackPolicy = .pauses
+		player.isMuted = true
+		looper = AVPlayerLooper(player: player, templateItem: item)
+	}
 
 	var body: some View {
 		ScrollView {
 			VStack(alignment: .leading, spacing: 16) {
+				VideoLayer(player: player)
+					.ignoresSafeArea()
+					.frame(maxWidth: .greatestFiniteMagnitude, minHeight: (UIScreen.main.bounds.height - 96) * 0.9)
+					.onAppear {
+						DispatchQueue.main.asyncAfter(deadline: .now()) {
+							player.play()
+						}
+					}
+					.onDisappear {
+						player.pause()
+						player.seek(to: .zero)
+					}
+					.onChange(of: state.scenePhase) { newPhase in
+						switch newPhase {
+						case .active:
+							player.play()
+						default: break
+						}
+					}
 				Text("**1.** Long press in an empty spot on your Home Screen.")
 				Text("**2.** Tap the \"+\" button in the top-left.")
 				Text("**3.** Search for \"On This Day\" (it's been copied to your clipboard), or find it from the list.")
@@ -25,6 +60,7 @@ struct HelpAddWidgetView: View {
 				.padding()
 		}
 			.navigationTitle("Add a Widget")
+			.navigationBarTitleDisplayMode(.inline)
 			.toolbar {
 				ToolbarItem(placement: .destructiveAction) {
 					if inSheet {
