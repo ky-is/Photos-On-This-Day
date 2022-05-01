@@ -55,14 +55,13 @@ struct PhotoFavoriteToggle: View {
 
 	var body: some View {
 		if asset.sourceType == .typeUserLibrary {
-			let binding = Binding(get: {
+			Toggle("Favorite", isOn: Binding(get: {
 				photoState.favorites[asset] ?? false
 			}, set: { isOn in
 				Task(priority: .userInitiated) {
 					await toggleFavorite(asset: asset, isOn: isOn)
 				}
-			})
-			Toggle("Favorite", isOn: binding)
+			}))
 		}
 	}
 }

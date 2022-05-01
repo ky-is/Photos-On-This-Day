@@ -55,7 +55,7 @@ struct PhotosYearThumbnail: View {
 				}
 			}
 			.contextMenu {
-				PhotoFavoriteToggle(asset: asset)
+//				PhotoFavoriteToggle(asset: asset) //TODO doesn't work??
 				PhotoHideToggle(asset: asset, dateID: dateID)
 			}
 	}
