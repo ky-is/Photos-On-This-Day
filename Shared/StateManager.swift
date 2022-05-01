@@ -1,8 +1,11 @@
 import Photos
 import WidgetKit
+import SwiftUI
 
 final class StateManager: ObservableObject {
 	static let shared = StateManager()
+
+	@Published var scenePhase: ScenePhase = .active
 
 	@Published var daysChange = 0 {
 		didSet {

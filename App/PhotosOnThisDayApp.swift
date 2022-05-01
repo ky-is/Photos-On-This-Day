@@ -16,6 +16,7 @@ struct PhotosOnThisDayApp: App {
 			}
 		}
 			.onChange(of: scenePhase) { newPhase in
+				StateManager.shared.scenePhase = newPhase
 				switch newPhase {
 				case .active:
 					let newDay = Calendar.current.component(.day, from: Date())
