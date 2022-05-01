@@ -20,19 +20,21 @@ struct PhotosYearThumbnail: View {
 							.aspectRatio(contentMode: .fill)
 							.frame(width: size.width, height: size.height)
 							.overlay(alignment: .bottomTrailing) {
-								Group {
-									if asset.sourceType == .typeCloudShared {
-										Image(systemName: "icloud") // rectangle.stack.badge.person.crop
-									} else {
-										PhotoFavoriteIcon(asset: asset)
+								HStack {
+									Group {
+										if asset.sourceType == .typeCloudShared {
+											Image(systemName: "icloud") // rectangle.stack.badge.person.crop
+										} else {
+											PhotoFavoriteIcon(asset: asset)
+										}
+										if asset.mediaSubtypes.contains(.photoScreenshot) {
+											Image(systemName: "iphone")
+										}
 									}
-									if asset.mediaSubtypes.contains(.photoScreenshot) {
-										Image(systemName: "iphone")
-									}
+										.shadow(color: .black, radius: 1, x: 0, y: 0.5)
 								}
-									.foregroundColor(.white)
-									.shadow(color: .black, radius: 1, x: 0, y: 0.5)
 									.padding(3)
+									.foregroundColor(.white)
 							}
 					}
 				} else {
