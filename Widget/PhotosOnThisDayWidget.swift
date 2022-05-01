@@ -4,7 +4,7 @@ import WidgetKit
 
 struct Provider: IntentTimelineProvider {
 	private static func getImageURL(cacheURL: URL, asset: PHAsset, size: CGSize, resultHandler: @escaping (URL) -> Void) {
-		PHImageManager.default().requestImage(for: asset, size: size, isSynchronous: true, highQuality: true) { image, _ in
+		PHImageManager.default().requestImage(for: asset, size: size, isSynchronous: true, cropped: true) { image, _ in
 			autoreleasepool {
 				if let url = saveImageToCache(cacheURL: cacheURL, asset: asset, image: image) {
 					resultHandler(url)

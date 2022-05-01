@@ -30,13 +30,11 @@ extension PHAsset {
 }
 
 extension PHImageManager {
-	func requestImage(for asset: PHAsset, size: CGSize, isSynchronous: Bool, highQuality: Bool, resultHandler: @escaping (UIImage?, [AnyHashable: Any]?) -> Void) {
+	func requestImage(for asset: PHAsset, size: CGSize, isSynchronous: Bool, cropped: Bool, resultHandler: @escaping (UIImage?, [AnyHashable: Any]?) -> Void) {
 		let options = PHImageRequestOptions()
 		options.isSynchronous = isSynchronous
-		options.deliveryMode = highQuality ? .opportunistic : .fastFormat
-		options.resizeMode = .fast
-//		options.resizeMode = .exact
-//		options.normalizedCropRect = CGRect(origin: .zero, size: size)
+		options.deliveryMode = .opportunistic
+		options.resizeMode = cropped ? .exact : .fast
 		options.isNetworkAccessAllowed = true
 		let scale = UIScreen.main.scale
 		let targetSize = CGSize(width: size.width * scale, height: size.height * scale)

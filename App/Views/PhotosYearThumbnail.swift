@@ -48,7 +48,7 @@ struct PhotosYearThumbnail: View {
 				.clipped()
 		}
 			.task {
-				PHCachingImageManager.default().requestImage(for: asset, size: size, isSynchronous: false, highQuality: true) { image, userInfo in
+				PHCachingImageManager.default().requestImage(for: asset, size: size, isSynchronous: false, cropped: true) { image, userInfo in
 					DispatchQueue.main.async {
 						self.image = image
 					}
