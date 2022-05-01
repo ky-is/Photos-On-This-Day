@@ -19,9 +19,21 @@ final class PhotosFetch: Identifiable, ObservableObject {
 		self.dateID = dateID
 		self.date = date
 		self.yearsBack = yearsBack
+		refetch()
+	}
 
-		self.task = Task.detached(priority: .userInitiated) {
-			let fetch = PHAsset.fetchAssets(yearsBack: yearsBack, from: date, dateID: dateID, onlyFavorites: false)
+	deinit {
+		task?.cancel()
+	}
+
+	private static func getDateID(from date: Date) -> String {
+		return "\(Calendar.current.component(.month, from: date))-\(Calendar.current.component(.day, from: date))"
+	}
+
+	func refetch() {
+		task?.cancel()
+		task = Task(priority: .userInitiated) {
+			let fetch = PHAsset.fetchAssets(yearsBack: self.yearsBack, from: self.date, dateID: self.dateID, onlyFavorites: false)
 			var fetchedAssets: [PHAsset] = []
 			fetch.enumerateObjects { asset, _, _ in
 				fetchedAssets.append(asset)
@@ -33,23 +45,6 @@ final class PhotosFetch: Identifiable, ObservableObject {
 				}
 				self.assets = assets
 			}
-		}
-	}
-
-	deinit {
-		task?.cancel()
-	}
-
-	private static func getDateID(from date: Date) -> String {
-		return "\(Calendar.current.component(.month, from: date))-\(Calendar.current.component(.day, from: date))"
-	}
-
-	func updateFilters() {
-		guard let assets = assets else { return }
-		let filteredIDs = UserDefaults.shared.filterPhotos[dateID] ?? []
-		let newAssets = assets.filter { !filteredIDs.contains($0.localIdentifier) }
-		if newAssets.count != assets.count {
-			self.assets = newAssets
 		}
 	}
 

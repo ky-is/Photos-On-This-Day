@@ -5,6 +5,7 @@ struct PhotosView: View {
 	let fetches: [PhotosFetch]
 
 	@ObservedObject private var photoState = PhotoStateManager.shared
+	@ObservedObject private var syncStorage = SyncStorage.shared
 
 	init(date: Date) {
 		self.date = date
@@ -20,6 +21,10 @@ struct PhotosView: View {
 			}
 		}
 		return true
+	}
+
+	private func refetch() {
+		fetches.forEach { $0.refetch() }
 	}
 
 	var body: some View {
@@ -44,9 +49,6 @@ struct PhotosView: View {
 						PhotosYearView(fetch: fetch)
 					}
 				}
-					.onChange(of: SyncStorage.shared.filterPhotos) { newValue in
-						fetches.forEach { $0.updateFilters() }
-					}
 			}
 			if let fetch = fetches.first, let hiddenPhotosCount = SyncStorage.shared.filterPhotos[fetch.dateID]?.count, hiddenPhotosCount > 0 {
 				Button {
@@ -61,6 +63,9 @@ struct PhotosView: View {
 			}
 		}
 			.padding(.bottom, 32)
+			.onChange(of: SyncStorage.shared.filterPhotos) { _ in refetch() }
+			.onChange(of: SyncStorage.shared.filterShowShared) { _ in refetch() }
+			.onChange(of: SyncStorage.shared.filterShowScreenshots) { _ in refetch() }
 	}
 }
 

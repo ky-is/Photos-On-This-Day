@@ -4,26 +4,23 @@ import WidgetKit
 final class SyncStorage: ObservableObject {
 	static let shared = SyncStorage()
 
-	let localDefaults = UserDefaults.shared
+	private let localDefaults = UserDefaults.shared
 
 	@Published var filterPhotos: [String: [String]] {
-		didSet(newValue) {
+		willSet(newValue) {
 			localDefaults.set(filterPhotos, forKey: UserDefaults.Key.filterPhotos)
-			StateManager.shared.updateDate()
 			WidgetCenter.shared.reloadTimelines(ofKind: WidgetKind)
 		}
 	}
 	@Published var filterShowScreenshots: Bool {
-		didSet(newValue) {
+		willSet(newValue) {
 			localDefaults.set(newValue, forKey: UserDefaults.Key.filterShowScreenshots)
-			StateManager.shared.updateDate()
 			WidgetCenter.shared.reloadTimelines(ofKind: WidgetKind)
 		}
 	}
 	@Published var filterShowShared: Bool {
-		didSet(newValue) {
+		willSet(newValue) {
 			localDefaults.set(newValue, forKey: UserDefaults.Key.filterShowShared)
-			StateManager.shared.updateDate()
 			WidgetCenter.shared.reloadTimelines(ofKind: WidgetKind)
 		}
 	}
@@ -37,31 +34,37 @@ final class SyncStorage: ObservableObject {
 
 		NotificationCenter.default.addObserver(self, selector: #selector(didChangeExternally), name: NSUbiquitousKeyValueStore.didChangeExternallyNotification, object: nil)
 
-		observers.append(localDefaults.observe(\.filterPhotos) { (defaults, change) in
+		observers.append(localDefaults.observe(\.filterPhotos) { _, _ in
 			DispatchQueue.main.async {
-				self.filterPhotos = self.localDefaults.filterPhotos
-				NSUbiquitousKeyValueStore.default.set(self.filterPhotos, forKey: UserDefaults.Key.filterPhotos)
-#if DEBUG
-				NSUbiquitousKeyValueStore.default.synchronize()
-#endif
+				if self.filterPhotos != self.localDefaults.filterPhotos {
+					self.filterPhotos = self.localDefaults.filterPhotos
+					NSUbiquitousKeyValueStore.default.set(self.filterPhotos, forKey: UserDefaults.Key.filterPhotos)
+	#if DEBUG
+					NSUbiquitousKeyValueStore.default.synchronize()
+	#endif
+				}
 			}
 		})
-		observers.append(localDefaults.observe(\.filterShowScreenshots) { (defaults, change) in
+		observers.append(localDefaults.observe(\.filterShowScreenshots) { _, _ in
 			DispatchQueue.main.async {
-				self.filterShowScreenshots = self.localDefaults.filterShowScreenshots
-				NSUbiquitousKeyValueStore.default.set(self.filterShowScreenshots, forKey: UserDefaults.Key.filterShowScreenshots)
-#if DEBUG
-				NSUbiquitousKeyValueStore.default.synchronize()
-#endif
+				if self.filterShowScreenshots != self.localDefaults.filterShowScreenshots {
+					self.filterShowScreenshots = self.localDefaults.filterShowScreenshots
+					NSUbiquitousKeyValueStore.default.set(self.filterShowScreenshots, forKey: UserDefaults.Key.filterShowScreenshots)
+	#if DEBUG
+					NSUbiquitousKeyValueStore.default.synchronize()
+	#endif
+				}
 			}
 		})
-		observers.append(localDefaults.observe(\.filterShowShared) { (defaults, change) in
+		observers.append(localDefaults.observe(\.filterShowShared) { _, _ in
 			DispatchQueue.main.async {
-				self.filterShowShared = self.localDefaults.filterShowShared
-				NSUbiquitousKeyValueStore.default.set(self.filterShowShared, forKey: UserDefaults.Key.filterShowShared)
-#if DEBUG
-				NSUbiquitousKeyValueStore.default.synchronize()
-#endif
+				if self.filterShowShared != self.localDefaults.filterShowShared {
+					self.filterShowShared = self.localDefaults.filterShowShared
+					NSUbiquitousKeyValueStore.default.set(self.filterShowShared, forKey: UserDefaults.Key.filterShowShared)
+	#if DEBUG
+					NSUbiquitousKeyValueStore.default.synchronize()
+	#endif
+				}
 			}
 		})
 	}
