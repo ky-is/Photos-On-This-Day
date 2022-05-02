@@ -14,9 +14,7 @@ struct PermissionsView: View {
 			ZStack {
 				RoundedRectangle(cornerRadius: 48, style: .continuous)
 					.fill(Color(uiColor: .secondarySystemFill))
-					.onTapGesture {
-						openSettings()
-					}
+					.onTapGesture(perform: openSettings)
 				VStack {
 					Label("Access \(state.permission == .limited ? "Limited" : "Unavailable")", systemImage: "photo")
 						.font(.system(.headline, design: .rounded))
