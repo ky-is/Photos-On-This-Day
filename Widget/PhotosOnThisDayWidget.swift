@@ -19,7 +19,7 @@ struct Provider: IntentTimelineProvider {
 
 	fileprivate static func getSnapshotEntry(for configuration: ConfigurationIntent, size: CGSize) -> PhotosOnThisDayEntry {
 		let currentDate = Date()
-		let photosFetch = PhotosFetch.getBestPhotos(fromDate: currentDate, yearDiffs: [1], maxCount: 1, onlyFavorites: false)
+		let photosFetch = PhotosFetch.getBestPhotos(fromDate: currentDate, yearDiffs: [1], idealCount: 1, onlyFavorites: false)
 		var entry: PhotosOnThisDayEntry?
 		if let (score, asset) = photosFetch.first {
 			let cacheURL = clearCacheDirectory(for: currentDate)
@@ -75,13 +75,15 @@ struct Provider: IntentTimelineProvider {
 		let calendar = Calendar.current
 		let nextDayStart = calendar.startOfDay(for: calendar.date(byAdding: .day, value: 1, to: currentDate)!)
 		let timeForUpdates = nextDayStart.timeIntervalSince(currentDate)
-		let minutesPerUpdate: Double = 30
-		let maxEntries = Int((timeForUpdates / (minutesPerUpdate * .minute)).rounded(.down))
+		let intervalPerUpdate: TimeInterval = 30 * .minute
+		let maxEntries = Int((timeForUpdates / intervalPerUpdate).rounded(.up))
 		var entries: [PhotosOnThisDayEntry] = []
 
 		let customYearDiffs = configuration.onlyShowYears?.compactMap { $0.yearsAgo as? Int } ?? []
 		let yearDiffs = !customYearDiffs.isEmpty ? customYearDiffs : (1...MaxYearsBack).map { $0 }
-		let photosFetch = PhotosFetch.getBestPhotos(fromDate: Date(), yearDiffs: yearDiffs, maxCount: maxEntries, onlyFavorites: configuration.onlyShowFavorites == 1).shuffled()
+		let photosFetch = PhotosFetch.getBestPhotos(fromDate: Date(), yearDiffs: yearDiffs, idealCount: maxEntries, onlyFavorites: configuration.onlyShowFavorites == 1)
+			.shuffled()
+			.prefix(maxEntries)
 		let timePerUpdate = timeForUpdates / Double(photosFetch.count)
 		for (offset, scoreAsset) in photosFetch.enumerated() {
 			autoreleasepool {

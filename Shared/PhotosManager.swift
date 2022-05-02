@@ -48,7 +48,7 @@ final class PhotosFetch: Identifiable, ObservableObject {
 		}
 	}
 
-	static func getBestPhotos(fromDate date: Date, yearDiffs: [Int], maxCount: Int, onlyFavorites: Bool) -> [ScoreAsset] {
+	static func getBestPhotos(fromDate date: Date, yearDiffs: [Int], idealCount: Int, onlyFavorites: Bool) -> [ScoreAsset] {
 		var scoreAssetsByYear: [Int: [ScoreAsset]] = [:]
 		let dateID = Self.getDateID(from: date)
 		yearDiffs.forEach { yearsToSubtract in
@@ -70,13 +70,13 @@ final class PhotosFetch: Identifiable, ObservableObject {
 			.map { (year, scoreAssets) -> YearScoreAssets in (year, scoreAssets.sorted { $0.score > $1.score }) }
 			.sorted { $0.yearsBack > $1.yearsBack }
 			.map(\.assets)
-		return getBestPhotos(scoreYearPhotoList: scoreYearPhotoList, maxCount: maxCount)
+		return getBestPhotos(scoreYearPhotoList: scoreYearPhotoList, idealCount: idealCount)
 	}
 
-	private static func getBestPhotos(scoreYearPhotoList: [[ScoreAsset]], maxCount: Int) -> [ScoreAsset] {
+	private static func getBestPhotos(scoreYearPhotoList: [[ScoreAsset]], idealCount: Int) -> [ScoreAsset] {
 		var results: [ScoreAsset] = []
 		var photosByYear = scoreYearPhotoList
-		while (results.count < maxCount) {
+		while (results.count < idealCount) {
 			var foundPhoto = false
 			for index in photosByYear.indices {
 				if !photosByYear[index].isEmpty {
