@@ -34,8 +34,15 @@ extension PHImageManager {
 		let options = PHImageRequestOptions()
 		options.isSynchronous = isSynchronous
 		options.deliveryMode = .opportunistic
-		options.resizeMode = cropped ? .exact : .fast
 		options.isNetworkAccessAllowed = true
+		if cropped {
+			options.resizeMode = .exact
+			let scaledWidth = size.width / Double(asset.pixelWidth)
+			let scaledHeight = size.height / Double(asset.pixelHeight)
+			let assetScaleBy = max(scaledWidth, scaledHeight)
+			let assetNormalizedSize = CGSize(width: scaledWidth / assetScaleBy, height: scaledHeight / assetScaleBy)
+			options.normalizedCropRect = CGRect(origin: CGPoint(x: (1 - assetNormalizedSize.width) / 2, y: (1 - assetNormalizedSize.height) / 2), size: assetNormalizedSize)
+		}
 		let scale = UIScreen.main.scale
 		let targetSize = CGSize(width: size.width * scale, height: size.height * scale)
 		requestImage(for: asset, targetSize: targetSize, contentMode: .aspectFill, options: options, resultHandler: resultHandler)
