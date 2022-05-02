@@ -5,10 +5,8 @@ import WidgetKit
 struct Provider: IntentTimelineProvider {
 	private static func getImageURL(cacheURL: URL, asset: PHAsset, size: CGSize, resultHandler: @escaping (URL) -> Void) {
 		PHImageManager.default().requestImage(for: asset, size: size, isSynchronous: true, cropped: true) { image, _ in
-			autoreleasepool {
-				if let url = saveImageToCache(cacheURL: cacheURL, asset: asset, image: image) {
-					resultHandler(url)
-				}
+			if let url = saveImageToCache(cacheURL: cacheURL, asset: asset, image: image) {
+				resultHandler(url)
 			}
 		}
 	}
@@ -19,7 +17,7 @@ struct Provider: IntentTimelineProvider {
 
 	fileprivate static func getSnapshotEntry(for configuration: ConfigurationIntent, size: CGSize) -> PhotosOnThisDayEntry {
 		let currentDate = Date()
-		let photosFetch = PhotosFetch.getBestPhotos(fromDate: currentDate, yearDiffs: [1], idealCount: 1, onlyFavorites: false)
+		let photosFetch = getBestPhotos(fromDate: currentDate, yearDiffs: [1], idealCount: 1, onlyFavorites: false)
 		var entry: PhotosOnThisDayEntry?
 		if let (score, asset) = photosFetch.first {
 			let cacheURL = clearCacheDirectory(for: currentDate)
@@ -72,19 +70,20 @@ struct Provider: IntentTimelineProvider {
 		let currentDate = Date()
 		let cacheURL = Self.clearCacheDirectory(for: currentDate)
 
-		let calendar = Calendar.current
-		let nextDayStart = calendar.startOfDay(for: calendar.date(byAdding: .day, value: 1, to: currentDate)!)
+		let nextDayStart = Calendar.current.startOfDay(for: Calendar.current.date(byAdding: .day, value: 1, to: currentDate)!)
 		let timeForUpdates = nextDayStart.timeIntervalSince(currentDate)
-		let intervalPerUpdate: TimeInterval = 30 * .minute
-		let maxEntries = Int((timeForUpdates / intervalPerUpdate).rounded(.up))
-		var entries: [PhotosOnThisDayEntry] = []
-
-		let customYearDiffs = configuration.onlyShowYears?.compactMap { $0.yearsAgo as? Int } ?? []
-		let yearDiffs = !customYearDiffs.isEmpty ? customYearDiffs : (1...MaxYearsBack).map { $0 }
-		let photosFetch = PhotosFetch.getBestPhotos(fromDate: Date(), yearDiffs: yearDiffs, idealCount: maxEntries, onlyFavorites: configuration.onlyShowFavorites == 1)
-			.shuffled()
-			.prefix(maxEntries)
+		let photosFetch: [ScoreAsset]
+		do {
+			let intervalPerUpdate: TimeInterval = 30 * .minute
+			let maxEntries = Int((timeForUpdates / intervalPerUpdate).rounded(.up))
+			let customYearDiffs = configuration.onlyShowYears?.compactMap { $0.yearsAgo as? Int } ?? []
+			let yearDiffs = !customYearDiffs.isEmpty ? customYearDiffs : (1...MaxYearsBack).map { $0 }
+			photosFetch = Array(getBestPhotos(fromDate: Date(), yearDiffs: yearDiffs, idealCount: maxEntries, onlyFavorites: configuration.onlyShowFavorites == 1)
+				.shuffled()
+				.prefix(maxEntries))
+		}
 		let timePerUpdate = timeForUpdates / Double(photosFetch.count)
+		var entries: [PhotosOnThisDayEntry] = []
 		for (offset, scoreAsset) in photosFetch.enumerated() {
 			autoreleasepool {
 				let entryDate = currentDate.addingTimeInterval(timePerUpdate * Double(offset))

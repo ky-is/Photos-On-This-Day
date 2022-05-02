@@ -11,7 +11,6 @@
 		2404CDE72814CF4F00E20C48 /* HelpAddWidgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2404CDE62814CF4F00E20C48 /* HelpAddWidgetView.swift */; };
 		2404CDE928150D5900E20C48 /* ShowHelpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2404CDE828150D5900E20C48 /* ShowHelpView.swift */; };
 		2404CDEC28159AB700E20C48 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2404CDE42814CBE700E20C48 /* UserDefaults.swift */; };
-		2404CDF12815A86A00E20C48 /* StateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 249F40CC28123C49002287F0 /* StateManager.swift */; };
 		2404CDF32815A8EC00E20C48 /* SyncStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2404CDF22815A8EC00E20C48 /* SyncStorage.swift */; };
 		24145AD7281362EC00022FB1 /* Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24145AD6281362EC00022FB1 /* Environment.swift */; };
 		24145AD92813686E00022FB1 /* PhotosYearFullsize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24145AD82813686E00022FB1 /* PhotosYearFullsize.swift */; };
@@ -39,20 +38,20 @@
 		24721DE92811DCC0006EB593 /* ConfigurationIntent.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 24721DE52811DCBF006EB593 /* ConfigurationIntent.intentdefinition */; };
 		24721DED2811DCC0006EB593 /* WidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 24721DDC2811DCBF006EB593 /* WidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		24721DF32811DE34006EB593 /* Foundation+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24721DD42811C66D006EB593 /* Foundation+Extensions.swift */; };
-		24721DF42811DE37006EB593 /* PhotosManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24721DD62811CEAF006EB593 /* PhotosManager.swift */; };
 		2473CBC028126DB000A5E34B /* Predicates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2473CBBF28126DB000A5E34B /* Predicates.swift */; };
 		2473CBC128126DB000A5E34B /* Predicates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2473CBBF28126DB000A5E34B /* Predicates.swift */; };
 		247BF61D2812766B0024B9F2 /* PhotosYearView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 247BF61C2812766B0024B9F2 /* PhotosYearView.swift */; };
 		247BF620281278910024B9F2 /* PermissionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 247BF61F281278910024B9F2 /* PermissionsView.swift */; };
 		247BF62228127D930024B9F2 /* PhotosView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 247BF62128127D930024B9F2 /* PhotosView.swift */; };
 		249853CA28183E9800315C86 /* PhotoButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 249853C928183E9800315C86 /* PhotoButtons.swift */; };
-		249853CB2818527100315C86 /* PhotoStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24145ADC2813C1C000022FB1 /* PhotoStateManager.swift */; };
 		249853CD2818580800315C86 /* HelpHiddenPhotos.swift in Sources */ = {isa = PBXBuildFile; fileRef = 249853CC2818580800315C86 /* HelpHiddenPhotos.swift */; };
 		249853CE2818739D00315C86 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 24721DE62811DCC0006EB593 /* Assets.xcassets */; };
 		249F40CA2812374C002287F0 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 249F40C92812374C002287F0 /* Constants.swift */; };
 		249F40CB2812374C002287F0 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 249F40C92812374C002287F0 /* Constants.swift */; };
 		249F40CD28123C49002287F0 /* StateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 249F40CC28123C49002287F0 /* StateManager.swift */; };
 		249F40CF281245BF002287F0 /* UIKit+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 249F40CE281245BF002287F0 /* UIKit+Extensions.swift */; };
+		24C6578028203DD100DBF263 /* PhotoUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24C6577F28203DD100DBF263 /* PhotoUtils.swift */; };
+		24C6578128203DD100DBF263 /* PhotoUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24C6577F28203DD100DBF263 /* PhotoUtils.swift */; };
 		24CF9C86281C668500BE0A84 /* ToolbarButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24CF9C85281C668500BE0A84 /* ToolbarButtons.swift */; };
 		24DBDA0D2813400300B4313E /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24DBDA0C2813400300B4313E /* Colors.swift */; };
 		24DBDA0F281344F100B4313E /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24DBDA0E281344F100B4313E /* AboutView.swift */; };
@@ -135,6 +134,7 @@
 		249F40C92812374C002287F0 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		249F40CC28123C49002287F0 /* StateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateManager.swift; sourceTree = "<group>"; };
 		249F40CE281245BF002287F0 /* UIKit+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIKit+Extensions.swift"; sourceTree = "<group>"; };
+		24C6577F28203DD100DBF263 /* PhotoUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoUtils.swift; sourceTree = "<group>"; };
 		24CF9C85281C668500BE0A84 /* ToolbarButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarButtons.swift; sourceTree = "<group>"; };
 		24DBDA0C2813400300B4313E /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		24DBDA0E281344F100B4313E /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
@@ -234,6 +234,9 @@
 				24145AD6281362EC00022FB1 /* Environment.swift */,
 				24DBDA132813484700B4313E /* Sharing.swift */,
 				2404CDF22815A8EC00E20C48 /* SyncStorage.swift */,
+				24145ADC2813C1C000022FB1 /* PhotoStateManager.swift */,
+				24721DD62811CEAF006EB593 /* PhotosManager.swift */,
+				249F40CC28123C49002287F0 /* StateManager.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -273,11 +276,9 @@
 				249F40C92812374C002287F0 /* Constants.swift */,
 				24721DD42811C66D006EB593 /* Foundation+Extensions.swift */,
 				242F2E182813057E00E88ADF /* Photos+Extensions.swift */,
-				24145ADC2813C1C000022FB1 /* PhotoStateManager.swift */,
-				24721DD62811CEAF006EB593 /* PhotosManager.swift */,
 				2473CBBF28126DB000A5E34B /* Predicates.swift */,
 				2404CDE42814CBE700E20C48 /* UserDefaults.swift */,
-				249F40CC28123C49002287F0 /* StateManager.swift */,
+				24C6577F28203DD100DBF263 /* PhotoUtils.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -481,6 +482,7 @@
 				24145ADB2813BC3C00022FB1 /* ZoomScrollView.swift in Sources */,
 				247BF620281278910024B9F2 /* PermissionsView.swift in Sources */,
 				24DBDA142813484700B4313E /* Sharing.swift in Sources */,
+				24C6578028203DD100DBF263 /* PhotoUtils.swift in Sources */,
 				24145ADD2813C1C000022FB1 /* PhotoStateManager.swift in Sources */,
 				242F2E192813057E00E88ADF /* Photos+Extensions.swift in Sources */,
 			);
@@ -490,13 +492,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2404CDF12815A86A00E20C48 /* StateManager.swift in Sources */,
 				24721DE42811DCBF006EB593 /* PhotosOnThisDayWidget.swift in Sources */,
 				24721DF32811DE34006EB593 /* Foundation+Extensions.swift in Sources */,
-				24721DF42811DE37006EB593 /* PhotosManager.swift in Sources */,
+				24C6578128203DD100DBF263 /* PhotoUtils.swift in Sources */,
 				24721DE92811DCC0006EB593 /* ConfigurationIntent.intentdefinition in Sources */,
 				2404CDEC28159AB700E20C48 /* UserDefaults.swift in Sources */,
-				249853CB2818527100315C86 /* PhotoStateManager.swift in Sources */,
 				249F40CB2812374C002287F0 /* Constants.swift in Sources */,
 				2473CBC128126DB000A5E34B /* Predicates.swift in Sources */,
 				242F2E1A2813057E00E88ADF /* Photos+Extensions.swift in Sources */,
