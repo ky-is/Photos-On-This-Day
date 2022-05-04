@@ -24,7 +24,9 @@ struct PhotosView: View {
 	}
 
 	private func refetch() {
-		fetches.forEach { $0.refetch() }
+		DispatchQueue.main.async {
+			fetches.forEach { $0.refetch() }
+		}
 	}
 
 	var body: some View {
