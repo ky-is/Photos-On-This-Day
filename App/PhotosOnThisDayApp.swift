@@ -16,13 +16,17 @@ struct PhotosOnThisDayApp: App {
 			}
 		}
 			.onChange(of: scenePhase) { newPhase in
-				StateManager.shared.scenePhase = newPhase
+				DispatchQueue.main.async {
+					StateManager.shared.scenePhase = newPhase
+				}
 				switch newPhase {
 				case .active:
 					let newDay = Calendar.current.component(.day, from: Date())
 					let oldDay = Calendar.current.component(.day, from: StateManager.shared.date)
 					if newDay != oldDay {
-						StateManager.shared.daysChange = 0
+						DispatchQueue.main.async {
+							StateManager.shared.daysChange = 0
+						}
 					}
 				default: break
 				}

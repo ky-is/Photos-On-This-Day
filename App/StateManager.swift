@@ -9,15 +9,11 @@ final class StateManager: ObservableObject {
 
 	@Published var daysChange = 0 {
 		didSet {
-			updateDate()
+			date = Calendar.current.date(byAdding: .init(day: daysChange), to: Date())!
 		}
 	}
 
 	@Published var date = Date()
-
-	func updateDate() {
-		date = Calendar.current.date(byAdding: .init(day: daysChange), to: Date())!
-	}
 
 	@Published var permission = PHPhotoLibrary.authorizationStatus(for: .readWrite) {
 		didSet {

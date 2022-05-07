@@ -5,10 +5,6 @@ struct ContentView: View {
 
 	@State private var showAbout = false
 
-	init() {
-		state.updateDate()
-	}
-
 	var body: some View {
 		NavigationView {
 			let canShowPhotos = state.permission == .authorized || state.permission == .limited
