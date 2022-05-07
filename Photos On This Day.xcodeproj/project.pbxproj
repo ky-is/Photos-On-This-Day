@@ -50,7 +50,6 @@
 		249F40CB2812374C002287F0 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 249F40C92812374C002287F0 /* Constants.swift */; };
 		249F40CD28123C49002287F0 /* StateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 249F40CC28123C49002287F0 /* StateManager.swift */; };
 		249F40CF281245BF002287F0 /* UIKit+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 249F40CE281245BF002287F0 /* UIKit+Extensions.swift */; };
-		24C6578028203DD100DBF263 /* PhotoUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24C6577F28203DD100DBF263 /* PhotoUtils.swift */; };
 		24C6578128203DD100DBF263 /* PhotoUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24C6577F28203DD100DBF263 /* PhotoUtils.swift */; };
 		24CF9C86281C668500BE0A84 /* ToolbarButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24CF9C85281C668500BE0A84 /* ToolbarButtons.swift */; };
 		24DBDA0D2813400300B4313E /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24DBDA0C2813400300B4313E /* Colors.swift */; };
@@ -264,6 +263,7 @@
 			children = (
 				24721DE32811DCBF006EB593 /* PhotosOnThisDayWidget.swift */,
 				24721DE52811DCBF006EB593 /* ConfigurationIntent.intentdefinition */,
+				24C6577F28203DD100DBF263 /* PhotoUtils.swift */,
 				2404CDEF28159E6B00E20C48 /* Assets */,
 			);
 			path = Widget;
@@ -278,7 +278,6 @@
 				242F2E182813057E00E88ADF /* Photos+Extensions.swift */,
 				2473CBBF28126DB000A5E34B /* Predicates.swift */,
 				2404CDE42814CBE700E20C48 /* UserDefaults.swift */,
-				24C6577F28203DD100DBF263 /* PhotoUtils.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -482,7 +481,6 @@
 				24145ADB2813BC3C00022FB1 /* ZoomScrollView.swift in Sources */,
 				247BF620281278910024B9F2 /* PermissionsView.swift in Sources */,
 				24DBDA142813484700B4313E /* Sharing.swift in Sources */,
-				24C6578028203DD100DBF263 /* PhotoUtils.swift in Sources */,
 				24145ADD2813C1C000022FB1 /* PhotoStateManager.swift in Sources */,
 				242F2E192813057E00E88ADF /* Photos+Extensions.swift in Sources */,
 			);

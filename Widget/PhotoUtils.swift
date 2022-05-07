@@ -2,13 +2,9 @@ import Photos
 
 typealias ScoreAsset = (score: Float, asset: PHAsset)
 
-func getDateID(from date: Date) -> String {
-	return "\(Calendar.current.component(.month, from: date))-\(Calendar.current.component(.day, from: date))"
-}
-
 func getBestPhotos(fromDate date: Date, yearDiffs: [Int], idealCount: Int, onlyFavorites: Bool) -> [ScoreAsset] {
 	var scoreAssetsByYear: [Int: [ScoreAsset]] = [:]
-	let dateID = getDateID(from: date)
+	let dateID = Calendar.current.getDateID(from: date)
 	yearDiffs.forEach { yearsToSubtract in
 		PHAsset.fetchAssets(yearsBack: yearsToSubtract, from: date, dateID: dateID, onlyFavorites: onlyFavorites).enumerateObjects { asset, index, _ in
 			if scoreAssetsByYear[yearsToSubtract] == nil {

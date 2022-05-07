@@ -31,7 +31,7 @@ extension DateFormatter {
 	}()
 }
 
-public extension String {
+extension String {
 	func pluralized(_ count: Int) -> String {
 		return count == 1 ? self : "\(self)s"
 	}
@@ -46,4 +46,10 @@ extension TimeInterval {
 	static let minute = .second * 60
 	static let hour = .minute * 60
 	static let day = .hour * 24
+}
+
+extension Calendar {
+	func getDateID(from date: Date) -> String {
+		return "\(component(.month, from: date))-\(component(.day, from: date))"
+	}
 }

@@ -3,8 +3,6 @@ import Photos
 final class PhotosFetch: Identifiable, ObservableObject {
 	@Published var assets: [PHAsset]?
 
-	private var scoreYearPhotoList: [[ScoreAsset]] = []
-
 	let date: Date
 	let yearsBack: Int
 	let dateID: String
@@ -12,7 +10,7 @@ final class PhotosFetch: Identifiable, ObservableObject {
 	private var task: Task<Void, Error>?
 
 	init(fromDate date: Date, yearsBack: Int) {
-		let dateID = getDateID(from: date)
+		let dateID = Calendar.current.getDateID(from: date)
 		self.dateID = dateID
 		self.date = date
 		self.yearsBack = yearsBack
