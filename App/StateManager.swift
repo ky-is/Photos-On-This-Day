@@ -5,8 +5,6 @@ import SwiftUI
 final class StateManager: ObservableObject {
 	static let shared = StateManager()
 
-	@Published var scenePhase: ScenePhase = .active
-
 	@Published var daysChange = 0 {
 		didSet {
 			date = Calendar.current.date(byAdding: .init(day: daysChange), to: Date())!

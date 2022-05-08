@@ -5,8 +5,9 @@ struct HelpAddWidgetView: View {
 	let inSheet: Bool
 
 	@Environment(\.dismiss) private var dismiss
+	@Environment(\.scenePhase) private var scenePhase
 
-	@ObservedObject private var state = StateManager.shared
+	@ObservedObject private var environment = EnvironmentManager.shared
 
 	@State private var loading = false
 
@@ -38,7 +39,7 @@ struct HelpAddWidgetView: View {
 						player.pause()
 						player.seek(to: .zero)
 					}
-					.onChange(of: state.scenePhase) { newPhase in
+					.onChange(of: environment.scenePhase) { newPhase in
 						switch newPhase {
 						case .active:
 							player.play()

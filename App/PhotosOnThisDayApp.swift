@@ -17,7 +17,7 @@ struct PhotosOnThisDayApp: App {
 		}
 			.onChange(of: scenePhase) { newPhase in
 				DispatchQueue.main.async {
-					StateManager.shared.scenePhase = newPhase
+					EnvironmentManager.shared.scenePhase = newPhase
 				}
 				switch newPhase {
 				case .active:

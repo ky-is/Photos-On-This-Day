@@ -16,6 +16,7 @@
 		24145AD92813686E00022FB1 /* PhotosYearFullsize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24145AD82813686E00022FB1 /* PhotosYearFullsize.swift */; };
 		24145ADB2813BC3C00022FB1 /* ZoomScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24145ADA2813BC3C00022FB1 /* ZoomScrollView.swift */; };
 		24145ADD2813C1C000022FB1 /* PhotoStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24145ADC2813C1C000022FB1 /* PhotoStateManager.swift */; };
+		241F897828288D8400782BDB /* EnvironmentManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 241F897728288D8400782BDB /* EnvironmentManager.swift */; };
 		242F2E192813057E00E88ADF /* Photos+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 242F2E182813057E00E88ADF /* Photos+Extensions.swift */; };
 		242F2E1A2813057E00E88ADF /* Photos+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 242F2E182813057E00E88ADF /* Photos+Extensions.swift */; };
 		242F2E1C28130B2E00E88ADF /* PhotosYearThumbnail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 242F2E1B28130B2E00E88ADF /* PhotosYearThumbnail.swift */; };
@@ -102,6 +103,7 @@
 		24145AD82813686E00022FB1 /* PhotosYearFullsize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosYearFullsize.swift; sourceTree = "<group>"; };
 		24145ADA2813BC3C00022FB1 /* ZoomScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoomScrollView.swift; sourceTree = "<group>"; };
 		24145ADC2813C1C000022FB1 /* PhotoStateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoStateManager.swift; sourceTree = "<group>"; };
+		241F897728288D8400782BDB /* EnvironmentManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnvironmentManager.swift; sourceTree = "<group>"; };
 		242F2E182813057E00E88ADF /* Photos+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Photos+Extensions.swift"; sourceTree = "<group>"; };
 		242F2E1B28130B2E00E88ADF /* PhotosYearThumbnail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosYearThumbnail.swift; sourceTree = "<group>"; };
 		2439866F281730540055F7C4 /* WidgetIntent.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = WidgetIntent.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -235,6 +237,7 @@
 				2404CDF22815A8EC00E20C48 /* SyncStorage.swift */,
 				24145ADC2813C1C000022FB1 /* PhotoStateManager.swift */,
 				24721DD62811CEAF006EB593 /* PhotosManager.swift */,
+				241F897728288D8400782BDB /* EnvironmentManager.swift */,
 				249F40CC28123C49002287F0 /* StateManager.swift */,
 			);
 			path = App;
@@ -453,6 +456,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				241F897828288D8400782BDB /* EnvironmentManager.swift in Sources */,
 				2404CDE72814CF4F00E20C48 /* HelpAddWidgetView.swift in Sources */,
 				24721DC72811BE7C006EB593 /* ContentView.swift in Sources */,
 				24DBDA0D2813400300B4313E /* Colors.swift in Sources */,
@@ -592,7 +596,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 11;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = P3YWQG9C86;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -658,7 +662,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 11;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = P3YWQG9C86;
 				ENABLE_NS_ASSERTIONS = NO;
