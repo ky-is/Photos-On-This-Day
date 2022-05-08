@@ -17,26 +17,17 @@ final class PhotosFetch: Identifiable, ObservableObject {
 		refetch()
 	}
 
-	deinit {
-		task?.cancel()
-	}
-
 	func refetch() {
-		task?.cancel()
-		task = Task(priority: .userInitiated) {
-			let fetch = PHAsset.fetchAssets(yearsBack: self.yearsBack, from: self.date, dateID: self.dateID, onlyFavorites: false)
-			var fetchedAssets: [PHAsset] = []
-			fetch.enumerateObjects { asset, _, _ in
-				fetchedAssets.append(asset)
-			}
-			let assets = fetchedAssets
-			await MainActor.run {
-				if assets.isEmpty {
-					PhotoStateManager.shared.emptyYearsBack[self.yearsBack - 1] = true
-				}
-				self.assets = assets
-			}
+		let fetch = PHAsset.fetchAssets(yearsBack: self.yearsBack, from: self.date, dateID: self.dateID, onlyFavorites: false)
+		var fetchedAssets: [PHAsset] = []
+		fetch.enumerateObjects { asset, _, _ in
+			fetchedAssets.append(asset)
 		}
+		let assets = fetchedAssets
+		if assets.isEmpty {
+			PhotoStateManager.shared.emptyYearsBack[self.yearsBack - 1] = true
+		}
+		self.assets = assets
 	}
 }
 
