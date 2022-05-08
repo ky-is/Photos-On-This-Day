@@ -23,7 +23,7 @@ struct PhotosOnThisDayApp: App {
 				case .active:
 					let newDay = Calendar.current.component(.day, from: Date())
 					let oldDay = Calendar.current.component(.day, from: StateManager.shared.date)
-					if newDay != oldDay {
+					if newDay != oldDay { //TODO only when tapping the photo widget
 						DispatchQueue.main.async {
 							StateManager.shared.daysChange = 0
 						}
