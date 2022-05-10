@@ -59,7 +59,7 @@ struct PhotosViewContent: View {
 
 struct PhotosView_Previews: PreviewProvider {
 	static var previews: some View {
-		PhotosView(date: Date())
+		PhotosView(date: Date.current())
 			.environment(\.screenSize, UIScreen.main.bounds.size)
 	}
 }

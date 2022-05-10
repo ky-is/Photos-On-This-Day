@@ -19,6 +19,7 @@ struct PhotosOnThisDayApp: App {
 				DispatchQueue.main.async {
 					EnvironmentManager.shared.scenePhase = newPhase
 				}
+				#if !targetEnvironment(simulator)
 				switch newPhase {
 				case .active:
 					let newDay = Calendar.current.component(.day, from: Date())
@@ -30,6 +31,7 @@ struct PhotosOnThisDayApp: App {
 					}
 				default: break
 				}
+				#endif
 			}
 	}
 }

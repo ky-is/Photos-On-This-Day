@@ -12,6 +12,14 @@ extension Bundle {
 }
 
 extension Date {
+	static func current() -> Self {
+#if targetEnvironment(simulator)
+		return try! Date("2022-06-07T18:00:00Z", strategy: .iso8601)
+#else
+		return Date()
+#endif
+	}
+
 	func getStartAndEndOfDay() -> (startDate: Date, endDate: Date) {
 		let calendar = Calendar.current
 		let startDate = calendar.startOfDay(for: self)

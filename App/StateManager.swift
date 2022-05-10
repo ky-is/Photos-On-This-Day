@@ -7,11 +7,11 @@ final class StateManager: ObservableObject {
 
 	@Published var daysChange = 0 {
 		didSet {
-			date = Calendar.current.date(byAdding: .init(day: daysChange), to: Date())!
+			date = Calendar.current.date(byAdding: .init(day: daysChange), to: Date.current())!
 		}
 	}
 
-	@Published var date = Date()
+	@Published var date = Date.current()
 
 	@Published var permission = PHPhotoLibrary.authorizationStatus(for: .readWrite) {
 		didSet {

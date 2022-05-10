@@ -12,11 +12,11 @@ struct Provider: IntentTimelineProvider {
 	}
 
 	func placeholder(in context: Context) -> PhotosOnThisDayEntry {
-		return PhotosOnThisDayEntry(timelineDate: Calendar.current.date(byAdding: .year, value: -1, to: Date())!, photoDate: nil, score: 0, imageURL: nil, configuration: ConfigurationIntent())
+		return PhotosOnThisDayEntry(timelineDate: Calendar.current.date(byAdding: .year, value: -1, to: Date.current())!, photoDate: nil, score: 0, imageURL: nil, configuration: ConfigurationIntent())
 	}
 
 	fileprivate static func getSnapshotEntry(for configuration: ConfigurationIntent, size: CGSize) -> PhotosOnThisDayEntry {
-		let currentDate = Date()
+		let currentDate = Date.current()
 		let photosFetch = getBestPhotos(fromDate: currentDate, yearDiffs: [1], idealCount: 1, onlyFavorites: false)
 		var entry: PhotosOnThisDayEntry?
 		if let (score, asset) = photosFetch.first {
@@ -25,7 +25,7 @@ struct Provider: IntentTimelineProvider {
 				entry = PhotosOnThisDayEntry(timelineDate: currentDate, photoDate: asset.creationDate, score: score, imageURL: url, configuration: configuration)
 			}
 		}
-		return entry ?? PhotosOnThisDayEntry(timelineDate: Date(), photoDate: nil, score: -1, imageURL: nil, configuration: configuration)
+		return entry ?? PhotosOnThisDayEntry(timelineDate: currentDate, photoDate: nil, score: -1, imageURL: nil, configuration: configuration)
 	}
 
 	func getSnapshot(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (PhotosOnThisDayEntry) -> ()) {
@@ -67,7 +67,7 @@ struct Provider: IntentTimelineProvider {
 	}
 
 	func getTimeline(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
-		let currentDate = Date()
+		let currentDate = Date.current()
 		let cacheURL = Self.clearCacheDirectory(for: currentDate)
 
 		let nextDayStart = Calendar.current.startOfDay(for: Calendar.current.date(byAdding: .day, value: 1, to: currentDate)!)
@@ -78,7 +78,7 @@ struct Provider: IntentTimelineProvider {
 			let maxEntries = Int((timeForUpdates / intervalPerUpdate).rounded(.up))
 			let customYearDiffs = configuration.onlyShowYears?.compactMap { $0.yearsAgo as? Int } ?? []
 			let yearDiffs = !customYearDiffs.isEmpty ? customYearDiffs : (1...MaxYearsBack).map { $0 }
-			photosFetch = Array(getBestPhotos(fromDate: Date(), yearDiffs: yearDiffs, idealCount: maxEntries, onlyFavorites: configuration.onlyShowFavorites == 1)
+			photosFetch = Array(getBestPhotos(fromDate: currentDate, yearDiffs: yearDiffs, idealCount: maxEntries, onlyFavorites: configuration.onlyShowFavorites == 1)
 				.shuffled()
 				.prefix(maxEntries))
 		}

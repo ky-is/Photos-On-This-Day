@@ -38,7 +38,7 @@ struct PhotosYearView: View {
 
 struct PhotosYearView_Previews: PreviewProvider {
 	static var previews: some View {
-		PhotosYearView(fetch: PhotosFetch(fromDate: Date(), yearsBack: 1))
+		PhotosYearView(fetch: PhotosFetch(fromDate: Date.current(), yearsBack: 1))
 			.environment(\.screenSize, UIScreen.main.bounds.size)
 	}
 }
