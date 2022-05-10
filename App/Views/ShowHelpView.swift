@@ -17,7 +17,7 @@ struct ShowHelpView: View {
 						.padding(8)
 				}
 					.buttonStyle(.bordered)
-					.padding(.horizontal)
+					.padding()
 					.sheet(isPresented: $showAddWidgetHelp) {
 						NavigationView {
 							HelpAddWidgetView(inSheet: true)
