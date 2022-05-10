@@ -5,8 +5,11 @@ typealias ScoreAsset = (score: Float, asset: PHAsset)
 func getBestPhotos(fromDate date: Date, yearDiffs: [Int], idealCount: Int, onlyFavorites: Bool) -> [ScoreAsset] {
 	var scoreAssetsByYear: [Int: [ScoreAsset]] = [:]
 	let dateID = Calendar.current.getDateID(from: date)
+	let showScreenshots = UserDefaults.shared.filterShowScreenshots
+	let showShared = UserDefaults.shared.filterShowShared
+	let filterPhotos = UserDefaults.shared.filterPhotos[dateID]
 	yearDiffs.forEach { yearsToSubtract in
-		PHAsset.fetchAssets(yearsBack: yearsToSubtract, from: date, dateID: dateID, onlyFavorites: onlyFavorites).enumerateObjects { asset, index, _ in
+		PHAsset.fetchAssets(yearsBack: yearsToSubtract, from: date, dateID: dateID, onlyFavorites: onlyFavorites, showScreenshots: showScreenshots, showShared: showShared, filterPhotos: filterPhotos).enumerateObjects { asset, index, _ in
 			if scoreAssetsByYear[yearsToSubtract] == nil {
 				scoreAssetsByYear[yearsToSubtract] = []
 			}

@@ -2,10 +2,7 @@ import Photos
 import UIKit
 
 extension PHAsset {
-	static func fetchAssets(yearsBack: Int, from date: Date, dateID: String, onlyFavorites: Bool) -> PHFetchResult<PHAsset> {
-		let includeScreenshots = UserDefaults.shared.filterShowScreenshots
-		let includeShared = UserDefaults.shared.filterShowShared
-
+	static func fetchAssets(yearsBack: Int, from date: Date, dateID: String, onlyFavorites: Bool, showScreenshots: Bool, showShared: Bool, filterPhotos: [String]?) -> PHFetchResult<PHAsset> {
 		let (startDate, endDate) = Calendar.current.date(byAdding: .year, value: -yearsBack, to: date)!.getStartAndEndOfDay()
 		let fetchPhotosOptions = PHFetchOptions()
 		let creationPredicate: NSPredicate = \PHAsset.creationDate > startDate && \PHAsset.creationDate < endDate
@@ -13,16 +10,16 @@ extension PHAsset {
 		if onlyFavorites {
 			subpredicates.append(\PHAsset.isFavorite == true)
 		}
-		if let skipIDs = UserDefaults.shared.filterPhotos[dateID], !skipIDs.isEmpty {
-			subpredicates.append(\PHAsset.localIdentifier !== skipIDs)
+		if let filterPhotos = filterPhotos, !filterPhotos.isEmpty {
+			subpredicates.append(\PHAsset.localIdentifier !== filterPhotos)
 		}
-		if !includeScreenshots {
+		if !showScreenshots {
 			let sourceTypePredicate = NSPredicate(format: "NOT ((%K & %d) != 0)", #keyPath(PHAsset.mediaSubtypes), PHAssetMediaSubtype.photoScreenshot.rawValue)
 			subpredicates.append(sourceTypePredicate)
 		}
 		fetchPhotosOptions.predicate = CompoundPredicate<PHAsset>(type: .and, subpredicates: subpredicates)
 		fetchPhotosOptions.sortDescriptors = [NSSortDescriptor(key: #keyPath(PHAsset.creationDate), ascending: true)]
-		fetchPhotosOptions.includeAssetSourceTypes = includeShared ? [.typeCloudShared, .typeUserLibrary, .typeiTunesSynced] : [.typeUserLibrary, .typeiTunesSynced]
+		fetchPhotosOptions.includeAssetSourceTypes = showShared ? [.typeCloudShared, .typeUserLibrary, .typeiTunesSynced] : [.typeUserLibrary, .typeiTunesSynced]
 		fetchPhotosOptions.includeAllBurstAssets = false
 		fetchPhotosOptions.includeHiddenAssets = false
 		return PHAsset.fetchAssets(with: fetchPhotosOptions)

@@ -4,7 +4,9 @@ struct HelpHiddenPhotos: View {
 	@ObservedObject private var syncStorage = SyncStorage.shared
 
 	var body: some View {
-		let hiddenGroups = syncStorage.filterPhotos.sorted(by: { $0.key > $1.key })
+		let hiddenGroups = syncStorage.filterPhotos
+			.filter { !$0.value.isEmpty }
+			.sorted { $0.key > $1.key }
 		Form {
 			ForEach(hiddenGroups, id: \.key) { dateKey, photoIDs in
 				Button(role: .destructive) {

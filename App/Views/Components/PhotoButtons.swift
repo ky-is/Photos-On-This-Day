@@ -76,7 +76,7 @@ struct PhotoHideToggle: View {
 	var body: some View {
 		let id = asset.localIdentifier
 		Toggle("Hide from On This Day", isOn: Binding(get: {
-			UserDefaults.shared.filterPhotos[dateID]?.contains(id) ?? false
+			syncStorage.filterPhotos[dateID]?.contains(id) ?? false
 		}, set: { isOn in
 			if syncStorage.filterPhotos[dateID] == nil {
 				syncStorage.filterPhotos[dateID] = []

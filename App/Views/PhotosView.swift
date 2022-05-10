@@ -2,36 +2,25 @@ import SwiftUI
 
 struct PhotosView: View {
 	let date: Date
-	let fetches: [PhotosFetch]
 
-	@ObservedObject private var photoState = PhotoStateManager.shared
 	@ObservedObject private var syncStorage = SyncStorage.shared
+
+	var body: some View {
+		PhotosViewContent(date: date)
+	}
+}
+struct PhotosViewContent: View {
+	let date: Date
+	let fetches: [PhotosFetch]
 
 	init(date: Date) {
 		self.date = date
-		PhotoStateManager.shared.emptyYearsBack = Array(repeating: false, count: MaxYearsBack)
 		self.fetches = (1...MaxYearsBack).map { PhotosFetch(fromDate: date, yearsBack: $0) }
-	}
-
-	var areAllEmpty: Bool {
-		for fetch in fetches {
-			guard let assets = fetch.assets else { return false }
-			if !assets.isEmpty {
-				return false
-			}
-		}
-		return true
-	}
-
-	private func refetch() {
-		DispatchQueue.main.async {
-			fetches.forEach { $0.refetch() }
-		}
 	}
 
 	var body: some View {
 		VStack {
-			if photoState.emptyYearsBack.allSatisfy({ $0 }) {
+			if fetches.allSatisfy({ $0.assets.isEmpty }) {
 				VStack {
 					Text("No photos from past years on this day")
 						.font(.system(.title3, design: .rounded).weight(.medium))
@@ -65,9 +54,6 @@ struct PhotosView: View {
 			}
 		}
 			.padding(.bottom, 32)
-			.onChange(of: SyncStorage.shared.filterPhotos) { _ in refetch() }
-			.onChange(of: SyncStorage.shared.filterShowShared) { _ in refetch() }
-			.onChange(of: SyncStorage.shared.filterShowScreenshots) { _ in refetch() }
 	}
 }
 

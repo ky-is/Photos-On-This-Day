@@ -1,7 +1,7 @@
 import Photos
 
 final class PhotosFetch: Identifiable, ObservableObject {
-	@Published var assets: [PHAsset]?
+	@Published var assets: [PHAsset]
 
 	let date: Date
 	let yearsBack: Int
@@ -14,20 +14,12 @@ final class PhotosFetch: Identifiable, ObservableObject {
 		self.dateID = dateID
 		self.date = date
 		self.yearsBack = yearsBack
-		refetch()
-	}
-
-	func refetch() {
-		let fetch = PHAsset.fetchAssets(yearsBack: self.yearsBack, from: self.date, dateID: self.dateID, onlyFavorites: false)
+		let fetch = PHAsset.fetchAssets(yearsBack: self.yearsBack, from: self.date, dateID: self.dateID, onlyFavorites: false, showScreenshots: SyncStorage.shared.filterShowScreenshots, showShared: SyncStorage.shared.filterShowShared, filterPhotos: SyncStorage.shared.filterPhotos[dateID])
 		var fetchedAssets: [PHAsset] = []
 		fetch.enumerateObjects { asset, _, _ in
 			fetchedAssets.append(asset)
 		}
-		let assets = fetchedAssets
-		if assets.isEmpty {
-			PhotoStateManager.shared.emptyYearsBack[self.yearsBack - 1] = true
-		}
-		self.assets = assets
+		self.assets = fetchedAssets
 	}
 }
 
