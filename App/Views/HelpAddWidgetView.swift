@@ -27,25 +27,30 @@ struct HelpAddWidgetView: View {
 	var body: some View {
 		ScrollView {
 			VStack(alignment: .leading, spacing: 16) {
-				VideoLayer(player: player)
+				ZStack {
+					ProgressView("Loading video")
+						.progressViewStyle(.circular)
+						.labelsHidden()
+					VideoLayer(player: player)
+						.onAppear {
+							DispatchQueue.main.asyncAfter(deadline: .now()) {
+								player.play()
+							}
+						}
+						.onDisappear {
+							player.pause()
+							player.seek(to: .zero)
+						}
+						.onChange(of: environment.scenePhase) { newPhase in
+							switch newPhase {
+							case .active:
+								player.play()
+							default: break
+							}
+						}
+				}
 					.ignoresSafeArea()
 					.frame(maxWidth: .greatestFiniteMagnitude, minHeight: (UIScreen.main.bounds.height - 96) * 0.9)
-					.onAppear {
-						DispatchQueue.main.asyncAfter(deadline: .now()) {
-							player.play()
-						}
-					}
-					.onDisappear {
-						player.pause()
-						player.seek(to: .zero)
-					}
-					.onChange(of: environment.scenePhase) { newPhase in
-						switch newPhase {
-						case .active:
-							player.play()
-						default: break
-						}
-					}
 				Text("**1.** Long press in an empty spot on your Home Screen.")
 				Text("**2.** Tap the \"+\" button in the top-left.")
 				Text("**3.** Search for \"On This Day\" (it's been copied to your clipboard), or find it from the list.")
