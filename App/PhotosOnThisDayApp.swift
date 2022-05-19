@@ -42,6 +42,13 @@ final class AppDelegate: NSObject, UIApplicationDelegate, PHPhotoLibraryAvailabi
 		UINavigationBar.appearance().largeTitleTextAttributes = [.font: UIFont.rounded(style: .largeTitle, bold: true)]
 		UINavigationBar.appearance().titleTextAttributes = [.font: UIFont.rounded(style: .headline, bold: false)]
 
+		do {
+			let audioSession = AVAudioSession.sharedInstance()
+			try audioSession.setCategory(.ambient, mode: .default)
+		} catch {
+			print(error)
+		}
+
 		PHPhotoLibrary.shared().register(self)
 		if StateManager.shared.permission != .authorized && StateManager.shared.permission != .limited {
 			Task(priority: .userInitiated) {
