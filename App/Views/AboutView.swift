@@ -33,7 +33,6 @@ struct AboutView: View {
 					}
 				}
 				Section {
-					#if DEBUG //RELEASE
 					UIViewButton { backing in
 						openReviews()
 					} label: {
@@ -57,7 +56,6 @@ struct AboutView: View {
 						Text("Share with a friend...")
 					}
 						.disabled(loading)
-					#endif
 				} header: {
 					Text("Share")
 						.font(.system(.footnote, design: .rounded))
