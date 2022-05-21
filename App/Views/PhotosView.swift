@@ -22,13 +22,17 @@ struct PhotosViewContent: View {
 		VStack {
 			if fetches.allSatisfy({ $0.assets.isEmpty }) {
 				VStack {
-					Text("No photos from past years on this day")
-						.font(.system(.title3, design: .rounded).weight(.medium))
-						.fixedSize(horizontal: false, vertical: true)
-						.padding(.vertical)
-					if !SyncStorage.shared.filterShowShared {
-						Text("Try enabling iCloud Shared photos from the filter button at the top to include photos from friends and family!")
+					Group {
+						Text("No photos from past years on this day")
+							.font(.system(.title3, design: .rounded).weight(.medium))
+							.padding(.vertical)
+						if !SyncStorage.shared.filterShowShared {
+							Text("Try enabling iCloud Shared photos from the filter button at the top to include photos from friends and family!")
+						} else {
+							Text("You can browse other days\nusing the ◀︎ and ▶︎ buttons")
+						}
 					}
+						.fixedSize(horizontal: false, vertical: true)
 				}
 					.foregroundColor(.secondary)
 					.multilineTextAlignment(.center)
