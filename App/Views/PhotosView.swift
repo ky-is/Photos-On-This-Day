@@ -10,11 +10,9 @@ struct PhotosView: View {
 	}
 }
 struct PhotosViewContent: View {
-	let date: Date
 	let fetches: [PhotosFetch]
 
 	init(date: Date) {
-		self.date = date
 		self.fetches = (1...MaxYearsBack).map { PhotosFetch(fromDate: date, yearsBack: $0) }
 	}
 

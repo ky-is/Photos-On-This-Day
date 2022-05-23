@@ -21,3 +21,5 @@ final class StateManager: ObservableObject {
 		}
 	}
 }
+
+let currentYear = Calendar.current.component(.year, from: Date.current())

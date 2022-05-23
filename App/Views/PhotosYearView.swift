@@ -4,7 +4,7 @@ private struct PhotosYearHeader: View {
 	let fetch: PhotosFetch
 
 	var body: some View {
-		Text((Calendar.current.component(.year, from: fetch.date) - fetch.yearsBack).description)
+		Text((currentYear - fetch.yearsBack).description)
 			.font(.system(.headline, design: .rounded))
 			.padding(.horizontal)
 			.frame(height: 32)
