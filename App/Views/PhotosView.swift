@@ -21,8 +21,23 @@ struct PhotosViewContent: View {
 		self.fetches = (1...MaxYearsBack).map { PhotosFetch(fromDate: date, yearsBack: $0) }
 		self.hasNoPastPhotos = fetches.allSatisfy({ $0.assets.isEmpty })
 		self.dateID = fetches.first?.dateID ?? ""
-		self.currentYearFetch = self.hasNoPastPhotos ? PhotosFetch(fromDate: date, yearsBack: 0) : nil
 		self.hiddenPhotosCount = SyncStorage.shared.filterPhotos[dateID]?.count ?? 0
+		if hasNoPastPhotos && hiddenPhotosCount == 0 && StateManager.shared.daysScanned > 0 {
+			self.currentYearFetch = nil
+			scanForDayWithPhotos()
+		} else {
+			self.currentYearFetch = self.hasNoPastPhotos ? PhotosFetch(fromDate: date, yearsBack: 0) : nil
+			StateManager.shared.daysScanned = 0
+		}
+	}
+
+	private func scanForDayWithPhotos() {
+		guard StateManager.shared.daysScanned < 365 else {
+			StateManager.shared.daysScanned = 0
+			return
+		}
+		StateManager.shared.daysScanned += 1
+		StateManager.shared.daysChange -= 1
 	}
 
 	var body: some View {
@@ -40,6 +55,10 @@ struct PhotosViewContent: View {
 						} else {
 							Text("You can browse other days\nusing the ◀︎ and ▶︎ buttons")
 								.foregroundColor(.secondary)
+							Button("Find recent day with photos") {
+								scanForDayWithPhotos()
+							}
+								.buttonStyle(.bordered)
 						}
 					}
 						.fixedSize(horizontal: false, vertical: true)

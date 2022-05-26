@@ -11,6 +11,8 @@ final class StateManager: ObservableObject {
 		}
 	}
 
+	@Published var daysScanned = 0
+
 	@Published var date = Date.current()
 
 	@Published var permission = PHPhotoLibrary.authorizationStatus(for: .readWrite) {
