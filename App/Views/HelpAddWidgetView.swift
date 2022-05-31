@@ -76,7 +76,7 @@ struct HelpAddWidgetView: View {
 			.toolbar {
 				ToolbarItem(placement: .cancellationAction) {
 					if inSheet {
-						ToolbarButton("Close") {
+						ToolbarButtonView("Close") {
 							dismiss()
 						}
 							.keyboardShortcut(.cancelAction)

@@ -34,7 +34,7 @@ struct PhotoFavoriteButton: View {
 
 	var body: some View {
 		if asset.sourceType == .typeUserLibrary {
-			ToolbarButton("Favorite", imageName: photoState.favorites[asset] == true ? "heart.fill" : "heart") {
+			ToolbarButtonView("Favorite", imageName: photoState.favorites[asset] == true ? "heart.fill" : "heart") {
 				Task(priority: .userInitiated) {
 					await toggleFavorite(asset: asset, isOn: nil)
 				}

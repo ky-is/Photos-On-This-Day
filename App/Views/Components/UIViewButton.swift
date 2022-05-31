@@ -47,7 +47,7 @@ struct ShareImageButton: View {
 			}
 		} label: {
 			Label("Share", systemImage: "square.and.arrow.up")
-				.modifier(ToolbarButtonModifier())
+				.modifier(ToolbarButtonContentModifier())
 		}
 	}
 }

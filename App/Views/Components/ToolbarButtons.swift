@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct ToolbarButton: View {
+struct ToolbarButtonView: View {
 	let title: String
 	let imageName: String?
 	let action: () -> Void
@@ -21,12 +21,12 @@ struct ToolbarButton: View {
 					Text(title)
 				}
 			}
-				.modifier(ToolbarButtonModifier())
+				.modifier(ToolbarButtonContentModifier())
 		}
 	}
 }
 
-struct ToolbarButtonModifier: ViewModifier {
+struct ToolbarButtonContentModifier: ViewModifier {
 	func body(content: Content) -> some View {
 		content
 			.frame(minWidth: 24, minHeight: 40)
@@ -35,6 +35,6 @@ struct ToolbarButtonModifier: ViewModifier {
 
 struct ToolbarButtons_Previews: PreviewProvider {
 	static var previews: some View {
-		ToolbarButton("Info", imageName: "i.circle", action: {})
+		ToolbarButtonView("Info", imageName: "i.circle", action: {})
 	}
 }

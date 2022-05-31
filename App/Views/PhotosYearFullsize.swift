@@ -35,7 +35,7 @@ struct PhotosYearFullsize: View {
 					} label: {
 						Image(systemName: "chevron.left")
 							.font(.body.bold())
-							.modifier(ToolbarButtonModifier())
+							.modifier(ToolbarButtonContentModifier())
 					}
 				}
 				ToolbarItemGroup(placement: .navigationBarTrailing) {
