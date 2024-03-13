@@ -1,7 +1,8 @@
 import Photos
+import Observation
 
-final class PhotoStateManager: ObservableObject {
+@Observable final class PhotoStateManager {
 	static let shared = PhotoStateManager()
 
-	@Published var favorites: [PHAsset: Bool] = [:]
+	var favorites: [PHAsset: Bool] = [:]
 }

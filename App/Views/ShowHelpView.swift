@@ -13,7 +13,7 @@ struct ShowHelpView: View {
 					showAddWidgetHelp.toggle()
 				} label: {
 					Text("Add a Widget to your Home Screen!")
-						.font(.system(.title3, design: .rounded).weight(.medium))
+						.font(.title3.weight(.medium))
 						.padding(8)
 				}
 					.buttonStyle(.bordered)
@@ -24,10 +24,10 @@ struct ShowHelpView: View {
 						}
 						.navigationViewStyle(.stack)
 					}
-					.onChange(of: scenePhase) { newPhase in
+					.onChange(of: scenePhase) { oldPhase, newPhase in
 						switch newPhase {
 						case .active:
-							UserDefaults.standard.updateAddedWidget()
+							UserDefaults.shared.updateAddedWidget()
 						default: break
 						}
 					}
@@ -36,8 +36,6 @@ struct ShowHelpView: View {
 	}
 }
 
-struct ShowHelpView_Previews: PreviewProvider {
-	static var previews: some View {
-		ShowHelpView()
-	}
+#Preview {
+	ShowHelpView()
 }

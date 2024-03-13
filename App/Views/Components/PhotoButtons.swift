@@ -25,7 +25,7 @@ private func toggleFavorite(asset: PHAsset, isOn: Bool?) async {
 struct PhotoFavoriteButton: View {
 	let asset: PHAsset
 
-	@ObservedObject private var photoState = PhotoStateManager.shared
+	private var photoState = PhotoStateManager.shared
 
 	init(asset: PHAsset) {
 		self.asset = asset
@@ -46,7 +46,7 @@ struct PhotoFavoriteButton: View {
 struct PhotoFavoriteToggle: View {
 	let asset: PHAsset
 
-	@ObservedObject private var photoState = PhotoStateManager.shared
+	private var photoState = PhotoStateManager.shared
 
 	init(asset: PHAsset) {
 		self.asset = asset
@@ -66,25 +66,24 @@ struct PhotoFavoriteToggle: View {
 	}
 }
 
-
 struct PhotoHideToggle: View {
 	let asset: PHAsset
 	let dateID: String
 
-	@ObservedObject private var syncStorage = SyncStorage.shared
+	@AppStorage(UserDefaults.Key.filterPhotos) private var filterPhotos: [String: [String]] = [String: [String]]()
 
 	var body: some View {
 		let id = asset.localIdentifier
 		Toggle("Hide from On This Day", isOn: Binding(get: {
-			syncStorage.filterPhotos[dateID]?.contains(id) ?? false
+			filterPhotos[dateID]?.contains(id) ?? false
 		}, set: { isOn in
-			if syncStorage.filterPhotos[dateID] == nil {
-				syncStorage.filterPhotos[dateID] = []
+			if filterPhotos[dateID] == nil {
+				filterPhotos[dateID] = []
 			}
 			if isOn {
-				syncStorage.filterPhotos[dateID]?.append(id)
+				filterPhotos[dateID]?.append(id)
 			} else {
-				syncStorage.filterPhotos[dateID] = syncStorage.filterPhotos[dateID]?.filter { $0 != id }
+				filterPhotos[dateID] = filterPhotos[dateID]?.filter { $0 != id }
 			}
 		}))
 	}
@@ -93,7 +92,7 @@ struct PhotoHideToggle: View {
 struct PhotoFavoriteIcon: View {
 	let asset: PHAsset
 
-	@ObservedObject private var photoState = PhotoStateManager.shared
+	private var photoState = PhotoStateManager.shared
 
 	init(asset: PHAsset) {
 		self.asset = asset
@@ -104,11 +103,5 @@ struct PhotoFavoriteIcon: View {
 		if photoState.favorites[asset] == true {
 			Image(systemName: "heart.fill")
 		}
-	}
-}
-
-struct PhotoFavoriteButton_Previews: PreviewProvider {
-	static var previews: some View {
-		PhotoFavoriteButton(asset: PHAsset())
 	}
 }

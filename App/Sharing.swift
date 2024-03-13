@@ -10,7 +10,7 @@ func openReviews() {
 
 func openStoreListing(backing: UIViewBacking) async {
 	do {
-		let vc = SKStoreProductViewController()
+		let vc = await SKStoreProductViewController()
 		let success = try await vc.loadProduct(withParameters: [SKStoreProductParameterITunesItemIdentifier: Bundle.iTunesIdentifier, SKStoreProductParameterCustomProductPageIdentifier: "write-review"])
 		if let frontViewController = await UIApplication.shared.frontViewController {
 			if success {

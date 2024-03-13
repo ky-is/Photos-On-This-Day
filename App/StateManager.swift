@@ -2,20 +2,20 @@ import Photos
 import WidgetKit
 import SwiftUI
 
-final class StateManager: ObservableObject {
+@Observable final class StateManager {
 	static let shared = StateManager()
 
-	@Published var daysChange = 0 {
+	var daysChange = 0 {
 		didSet {
 			date = Calendar.current.date(byAdding: .init(day: daysChange), to: Date.current())!
 		}
 	}
 
-	@Published var daysScanned = 0
+	var daysScanned = 0
 
-	@Published var date = Date.current()
+	var date = Date.current()
 
-	@Published var permission = PHPhotoLibrary.authorizationStatus(for: .readWrite) {
+	var permission = PHPhotoLibrary.authorizationStatus(for: .readWrite) {
 		didSet {
 			if permission == .authorized || permission == .limited {
 				WidgetCenter.shared.reloadTimelines(ofKind: WidgetKind)

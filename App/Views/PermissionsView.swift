@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct PermissionsView: View {
-	@ObservedObject private var state = StateManager.shared
+	private var state = StateManager.shared
 
 	@State private var showPrivacy = false
 
@@ -16,8 +16,8 @@ struct PermissionsView: View {
 					.fill(Color(uiColor: .secondarySystemFill))
 					.onTapGesture(perform: openSettings)
 				VStack {
-					Label("Access \(state.permission == .limited ? "Limited" : "Unavailable")", systemImage: "photo")
-						.font(.system(.headline, design: .rounded))
+					Label("Photos \(state.permission == .limited ? "Limited" : "Unavailable")", systemImage: "photo")
+						.font(.headline)
 						.padding(.bottom, 1)
 					VStack(alignment: .leading, spacing: 8) {
 						if state.permission == .limited {
@@ -45,7 +45,7 @@ struct PermissionsView: View {
 								.padding(4)
 						}
 					}
-						.font(.system(.headline, design: .rounded))
+						.font(.headline)
 				}
 					.buttonStyle(.bordered)
 					.padding(20)
@@ -54,7 +54,7 @@ struct PermissionsView: View {
 					Link(destination: URL(string: UIApplication.openSettingsURLString)!) {
 						Label("Go to Settings", systemImage: "gear")
 					}
-						.font(.system(.headline, design: .rounded))
+						.font(.headline)
 						.labelStyle(.titleAndIcon)
 				} message: {
 					Text("Your privacy is of the utmost importance. Photos are only used to display in the Widget and App UI. This app never stores or uploads your photos anywhere, nor does it make any changes to your photo library.")
@@ -63,8 +63,7 @@ struct PermissionsView: View {
 	}
 }
 
-struct PermissionsView_Previews: PreviewProvider {
-	static var previews: some View {
-		PermissionsView()
-	}
+#Preview {
+	PermissionsView()
+		.padding()
 }

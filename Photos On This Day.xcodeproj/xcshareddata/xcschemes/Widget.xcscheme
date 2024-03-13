@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-	LastUpgradeVersion = "1330"
+	LastUpgradeVersion = "1500"
 	wasCreatedForAppExtension = "YES"
 	version = "2.0">
 	<BuildAction
@@ -58,8 +58,9 @@
 		allowLocationSimulation = "YES"
 		launchAutomaticallySubstyle = "2">
 		<RemoteRunnable
-			runnableDebuggingMode = "2"
-			BundleIdentifier = "com.apple.springboard">
+			runnableDebuggingMode = "1"
+			BundleIdentifier = "com.apple.widgetkit.simulator"
+			RemotePath = "/System/Library/CoreServices/WidgetKit Simulator.app/Contents/MacOS/WidgetKit Simulator">
 			<BuildableReference
 				BuildableIdentifier = "primary"
 				BlueprintIdentifier = "24721DDB2811DCBF006EB593"

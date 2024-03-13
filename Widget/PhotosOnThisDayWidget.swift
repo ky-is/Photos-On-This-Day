@@ -126,6 +126,8 @@ struct PhotosOnThisDayWidget: Widget {
 			.configurationDisplayName("Photos On This Day")
 			.description("See photos on this day from years past.")
 			.supportedFamilies([.systemSmall, .systemMedium, .systemLarge, .systemExtraLarge])
+			.contentMarginsDisabled()
+			.containerBackgroundRemovable(false)
 	}
 }
 
@@ -136,7 +138,7 @@ struct PhotoWidgetView: View {
 	var size: CGSize
 
 	var body: some View {
-		ZStack {
+		Group {
 			if let imageURL = entry.imageURL, let image = UIImage(contentsOfFile: imageURL.path) {
 				Image(uiImage: image)
 					.resizable()
@@ -144,15 +146,17 @@ struct PhotoWidgetView: View {
 					.frame(width: size.width, height: size.height)
 			} else {
 				if entry.photoDate == nil {
-					Color.black
 					Image(systemName: "photo")
 						.font(.system(size: max(size.width * 1.05, size.height * 1.36)))
-						.foregroundColor(.init(white: 0.07))
+						.foregroundStyle(Color(white: 0.08))
 						.frame(width: size.width, height: size.height)
 						.unredacted()
 				}
 			}
 		}
+			.containerBackground(for: .widget) {
+				Color.black
+			}
 	}
 }
 
@@ -167,9 +171,9 @@ struct PhotosOnThisDayWidgetEntryView: View {
 				PhotoWidgetView(entry: entry, size: geometry.size)
 					.overlay(alignment: .bottomTrailing) {
 						VStack(alignment: .trailing) {
+							let isSmall = widgetFamily == .systemSmall
 							if PHPhotoLibrary.authorizationStatus(for: .readWrite) == .authorized {
 								Group {
-									let isSmall = widgetFamily == .systemSmall
 									let isLarge = !isSmall && widgetFamily != .systemMedium
 									if !isSmall || entry.photoDate == nil {
 										Group {
@@ -179,26 +183,28 @@ struct PhotosOnThisDayWidgetEntryView: View {
 												Text(entry.photoDate ?? entry.date, formatter: DateFormatter.monthDay)
 											}
 										}
-											.font(.system(isLarge ? .title : .title2, design: .rounded).weight(.semibold))
+											.font(isLarge ? .title : .title2).fontWeight(.semibold)
 									}
 									if let photoDate = entry.photoDate {
 										Text(photoDate, format: .relative(presentation: .numeric, unitsStyle: .wide))
-											.font(.system(.callout, design: .rounded).weight(.semibold))
+											.font(.callout.weight(.semibold))
 									}
 								}
-									.foregroundColor(.white)
+									.foregroundStyle(.white)
 									.shadow(color: .black, radius: 1.5, x: 0, y: 1)
 							} else {
 								VStack(alignment: .trailing, spacing: 4) {
-									Image(systemName: "photo")
-										.font(.system(size: 24))
-										.foregroundColor(.secondary)
+									if !isSmall {
+										Image(systemName: "photo")
+											.font(.system(size: 24))
+											.foregroundStyle(.secondary)
+									}
 									Text("Access restricted")
-										.font(.system(.headline, design: .rounded))
+										.font(.headline)
 									Text("Tap to configure!")
-										.font(.system(.body, design: .rounded))
+										.font(.body)
 								}
-									.foregroundColor(.primary)
+									.foregroundStyle(.white)
 									.multilineTextAlignment(.trailing)
 							}
 						}
@@ -207,12 +213,13 @@ struct PhotosOnThisDayWidgetEntryView: View {
 					}
 			}
 		}
+			.fontDesign(.rounded)
 	}
 }
 
 struct PhotosOnThisDayWidget_Previews: PreviewProvider {
 	static var previews: some View {
-		PhotosOnThisDayWidgetEntryView(entry: Provider.getSnapshotEntry(for: ConfigurationIntent(), size: CGSize(width: 128, height: 128))) //NOTE size
-			.previewContext(WidgetPreviewContext(family: .systemSmall))
+		PhotosOnThisDayWidgetEntryView(entry: Provider.getSnapshotEntry(for: ConfigurationIntent(), size: CGSize(width: 256, height: 256)))
+			.previewContext(WidgetPreviewContext(family: .systemExtraLarge))
 	}
 }

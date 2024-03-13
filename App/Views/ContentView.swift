@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct ContentView: View {
-	@ObservedObject private var state = StateManager.shared
+	var state = StateManager.shared
 
 	@State private var showAbout = false
 
@@ -62,12 +62,13 @@ struct ContentView: View {
 }
 
 struct FilterLibraryMenu: View {
-	@ObservedObject private var syncStorage = SyncStorage.shared
+	@AppStorage(UserDefaults.Key.filterShowShared) private var filterShowShared = false
+	@AppStorage(UserDefaults.Key.filterShowScreenshots) private var filterShowScreenshots = false
 
 	var body: some View {
 		Menu {
-			Toggle("Show iCloud Shared", isOn: $syncStorage.filterShowShared)
-			Toggle("Show Screenshots", isOn: $syncStorage.filterShowScreenshots)
+			Toggle("Show iCloud Shared", isOn: $filterShowShared)
+			Toggle("Show Screenshots", isOn: $filterShowScreenshots)
 		} label: {
 			Image(systemName: "line.3.horizontal.decrease.circle")
 				.modifier(ToolbarButtonContentModifier())
@@ -75,9 +76,7 @@ struct FilterLibraryMenu: View {
 	}
 }
 
-struct ContentView_Previews: PreviewProvider {
-	static var previews: some View {
-		ContentView()
-	}
+#Preview {
+	ContentView()
 }
 

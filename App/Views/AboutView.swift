@@ -4,23 +4,19 @@ struct AboutView: View {
 	@Environment(\.dismiss) private var dismiss
 
 	@State private var loading = false
-	@ObservedObject private var syncStorage = SyncStorage.shared
+	@AppStorage(UserDefaults.Key.filterPhotos) private var filterPhotos = [String: [String]]()
 
 	var body: some View {
 		NavigationView {
 			Form {
-				Section {
+				Section("Help") {
 					NavigationLink {
 						HelpAddWidgetView(inSheet: false)
 					} label: {
 						Text("How to add a Widget")
-							.font(.system(.headline, design: .rounded))
 					}
-				} header: {
-					Text("Help")
-						.font(.system(.footnote, design: .rounded))
 				}
-				if !syncStorage.filterPhotos.isEmpty {
+				if !filterPhotos.isEmpty {
 					Section {
 						NavigationLink {
 							HelpHiddenPhotos()
@@ -29,10 +25,9 @@ struct AboutView: View {
 						}
 					} header: {
 						Text("Manage")
-							.font(.system(.footnote, design: .rounded))
 					}
 				}
-				Section {
+				Section("Share") {
 					UIViewButton { backing in
 						openReviews()
 					} label: {
@@ -56,21 +51,13 @@ struct AboutView: View {
 						Text("Share with a friend...")
 					}
 						.disabled(loading)
-				} header: {
-					Text("Share")
-						.font(.system(.footnote, design: .rounded))
 				}
-				Section {
-				} header: {
-					Text("About")
-						.font(.system(.footnote, design: .rounded))
-				} footer: {
-					VStack(alignment: .leading) {
-						Text("Photos On This Day")
-							.font(.system(.headline, design: .rounded))
-						Text("v\(Bundle.main.versionName) build \(Bundle.main.versionNumber)")
-							.font(.system(.subheadline, design: .rounded))
-
+				Section("v\(Bundle.main.versionName) build \(Bundle.main.versionNumber)") {
+					Link(destination: URL(string: "https://github.com/ky-is/Photos-On-This-Day")!) {
+						HStack {
+							Text("View Source on GitHub")
+							Image(systemName: "arrow.up.forward.square")
+						}
 					}
 				}
 			}
@@ -88,8 +75,6 @@ struct AboutView: View {
 	}
 }
 
-struct AboutView_Previews: PreviewProvider {
-	static var previews: some View {
-		AboutView()
-	}
+#Preview {
+	AboutView()
 }

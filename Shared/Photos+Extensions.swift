@@ -10,7 +10,7 @@ extension PHAsset {
 		if onlyFavorites {
 			subpredicates.append(\PHAsset.isFavorite == true)
 		}
-		if let filterPhotos = filterPhotos, !filterPhotos.isEmpty {
+		if let filterPhotos, !filterPhotos.isEmpty {
 			subpredicates.append(\PHAsset.localIdentifier !== filterPhotos)
 		}
 		if !showScreenshots {

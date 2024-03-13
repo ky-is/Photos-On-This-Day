@@ -5,7 +5,7 @@ private struct PhotosYearHeader: View {
 
 	var body: some View {
 		Text((currentYear - fetch.yearsBack).description)
-			.font(.system(.headline, design: .rounded))
+			.font(.headline)
 			.padding(.horizontal)
 			.frame(height: 32)
 			.frame(maxWidth: .greatestFiniteMagnitude, alignment: .leading)
@@ -14,7 +14,7 @@ private struct PhotosYearHeader: View {
 }
 
 struct PhotosYearView: View {
-	@ObservedObject var fetch: PhotosFetch
+	var fetch: PhotosFetch
 
 	@Environment(\.screenSize) private var screenSize
 
@@ -36,9 +36,7 @@ struct PhotosYearView: View {
 	}
 }
 
-struct PhotosYearView_Previews: PreviewProvider {
-	static var previews: some View {
-		PhotosYearView(fetch: PhotosFetch(fromDate: Date.current(), yearsBack: 1))
-			.environment(\.screenSize, UIScreen.main.bounds.size)
-	}
+#Preview {
+	PhotosYearView(fetch: PhotosFetch(fromDate: Date.current(), yearsBack: 1))
+		.environment(\.screenSize, UIScreen.main.bounds.size)
 }

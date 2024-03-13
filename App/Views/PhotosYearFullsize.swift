@@ -2,10 +2,10 @@ import Photos
 import SwiftUI
 
 struct PhotosYearFullsize: View {
-	let asset: PHAsset
+	let asset: PHAsset?
 	@State var image: UIImage
 
-	init(asset: PHAsset, image: UIImage) {
+	init(asset: PHAsset?, image: UIImage) {
 		self.asset = asset
 		self._image = State(initialValue: image)
 	}
@@ -41,18 +41,20 @@ struct PhotosYearFullsize: View {
 				ToolbarItemGroup(placement: .navigationBarTrailing) {
 					ShareImageButton(image: fullQualityImage ?? image)
 						.disabled(fullQualityImage == nil)
-					PhotoFavoriteButton(asset: asset)
+					if let asset {
+						PhotoFavoriteButton(asset: asset)
+					}
 				}
 				ToolbarItem(placement: .principal) {
 					VStack {
-						if let locationDescription = locationDescription {
+						if let locationDescription {
 							Text(locationDescription)
-								.font(.system(.caption, design: .rounded).bold())
+								.font(.caption.bold())
 								.fixedSize(horizontal: true, vertical: false)
 						}
-						if let date = asset.creationDate {
+						if let date = asset?.creationDate {
 							Text(date, format: .dateTime)
-								.font(.system(.caption2, design: .rounded))
+								.font(.caption2)
 						}
 					}
 //						.frame(maxWidth: .greatestFiniteMagnitude)
@@ -61,33 +63,33 @@ struct PhotosYearFullsize: View {
 			.navigationBarBackButtonHidden(true)
 			.navigationBarTitleDisplayMode(.inline)
 			.task {
+				guard let asset else { return }
 				PHImageManager.default().requestImage(for: asset, size: screenSize, isSynchronous: false, cropped: false) { loadedImage, userInfo in
-					if let loadedImage = loadedImage {
-						let rotatedImage = UIDevice.current.userInterfaceIdiom == .phone && loadedImage.size.width > loadedImage.size.height ? UIImage(cgImage: loadedImage.cgImage!, scale:1, orientation: UIImage.Orientation.right) : loadedImage
-						DispatchQueue.main.async {
-							image = rotatedImage
-							let isDegraded = userInfo?[PHImageResultIsDegradedKey] as? Bool
-							if isDegraded == nil || isDegraded == false {
-								fullQualityImage = loadedImage
+					guard let loadedImage else { return }
+					let rotatedImage = UIDevice.current.userInterfaceIdiom == .phone && loadedImage.size.width > loadedImage.size.height ? UIImage(cgImage: loadedImage.cgImage!, scale:1, orientation: UIImage.Orientation.right) : loadedImage
+					Task { @MainActor in
+						image = rotatedImage
+						let isDegraded = userInfo?[PHImageResultIsDegradedKey] as? Bool
+						if isDegraded == nil || isDegraded == false {
+							fullQualityImage = loadedImage
+						}
+					}
+					if let location = asset.location {
+						CLGeocoder().reverseGeocodeLocation(location) { (placemarks, error) in
+							Task { @MainActor in
+								guard let placemark = placemarks?.first else {
+									locationDescription = nil
+									return
+								}
+								locationDescription = [placemark.thoroughfare, placemark.subLocality, placemark.locality, placemark.subAdministrativeArea, placemark.administrativeArea]
+									.compactMap({ $0 })
+									.prefix(2)
+									.joined(separator: ", ")
 							}
 						}
-						if let location = asset.location {
-							CLGeocoder().reverseGeocodeLocation(location) { (placemarks, error) in
-								DispatchQueue.main.async {
-									guard let placemark = placemarks?.first else {
-										locationDescription = nil
-										return
-									}
-									locationDescription = [placemark.thoroughfare, placemark.subLocality, placemark.locality, placemark.subAdministrativeArea, placemark.administrativeArea]
-										.compactMap({ $0 })
-										.prefix(2)
-										.joined(separator: ", ")
-								}
-							}
-						} else {
-							DispatchQueue.main.async {
-								locationDescription = nil
-							}
+					} else {
+						Task { @MainActor in
+							locationDescription = nil
 						}
 					}
 				}
@@ -95,8 +97,6 @@ struct PhotosYearFullsize: View {
 	}
 }
 
-struct PhotosYearFullsize_Previews: PreviewProvider {
-	static var previews: some View {
-		PhotosYearFullsize(asset: PHAsset(), image: UIImage())
-	}
+#Preview {
+	PhotosYearFullsize(asset: nil, image: UIImage())
 }

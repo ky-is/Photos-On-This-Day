@@ -14,7 +14,7 @@ struct ToolbarButtonView: View {
 	var body: some View {
 		Button(action: action) {
 			Group {
-				if let imageName = imageName {
+				if let imageName {
 					Image(systemName: imageName)
 						.accessibilityLabel(title)
 				} else {
@@ -33,8 +33,6 @@ struct ToolbarButtonContentModifier: ViewModifier {
 	}
 }
 
-struct ToolbarButtons_Previews: PreviewProvider {
-	static var previews: some View {
-		ToolbarButtonView("Info", imageName: "i.circle", action: {})
-	}
+#Preview {
+	ToolbarButtonView("Info", imageName: "i.circle", action: {})
 }

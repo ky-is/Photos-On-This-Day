@@ -3,31 +3,37 @@ import SwiftUI
 struct PhotosView: View {
 	let date: Date
 
-	@ObservedObject private var syncStorage = SyncStorage.shared
+	@AppStorage(UserDefaults.Key.filterPhotos) private var filterPhotos = [:]
+	@AppStorage(UserDefaults.Key.filterShowShared) private var filterShowShared = false
+	@AppStorage(UserDefaults.Key.filterShowScreenshots) private var filterShowScreenshots = false
 
 	var body: some View {
+		let _ = filterShowShared && filterShowScreenshots && filterPhotos.isEmpty
 		PhotosViewContent(date: date)
 	}
 }
 
-struct PhotosViewContent: View {
-	let fetches: [PhotosFetch]
-	let currentYearFetch: PhotosFetch?
+private struct PhotosViewContent: View {
 	let hasNoPastPhotos: Bool
 	let dateID: String
 	let hiddenPhotosCount: Int
+
+	let fetches: [PhotosFetch]
+	let currentYearFetch: PhotosFetch?
 
 	init(date: Date) {
 		self.fetches = (1...MaxYearsBack).map { PhotosFetch(fromDate: date, yearsBack: $0) }
 		self.hasNoPastPhotos = fetches.allSatisfy({ $0.assets.isEmpty })
 		self.dateID = fetches.first?.dateID ?? ""
-		self.hiddenPhotosCount = SyncStorage.shared.filterPhotos[dateID]?.count ?? 0
+		self.hiddenPhotosCount = UserDefaults.shared.filterPhotos[dateID]?.count ?? 0
 		if hasNoPastPhotos && hiddenPhotosCount == 0 && StateManager.shared.daysScanned > 0 {
 			self.currentYearFetch = nil
 			scanForDayWithPhotos()
 		} else {
 			self.currentYearFetch = self.hasNoPastPhotos ? PhotosFetch(fromDate: date, yearsBack: 0) : nil
-			StateManager.shared.daysScanned = 0
+			Task { @MainActor in
+				StateManager.shared.daysScanned = 0
+			}
 		}
 	}
 
@@ -46,15 +52,15 @@ struct PhotosViewContent: View {
 				VStack {
 					Group {
 						Text("No photos from past years on this day")
-							.font(.system(.title3, design: .rounded).weight(.medium))
+							.font(.title3.weight(.medium))
 							.padding(.vertical)
-							.foregroundColor(.secondary)
-						if !SyncStorage.shared.filterShowShared {
+							.foregroundStyle(.secondary)
+						if !UserDefaults.shared.filterShowShared {
 							Text("Try enabling iCloud Shared photos from the filter button at the top to include photos from friends and family!")
-								.foregroundColor(.secondary)
+								.foregroundStyle(.secondary)
 						} else {
 							Text("You can browse other days\nusing the ◀︎ and ▶︎ buttons")
-								.foregroundColor(.secondary)
+								.foregroundStyle(.secondary)
 							Button("Find recent day with photos") {
 								scanForDayWithPhotos()
 							}
@@ -66,7 +72,7 @@ struct PhotosViewContent: View {
 					.multilineTextAlignment(.center)
 					.frame(maxWidth: 512)
 					.padding()
-				if let currentYearFetch = currentYearFetch {
+				if let currentYearFetch {
 					LazyVStack(alignment: .leading, spacing: 0, pinnedViews: [.sectionHeaders]) {
 						PhotosYearView(fetch: currentYearFetch)
 					}
@@ -80,10 +86,10 @@ struct PhotosViewContent: View {
 			}
 			if hiddenPhotosCount > 0 {
 				Button {
-					SyncStorage.shared.filterPhotos[dateID] = nil
+					UserDefaults.shared.filterPhotos[dateID] = nil
 				} label: {
 					Text("Restore \("hidden photo".pluralize(hiddenPhotosCount))")
-						.font(.system(.title3, design: .rounded))
+						.font(.title3)
 						.padding(8)
 				}
 					.buttonStyle(.bordered)
@@ -94,9 +100,7 @@ struct PhotosViewContent: View {
 	}
 }
 
-struct PhotosView_Previews: PreviewProvider {
-	static var previews: some View {
-		PhotosView(date: Date.current())
-			.environment(\.screenSize, UIScreen.main.bounds.size)
-	}
+#Preview {
+	PhotosView(date: Date.current())
+		.environment(\.screenSize, UIScreen.main.bounds.size)
 }
