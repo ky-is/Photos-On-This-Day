@@ -12,7 +12,7 @@ struct PhotoFavoriteButton: View {
 
 	var body: some View {
 		if asset.sourceType == .typeUserLibrary {
-			ToolbarButtonView("Favorite", imageName: favorites.isFavorite(asset) ? "heart.fill" : "heart") {
+			Button("Favorite", systemImage: favorites.isFavorite(asset) ? "heart.fill" : "heart") {
 				Task {
 					await favorites.toggle(asset)
 				}

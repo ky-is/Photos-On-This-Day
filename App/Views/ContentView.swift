@@ -6,6 +6,8 @@ struct ContentView: View {
 	@State private var showAbout = false
 	@State private var showDatePicker = false
 
+	@Namespace private var photoTransition
+
 	var body: some View {
 		NavigationStack {
 			ScrollView {
@@ -73,6 +75,7 @@ struct ContentView: View {
 						.id(selection.id)
 				}
 		}
+			.environment(\.photoTransition, photoTransition)
 	}
 }
 

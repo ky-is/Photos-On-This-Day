@@ -24,7 +24,7 @@ private struct ScreenshotSupport: ViewModifier {
 				let state = StateManager.shared
 				guard state.openedPhoto == nil else { return }
 				let assets = await state.pastYearAssets(on: state.date)
-				// A portrait one if there is one: iPhone shows landscape stills sideways
+				// A portrait one if there is one, to fill the portrait screenshot
 				guard let photo = assets.first(where: { $0.pixelHeight > $0.pixelWidth }) ?? assets.first else { return }
 				state.openedPhoto = PhotoSelection(assets: assets, selectedID: photo.localIdentifier)
 			}

@@ -8,6 +8,7 @@ struct PhotosYearThumbnail: View {
 	let size: CGSize
 
 	@Environment(\.displayScale) private var displayScale
+	@Environment(\.photoTransition) private var photoTransition
 
 	@State private var image: UIImage?
 
@@ -21,31 +22,25 @@ struct PhotosYearThumbnail: View {
 						.resizable()
 						.aspectRatio(contentMode: .fill)
 						.frame(width: size.width, height: size.height)
-						.overlay(alignment: .bottomTrailing) {
+						.overlay(alignment: .bottom) {
+							// Favorite at the left and video length at the right, like in Photos.
 							HStack {
-								Group {
-									if asset.mediaType == .video {
-										Text(Duration.seconds(asset.duration.rounded()), format: .time(pattern: .minuteSecond))
-											.font(.caption.weight(.semibold).monospacedDigit())
-										Image(systemName: "play.fill")
-									} else if asset.mediaSubtypes.contains(.photoLive) {
-										Image(systemName: "livephoto")
-									}
-									if asset.sourceType == .typeCloudShared {
-										Image(systemName: "icloud")
-									} else {
-										PhotoFavoriteIcon(asset: asset)
-									}
-									if asset.mediaSubtypes.contains(.photoScreenshot) {
-										Image(systemName: "iphone")
-									}
+								PhotoFavoriteIcon(asset: asset)
+								Spacer()
+								if asset.sourceType == .typeCloudShared {
+									Image(systemName: "icloud")
 								}
-									.shadow(color: .black, radius: 1, x: 0, y: 0.5)
+								if asset.mediaType == .video {
+									Text(Duration.seconds(asset.duration.rounded()), format: .time(pattern: .minuteSecond))
+								}
 							}
-								.padding(3)
+								.font(.caption.weight(.semibold).monospacedDigit())
 								.foregroundStyle(.white)
+								.shadow(color: .black.opacity(0.6), radius: 2)
+								.padding(4)
 						}
 				}
+					.modifier(ZoomTransitionSource(id: asset.localIdentifier, namespace: photoTransition))
 			} else {
 				Image(systemName: "photo")
 					.font(.system(size: 64, weight: .black))
@@ -63,9 +58,24 @@ struct PhotosYearThumbnail: View {
 			}
 			.contextMenu {
 				if let asset {
+					ShareLink(item: SharedAsset(asset: asset), preview: SharedAsset.preview(for: asset))
+					PhotoFavoriteButton(asset: asset)
 					PhotoHideToggle(asset: asset, dateID: dateID)
 				}
 			}
+	}
+}
+
+private struct ZoomTransitionSource: ViewModifier {
+	let id: String
+	let namespace: Namespace.ID?
+
+	func body(content: Content) -> some View {
+		if let namespace {
+			content.matchedTransitionSource(id: id, in: namespace)
+		} else {
+			content
+		}
 	}
 }
 

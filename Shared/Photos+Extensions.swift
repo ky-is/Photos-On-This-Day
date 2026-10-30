@@ -65,11 +65,11 @@ nonisolated extension PHAsset {
 }
 
 nonisolated extension PHImageManager {
-	private static func options(for asset: PHAsset, size: CGSize, cropped: Bool, deliveryMode: PHImageRequestOptionsDeliveryMode) -> PHImageRequestOptions {
+	fileprivate static func options(for asset: PHAsset?, size: CGSize, cropped: Bool, deliveryMode: PHImageRequestOptionsDeliveryMode) -> PHImageRequestOptions {
 		let options = PHImageRequestOptions()
 		options.deliveryMode = deliveryMode
 		options.isNetworkAccessAllowed = true
-		if cropped {
+		if cropped, let asset {
 			options.resizeMode = .exact
 			let scaledWidth = size.width / Double(asset.pixelWidth)
 			let scaledHeight = size.height / Double(asset.pixelHeight)
@@ -80,12 +80,12 @@ nonisolated extension PHImageManager {
 		return options
 	}
 
-	/// Streams a fast degraded image first, then the full quality one.
-	func images(for asset: PHAsset, size: CGSize, scale: CGFloat, cropped: Bool) -> AsyncStream<(image: UIImage, isDegraded: Bool)> {
+	/// Streams a fast degraded image first, then the full quality one. Pass `.aspectFit` to get no more pixels than fit in `size`.
+	func images(for asset: PHAsset, size: CGSize, scale: CGFloat, cropped: Bool, contentMode: PHImageContentMode = .aspectFill) -> AsyncStream<(image: UIImage, isDegraded: Bool)> {
 		AsyncStream { continuation in
 			let options = Self.options(for: asset, size: size, cropped: cropped, deliveryMode: .opportunistic)
 			let targetSize = CGSize(width: size.width * scale, height: size.height * scale)
-			let requestID = requestImage(for: asset, targetSize: targetSize, contentMode: .aspectFill, options: options) { image, info in
+			let requestID = requestImage(for: asset, targetSize: targetSize, contentMode: contentMode, options: options) { image, info in
 				let isDegraded = info?[PHImageResultIsDegradedKey] as? Bool ?? false
 				if let image {
 					continuation.yield((image, isDegraded))
@@ -108,6 +108,20 @@ nonisolated extension PHImageManager {
 			requestImage(for: asset, targetSize: targetSize, contentMode: .aspectFill, options: options) { image, _ in
 				continuation.resume(returning: image)
 			}
+		}
+	}
+}
+
+nonisolated extension PHCachingImageManager {
+	/// Starts or stops preparing uncropped images, matching what `images(for:size:scale:cropped:contentMode:)` later asks for.
+	func setCaching(_ isCaching: Bool, _ assets: [PHAsset], size: CGSize, scale: CGFloat, contentMode: PHImageContentMode) {
+		guard !assets.isEmpty else { return }
+		let options = Self.options(for: nil, size: size, cropped: false, deliveryMode: .opportunistic)
+		let targetSize = CGSize(width: size.width * scale, height: size.height * scale)
+		if isCaching {
+			startCachingImages(for: assets, targetSize: targetSize, contentMode: contentMode, options: options)
+		} else {
+			stopCachingImages(for: assets, targetSize: targetSize, contentMode: contentMode, options: options)
 		}
 	}
 }

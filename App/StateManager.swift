@@ -218,4 +218,6 @@ private final class LibraryObserver: NSObject, PHPhotoLibraryChangeObserver, Sen
 
 extension EnvironmentValues {
 	@Entry var screenSize: CGSize = .zero
+	/// Links thumbnails to the photo viewer's zoom transition.
+	@Entry var photoTransition: Namespace.ID?
 }
