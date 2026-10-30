@@ -10,6 +10,11 @@ Nouveautés de la version 1.1 :
 • Sélectionnez plusieurs photos à la fois pour les partager ou les ajouter aux favoris
 • Fonctionne en mode paysage
 • VoiceOver décrit chaque photo
+• Créez un collage d’hier et d’aujourd’hui du jour, une photo par année, à partager
+• Regardez les photos du jour en diaporama
+• Masquez des albums entiers dans On This Day
+• Les jours sans photos vous proposent des jours proches qui en ont
+• Tous les quelques mois, si vous n’avez pas regardé depuis un moment, un rappel à l’anniversaire d’un jour riche en photos
 • Choisissez n'importe quelle date avec le bouton calendrier
 • Le widget ouvre la photo qu'il affiche
 • Nouveaux widgets pour l'écran verrouillé avec le nombre de photos du jour

@@ -10,6 +10,11 @@ Neu in 1.1:
 • Mehrere Fotos auswählen, um sie zusammen zu teilen oder als Favoriten zu markieren
 • Funktioniert im Querformat
 • VoiceOver beschreibt jedes Foto
+• Eine Damals-und-heute-Collage des Tages mit einem Foto aus jedem Jahr erstellen und teilen
+• Die Fotos des Tages als Diashow ansehen
+• Ganze Alben in On This Day ausblenden
+• Tage ohne Fotos verweisen auf Tage in der Nähe, die welche haben
+• Alle paar Monate, wenn du länger nicht reingeschaut hast, eine Erinnerung am Jahrestag eines Tages mit vielen Fotos
 • Mit der Kalendertaste ein beliebiges Datum wählen
 • Das Widget öffnet das Foto, das es zeigt
 • Neue Widgets für den Sperrbildschirm mit der Anzahl der heutigen Fotos

@@ -1,15 +1,28 @@
 import Photos
-import UIKit
+import SwiftUI
 
 nonisolated struct PhotoFilters: Hashable, Sendable {
 	var showScreenshots: Bool
 	var showShared: Bool
 	var onlyFavorites = false
 	var hiddenIDs: [String] = []
+	var hiddenAlbumIDs: [String] = []
 
 	static func current(for dateID: String, onlyFavorites: Bool = false) -> Self {
 		let defaults = UserDefaults.shared
-		return PhotoFilters(showScreenshots: defaults.filterShowScreenshots, showShared: defaults.filterShowShared, onlyFavorites: onlyFavorites, hiddenIDs: defaults.filterPhotos[dateID] ?? [])
+		return PhotoFilters(showScreenshots: defaults.filterShowScreenshots, showShared: defaults.filterShowShared, onlyFavorites: onlyFavorites, hiddenIDs: defaults.filterPhotos[dateID] ?? [], hiddenAlbumIDs: defaults.filterHiddenAlbums)
+	}
+
+	/// Every photo hidden one by one or by being in a hidden album. A fetch can't ask about albums, so their photos are listed.
+	var allHiddenIDs: [String] {
+		guard !hiddenAlbumIDs.isEmpty else { return hiddenIDs }
+		var ids = hiddenIDs
+		PHAssetCollection.fetchAssetCollections(withLocalIdentifiers: hiddenAlbumIDs, options: nil).enumerateObjects { album, _, _ in
+			PHAsset.fetchAssets(in: album, options: nil).enumerateObjects { asset, _, _ in
+				ids.append(asset.localIdentifier)
+			}
+		}
+		return ids
 	}
 }
 
@@ -47,8 +60,9 @@ nonisolated extension PHAsset {
 		if filters.onlyFavorites {
 			predicates.append(NSPredicate(format: "isFavorite == YES"))
 		}
-		if !filters.hiddenIDs.isEmpty {
-			predicates.append(NSPredicate(format: "NOT (localIdentifier IN %@)", filters.hiddenIDs))
+		let hiddenIDs = filters.allHiddenIDs
+		if !hiddenIDs.isEmpty {
+			predicates.append(NSPredicate(format: "NOT (localIdentifier IN %@)", hiddenIDs))
 		}
 		if !filters.showScreenshots {
 			// Photos mistranslates "(mediaSubtypes & x) == 0" and drops every asset without subtypes, so keep this form.
@@ -81,7 +95,7 @@ nonisolated extension PHImageManager {
 	}
 
 	/// Streams a fast degraded image first, then the full quality one. Pass `.aspectFit` to get no more pixels than fit in `size`.
-	func images(for asset: PHAsset, size: CGSize, scale: CGFloat, cropped: Bool, contentMode: PHImageContentMode = .aspectFill) -> AsyncStream<(image: UIImage, isDegraded: Bool)> {
+	func images(for asset: PHAsset, size: CGSize, scale: CGFloat, cropped: Bool, contentMode: PHImageContentMode = .aspectFill) -> AsyncStream<(image: PlatformImage, isDegraded: Bool)> {
 		AsyncStream { continuation in
 			let options = Self.options(for: asset, size: size, cropped: cropped, deliveryMode: .opportunistic)
 			let targetSize = CGSize(width: size.width * scale, height: size.height * scale)
@@ -101,7 +115,7 @@ nonisolated extension PHImageManager {
 	}
 
 	/// The full quality image only.
-	func image(for asset: PHAsset, size: CGSize, scale: CGFloat, cropped: Bool) async -> UIImage? {
+	func image(for asset: PHAsset, size: CGSize, scale: CGFloat, cropped: Bool) async -> PlatformImage? {
 		let options = Self.options(for: asset, size: size, cropped: cropped, deliveryMode: .highQualityFormat)
 		let targetSize = CGSize(width: size.width * scale, height: size.height * scale)
 		return await withCheckedContinuation { continuation in

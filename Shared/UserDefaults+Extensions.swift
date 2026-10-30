@@ -8,10 +8,12 @@ nonisolated extension UserDefaults {
 		static let filterPhotos = "filterPhotos"
 		static let filterShowScreenshots = "filterShowScreenshots"
 		static let filterShowShared = "filterShowShared"
+		static let filterHiddenAlbums = "filterHiddenAlbums"
 		static let dismissedAddWidget = "dismissedAddWidget"
 		static let widgetShuffledPhotoID = "widgetShuffledPhotoID"
-		static let yearlyNotificationDate = "yearlyNotificationDate"
-		static let lastYearlyNotificationDate = "lastYearlyNotificationDate"
+		// Named for the once-a-year reminder this replaced, so its saved dates carry over.
+		static let reminderDate = "yearlyNotificationDate"
+		static let lastReminderDate = "lastYearlyNotificationDate"
 	}
 
 	/// Photo IDs hidden by the user, keyed by `Date.dateID`.
@@ -30,6 +32,12 @@ nonisolated extension UserDefaults {
 		set { set(newValue, forKey: Key.filterShowShared) }
 	}
 
+	/// Albums whose photos never show, by `PHAssetCollection.localIdentifier`.
+	var filterHiddenAlbums: [String] {
+		get { stringArray(forKey: Key.filterHiddenAlbums) ?? [] }
+		set { set(newValue, forKey: Key.filterHiddenAlbums) }
+	}
+
 	var dismissedAddWidget: Bool {
 		get { bool(forKey: Key.dismissedAddWidget) }
 		set { set(newValue, forKey: Key.dismissedAddWidget) }
@@ -41,15 +49,15 @@ nonisolated extension UserDefaults {
 		set { set(newValue, forKey: Key.widgetShuffledPhotoID) }
 	}
 
-	/// When the pending once-a-year notification is set to go out.
-	var yearlyNotificationDate: Date? {
-		get { object(forKey: Key.yearlyNotificationDate) as? Date }
-		set { set(newValue, forKey: Key.yearlyNotificationDate) }
+	/// When the pending reminder is set to go out.
+	var reminderDate: Date? {
+		get { object(forKey: Key.reminderDate) as? Date }
+		set { set(newValue, forKey: Key.reminderDate) }
 	}
 
-	/// When the last once-a-year notification went out, so the next waits a year.
-	var lastYearlyNotificationDate: Date? {
-		get { object(forKey: Key.lastYearlyNotificationDate) as? Date }
-		set { set(newValue, forKey: Key.lastYearlyNotificationDate) }
+	/// When the last reminder went out, so the next waits a few months.
+	var lastReminderDate: Date? {
+		get { object(forKey: Key.lastReminderDate) as? Date }
+		set { set(newValue, forKey: Key.lastReminderDate) }
 	}
 }

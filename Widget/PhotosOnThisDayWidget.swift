@@ -22,6 +22,8 @@ nonisolated struct Provider: AppIntentTimelineProvider {
 	}
 
 	func timeline(for configuration: ConfigurationAppIntent, in context: Context) async -> Timeline<PhotosOnThisDayEntry> {
+		// A widget on screen means its photos are being seen, so push back the reminder.
+		await Reminder.reschedule(mayAskPermission: false)
 		let currentDate = Date.current()
 		let nextDayStart = currentDate.startAndEndOfDay.end
 		if context.family.isAccessory {
@@ -73,8 +75,13 @@ nonisolated struct Provider: AppIntentTimelineProvider {
 }
 
 nonisolated extension WidgetFamily {
+	/// Lock Screen sizes, which only iPhone and iPad have.
 	var isAccessory: Bool {
+		#if os(iOS)
 		[.accessoryCircular, .accessoryRectangular, .accessoryInline].contains(self)
+		#else
+		false
+		#endif
 	}
 }
 
@@ -111,13 +118,19 @@ nonisolated struct PhotosOnThisDayEntry: TimelineEntry {
 }
 
 struct PhotosOnThisDayWidget: Widget {
+	#if os(iOS)
+	static let families: [WidgetFamily] = [.systemSmall, .systemMedium, .systemLarge, .systemExtraLarge, .accessoryCircular, .accessoryRectangular, .accessoryInline]
+	#else
+	static let families: [WidgetFamily] = [.systemSmall, .systemMedium, .systemLarge, .systemExtraLarge]
+	#endif
+
 	var body: some WidgetConfiguration {
 		AppIntentConfiguration(kind: widgetKind, intent: ConfigurationAppIntent.self, provider: Provider()) { entry in
 			PhotosOnThisDayWidgetEntryView(entry: entry)
 		}
 			.configurationDisplayName("Photos On This Day")
 			.description("See photos on this day from years past.")
-			.supportedFamilies([.systemSmall, .systemMedium, .systemLarge, .systemExtraLarge, .accessoryCircular, .accessoryRectangular, .accessoryInline])
+			.supportedFamilies(Self.families)
 			.contentMarginsDisabled()
 			.containerBackgroundRemovable(false)
 	}
@@ -130,15 +143,19 @@ struct WidgetPhoto: View {
 	let imageURL: URL?
 	let size: CGSize
 
+	@Environment(\.widgetRenderingMode) private var renderingMode
+
 	var body: some View {
-		if let imageURL, let image = UIImage(contentsOfFile: imageURL.path()) {
-			Image(uiImage: image)
+		if let imageURL, let image = PlatformImage(contentsOfFile: imageURL.path()) {
+			Image(platformImage: image)
 				.resizable()
 				// Tinted and Clear Home Screens show the photo in the tint, like the Photos widget.
 				.widgetAccentedRenderingMode(.accentedDesaturated)
 				.aspectRatio(contentMode: .fill)
 				.frame(width: size.width, height: size.height)
 				.clipped()
+				// StandBy at night draws everything in dim red; a full-brightness photo would glare on the nightstand.
+				.opacity(renderingMode == .vibrant ? 0.55 : 1)
 		}
 	}
 }
@@ -292,6 +309,7 @@ private struct AccessoryView: View {
 	var body: some View {
 		Group {
 			switch widgetFamily {
+			#if os(iOS)
 			case .accessoryInline:
 				if entry.photoCount > 0 {
 					Label("^[\(entry.photoCount) photo](inflect: true) on this day", systemImage: "photo.on.rectangle")
@@ -309,6 +327,7 @@ private struct AccessoryView: View {
 							.minimumScaleFactor(0.5)
 					}
 				}
+			#endif
 			default:
 				VStack(alignment: .leading) {
 					Text("On This Day")
@@ -339,8 +358,10 @@ private struct AccessoryView: View {
 	PhotosOnThisDayEntry.empty(at: Date.current())
 }
 
+#if os(iOS)
 #Preview(as: .accessoryRectangular) {
 	PhotosOnThisDayWidget()
 } timeline: {
 	PhotosOnThisDayEntry(date: Date.current(), score: 1, photoCount: 12, years: [2012, 2018])
 }
+#endif

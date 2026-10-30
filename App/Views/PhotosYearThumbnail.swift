@@ -14,7 +14,7 @@ struct PhotosYearThumbnail: View {
 	@Environment(GridSelection.self) private var selection: GridSelection?
 
 	@AppStorage(GridSelection.aspectRatioGridKey) private var showsAspectRatio = false
-	@State private var image: UIImage?
+	@State private var image: PlatformImage?
 
 	private var favorites = Favorites.shared
 
@@ -58,6 +58,7 @@ struct PhotosYearThumbnail: View {
 					} label: {
 						thumbnail(image, asset: asset)
 					}
+						.pointerHighlight()
 						.modifier(ZoomTransitionSource(id: asset.localIdentifier, namespace: photoTransition))
 						// A pinch that starts on a photo shouldn't open it when the fingers lift.
 						.disabled(isPinchingGrid)
@@ -87,8 +88,8 @@ struct PhotosYearThumbnail: View {
 			}
 	}
 
-	private func thumbnail(_ image: UIImage, asset: PHAsset) -> some View {
-		Image(uiImage: image)
+	private func thumbnail(_ image: PlatformImage, asset: PHAsset) -> some View {
+		Image(platformImage: image)
 			.resizable()
 			// The aspect ratio grid shows whole photos in their square, like the option in Photos.
 			.aspectRatio(contentMode: showsAspectRatio ? .fit : .fill)

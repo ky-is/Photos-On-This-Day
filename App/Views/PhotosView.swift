@@ -82,6 +82,15 @@ private struct LoadedPhotos {
 	let pastYears: [PhotoYear]
 	/// This year's photos, shown only when no past years have any.
 	let currentYear: PhotoYear?
+	/// When no past years have photos: the days within three either side that do, nearest first.
+	var nearbyDays: [NearbyDay] = []
+}
+
+private struct NearbyDay: Identifiable {
+	let date: Date
+	let photoCount: Int
+
+	var id: Date { date }
 }
 
 struct PhotosView: View {
@@ -112,6 +121,8 @@ struct PhotosView: View {
 	@State private var cachedThumbnailSize = CGSize.zero
 
 	@Environment(GridSelection.self) private var selection: GridSelection?
+
+	@Bindable private var menuActions = MenuActions.shared
 	/// Scales the grid with the fingers between column changes, so pinching feels continuous.
 	@State private var liveScale: CGFloat = 1
 	/// The point the grid scales around: where the fingers are, in the grid's own coordinates.
@@ -139,7 +150,7 @@ struct PhotosView: View {
 		VStack {
 			if let loaded, loaded.date == date {
 				if loaded.pastYears.isEmpty {
-					noPastPhotos
+					noPastPhotos(nearbyDays: loaded.nearbyDays)
 					if let currentYear = loaded.currentYear {
 						LazyVStack(alignment: .leading, spacing: 0, pinnedViews: [.sectionHeaders]) {
 							PhotosYearView(year: currentYear, dayAssets: currentYear.assets)
@@ -200,6 +211,31 @@ struct PhotosView: View {
 					pinchEnded()
 				} else {
 					pinchChanged(pinch)
+				}
+			}
+			.toolbar {
+				ToolbarItemGroup(placement: .trailingBar) {
+					if let years = loaded?.pastYears, !years.isEmpty, selection?.isSelecting != true {
+						Button("Slideshow", systemImage: "play") {
+							menuActions.showsSlideshow = true
+						}
+						Button("Collage", systemImage: "square.grid.2x2") {
+							menuActions.showsCollage = true
+						}
+					}
+				}
+			}
+			.sheet(isPresented: Binding { menuActions.showsCollage && hasPastPhotos } set: { menuActions.showsCollage = $0 }) {
+				CollageView(date: date, years: loaded?.pastYears ?? [])
+			}
+			.fullScreen(isPresented: Binding { menuActions.showsSlideshow && hasPastPhotos } set: { menuActions.showsSlideshow = $0 }) {
+				// Oldest year first, photos only: videos would need their own playback.
+				SlideshowView(photos: (loaded?.pastYears ?? []).reversed().flatMap(\.assets).filter { $0.mediaType == .image })
+			}
+			// Bigger or Smaller Thumbnails from the menu bar.
+			.onChange(of: menuActions.columnStep) { _, step in
+				if let step {
+					_ = changeColumns(by: step.change)
 				}
 			}
 			.environment(\.isPinchingGrid, isPinching)
@@ -341,6 +377,10 @@ struct PhotosView: View {
 		}
 	}
 
+	private var hasPastPhotos: Bool {
+		loaded?.pastYears.isEmpty == false
+	}
+
 	private var columns: Int {
 		GridLayout.columns(width: screenSize.width, thumbnailWidth: thumbnailWidth)
 	}
@@ -396,14 +436,31 @@ struct PhotosView: View {
 		pinchAnchor = PinchAnchor(position: position, fraction: (point.y - layout.top(of: position)) / layout.cellSide, viewportY: frame.minY + point.y, gridTop: scrollTracker.contentOffsetY + frame.minY)
 	}
 
-	private var noPastPhotos: some View {
+	private func noPastPhotos(nearbyDays: [NearbyDay]) -> some View {
 		VStack {
 			Group {
 				Text("No photos from past years on this day")
 					.font(.title3.weight(.medium))
 					.padding(.vertical)
 					.foregroundStyle(.secondary)
-				if !filters.showShared {
+				if !nearbyDays.isEmpty {
+					Text("Photos from nearby days")
+						.foregroundStyle(.secondary)
+					ForEach(nearbyDays) { day in
+						Button {
+							state.go(to: day.date)
+						} label: {
+							HStack {
+								Text(day.date, format: .dateTime.month(.wide).day())
+								Spacer()
+								Text("^[\(day.photoCount) photo](inflect: true)")
+									.foregroundStyle(.secondary)
+							}
+								.frame(maxWidth: 320)
+						}
+							.buttonStyle(.bordered)
+					}
+				} else if !filters.showShared {
 					Text("Try enabling iCloud Shared photos from the filter button at the top to include photos from friends and family!")
 						.foregroundStyle(.secondary)
 				} else {
@@ -439,7 +496,16 @@ struct PhotosView: View {
 			.sorted { $0.key < $1.key }
 			.map { PhotoYear(year: date.year - $0.key, dateID: dateID, assets: $0.value) }
 		let currentYear = pastYears.isEmpty ? byYearsBack[0].map { PhotoYear(year: date.year, dateID: dateID, assets: $0) } : nil
-		return LoadedPhotos(date: date, pastYears: pastYears, currentYear: currentYear)
+		var loaded = LoadedPhotos(date: date, pastYears: pastYears, currentYear: currentYear)
+		if pastYears.isEmpty {
+			// An empty day points to nearby ones instead of a dead end.
+			loaded.nearbyDays = [1, -1, 2, -2, 3, -3].compactMap { offset in
+				let day = Calendar.current.date(byAdding: .day, value: offset, to: date)!
+				let count = PHAsset.assetsByYearsBack(Array(1...maxYearsBack), from: day, filters: filters).values.reduce(0) { $0 + $1.count }
+				return count > 0 ? NearbyDay(date: day, photoCount: count) : nil
+			}
+		}
+		return loaded
 	}
 }
 

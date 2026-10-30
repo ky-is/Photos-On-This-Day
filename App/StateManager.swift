@@ -119,16 +119,15 @@ let logger = Logger(subsystem: "is.ky.Photos-On-This-Day", category: "App")
 		isScanning = true
 		defer { isScanning = false }
 		let filters = Filters.shared
-		if let daysBack = await Self.nearestDayWithPhotos(before: date, showScreenshots: filters.showScreenshots, showShared: filters.showShared, hiddenPhotos: filters.hiddenPhotos) {
+		if let daysBack = await Self.nearestDayWithPhotos(before: date, filters: PhotoFilters(showScreenshots: filters.showScreenshots, showShared: filters.showShared, hiddenAlbumIDs: filters.hiddenAlbums), hiddenPhotos: filters.hiddenPhotos) {
 			daysChange -= daysBack
 		}
 	}
 
-	@concurrent private static func nearestDayWithPhotos(before date: Date, showScreenshots: Bool, showShared: Bool, hiddenPhotos: [String: [String]]) async -> Int? {
+	@concurrent private static func nearestDayWithPhotos(before date: Date, filters: PhotoFilters, hiddenPhotos: [String: [String]]) async -> Int? {
 		// Every photo from a past year of the scanned days (up to a year back) was taken before this cutoff.
 		let calendar = Calendar.current
 		let cutoff = calendar.startOfDay(for: calendar.date(byAdding: .year, value: -1, to: date)!)
-		let filters = PhotoFilters(showScreenshots: showScreenshots, showShared: showShared)
 		var dayIDsWithPhotos = Set<String>()
 		PHAsset.fetchAssets(createdBefore: cutoff, filters: filters).enumerateObjects { asset, _, stop in
 			guard let dayID = asset.creationDate?.dateID, !dayIDsWithPhotos.contains(dayID) else { return }
@@ -166,13 +165,17 @@ private final class LibraryObserver: NSObject, PHPhotoLibraryChangeObserver, Sen
 	var showScreenshots = UserDefaults.shared.filterShowScreenshots {
 		didSet { UserDefaults.shared.filterShowScreenshots = showScreenshots; reloadWidget() }
 	}
+	/// Albums whose photos never show.
+	var hiddenAlbums = UserDefaults.shared.filterHiddenAlbums {
+		didSet { UserDefaults.shared.filterHiddenAlbums = hiddenAlbums; reloadWidget() }
+	}
 	/// Hidden photo IDs, keyed by `Date.dateID`.
 	var hiddenPhotos = UserDefaults.shared.filterPhotos {
 		didSet { UserDefaults.shared.filterPhotos = hiddenPhotos; reloadWidget() }
 	}
 
 	func photoFilters(for dateID: String) -> PhotoFilters {
-		PhotoFilters(showScreenshots: showScreenshots, showShared: showShared, hiddenIDs: hiddenPhotos[dateID] ?? [])
+		PhotoFilters(showScreenshots: showScreenshots, showShared: showShared, hiddenIDs: hiddenPhotos[dateID] ?? [], hiddenAlbumIDs: hiddenAlbums)
 	}
 
 	func isHidden(_ asset: PHAsset, on dateID: String) -> Bool {

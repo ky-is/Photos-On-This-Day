@@ -1304,6 +1304,58 @@
         }
       }
     },
+    "You took ^[%lld photo](inflect: true) on this day in %@." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du hast an diesem Tag ^[%lld Foto](inflect: true) aufgenommen, im Jahr %@."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tomaste ^[%lld foto](inflect: true) en este día en %@."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vous avez pris ^[%lld photo](inflect: true) à cette date en %@."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hai scattato ^[%lld foto](inflect: true) in questo giorno nel %@."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%2$@年のこの日に%1$lld枚の写真を撮りました。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%2$@년 이날 사진을 %1$lld장 찍었습니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você tirou ^[%lld foto](inflect: true) neste dia em %@."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你在%2$@年的这一天拍了 %1$lld 张照片。"
+          }
+        }
+      }
+    },
     "^[%lld photo](inflect: true)" : {
       "localizations" : {
         "de" : {
@@ -1404,6 +1456,58 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "这一天的 %lld 张照片"
+          }
+        }
+      }
+    },
+    "^[%lld year](inflect: true) ago today" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Heute vor ^[%lld Jahr](inflect: true)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hoy hace ^[%lld año](inflect: true)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il y a ^[%lld an](inflect: true) aujourd’hui"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "^[%lld anno](inflect: true) fa oggi"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld年前の今日"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld년 전 오늘"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hoje, há ^[%lld ano](inflect: true)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 年前的今天"
           }
         }
       }

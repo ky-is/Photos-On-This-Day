@@ -10,6 +10,11 @@ What's new in 1.1:
 • Select several photos at once to share or favorite them
 • Works in landscape
 • VoiceOver describes every photo
+• Make a then-and-now collage of the day, one photo from each year, to share
+• Watch the day's photos as a slideshow
+• Hide whole albums from On This Day
+• Days without photos point you to nearby days that have some
+• Every few months, if you haven't looked in a while, a reminder on the anniversary of a day with lots of photos
 • Pick any date with the calendar button
 • Tapping the widget opens the photo it shows
 • New Lock Screen widgets with today's photo count

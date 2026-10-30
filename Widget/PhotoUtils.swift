@@ -1,5 +1,5 @@
 import Photos
-import UIKit
+import SwiftUI
 
 nonisolated struct ScoredAsset: Sendable {
 	let score: Float
@@ -52,10 +52,10 @@ actor WidgetImageCache {
 		return FileManager.default.fileExists(atPath: url.path()) ? url : nil
 	}
 
-	func save(_ image: UIImage, for asset: PHAsset, size: CGSize, in directory: URL) -> URL? {
+	func save(_ image: PlatformImage, for asset: PHAsset, size: CGSize, in directory: URL) -> URL? {
 		let url = url(for: asset, size: size, in: directory)
 		return autoreleasepool {
-			guard let data = image.jpegData(compressionQuality: 0.8) else { return nil }
+			guard let data = image.jpegData(quality: 0.8) else { return nil }
 			do {
 				try data.write(to: url)
 				return url

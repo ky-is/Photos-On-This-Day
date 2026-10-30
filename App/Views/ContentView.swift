@@ -55,34 +55,33 @@ struct ContentView: View {
 						.accessibilityHidden(true)
 				}
 				.toolbar {
-					ToolbarItemGroup(placement: .topBarLeading) {
+					ToolbarItemGroup(placement: .leadingBar) {
 						if !selection.isSelecting {
 							dateButtons
 						}
 					}
-					ToolbarItemGroup(placement: .topBarTrailing) {
+					ToolbarItemGroup(placement: .trailingBar) {
 						if selection.isSelecting {
 							Button("Cancel") {
 								selection.end()
 							}
 								.keyboardShortcut(.cancelAction)
 						} else if state.canShowPhotos {
-							FilterLibraryMenu()
-							ToolbarButtonView("About", imageName: "questionmark.circle") {
-								showAbout.toggle()
+							FilterLibraryMenu {
+								showAbout = true
 							}
 							Button("Select") {
 								selection.start()
 							}
 						}
 					}
-					ToolbarItemGroup(placement: .bottomBar) {
+					ToolbarItemGroup(placement: .bottomActions) {
 						if selection.isSelecting {
 							SelectionActions(selection: selection)
 						}
 					}
 				}
-				.toolbarVisibility(selection.isSelecting ? .visible : .hidden, for: .bottomBar)
+				.bottomBarVisibility(selection.isSelecting)
 				.onChange(of: state.date) {
 					selection.end()
 				}
@@ -184,7 +183,7 @@ private struct DatePickerSheet: View {
 				.datePickerStyle(.graphical)
 				.padding()
 				.navigationTitle("Choose a Date")
-				.navigationBarTitleDisplayMode(.inline)
+				.inlineNavigationTitle()
 				.toolbar {
 					ToolbarItem(placement: .cancellationAction) {
 						Button("Today") {
@@ -204,20 +203,32 @@ private struct DatePickerSheet: View {
 	}
 }
 
+/// Library filters and grid options, with About at the end.
 struct FilterLibraryMenu: View {
+	let showAbout: () -> Void
+
 	@Bindable private var filters = Filters.shared
 	@AppStorage(GridSelection.aspectRatioGridKey) private var showsAspectRatio = false
+	@State private var showsHiddenAlbums = false
 
 	var body: some View {
 		Menu {
 			Toggle("Show iCloud Shared", isOn: $filters.showShared)
 			Toggle("Show Screenshots", isOn: $filters.showScreenshots)
+			Button("Hide Albums", systemImage: "rectangle.stack.badge.minus") {
+				showsHiddenAlbums = true
+			}
 			Divider()
 			Toggle("Aspect Ratio Grid", isOn: $showsAspectRatio)
+			Divider()
+			Button("About", systemImage: "questionmark.circle", action: showAbout)
 		} label: {
 			Image(systemName: "line.3.horizontal.decrease.circle")
 				.modifier(ToolbarButtonContentModifier())
 		}
+			.sheet(isPresented: $showsHiddenAlbums) {
+				HiddenAlbumsView()
+			}
 	}
 }
 

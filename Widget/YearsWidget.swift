@@ -82,6 +82,8 @@ nonisolated struct YearsProvider: AppIntentTimelineProvider {
 	}
 
 	func timeline(for configuration: YearsConfigurationAppIntent, in context: Context) async -> Timeline<YearsEntry> {
+		// A widget on screen means its photos are being seen, so push back the reminder.
+		await Reminder.reschedule(mayAskPermission: false)
 		let date = Date.current()
 		let nextDayStart = date.startAndEndOfDay.end
 		let frequency = configuration.updateFrequency

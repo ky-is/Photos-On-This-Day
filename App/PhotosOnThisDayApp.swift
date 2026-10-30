@@ -9,6 +9,7 @@ struct PhotosOnThisDayApp: App {
 	@Environment(\.scenePhase) private var scenePhase
 
 	init() {
+		#if os(iOS)
 		UIView.appearance(whenContainedInInstancesOf: [UIAlertController.self]).tintColor = .accent
 		UINavigationBar.appearance().largeTitleTextAttributes = [.font: UIFont.rounded(style: .largeTitle, bold: true)]
 		UINavigationBar.appearance().titleTextAttributes = [.font: UIFont.rounded(style: .headline, bold: false)]
@@ -17,6 +18,7 @@ struct PhotosOnThisDayApp: App {
 		} catch {
 			logger.error("Audio session: \(error.localizedDescription)")
 		}
+		#endif
 	}
 
 	var body: some Scene {
@@ -32,6 +34,10 @@ struct PhotosOnThisDayApp: App {
 						}
 					}
 			}
+				#if os(macOS)
+				// Narrow enough to sit beside another window, with room for three columns and the toolbar.
+				.frame(minWidth: 480, minHeight: 560)
+				#endif
 				.task {
 					// Siri phrases name a year, so it needs the list of years.
 					PhotosOnThisDayShortcuts.updateAppShortcutParameters()
@@ -42,17 +48,26 @@ struct PhotosOnThisDayApp: App {
 					}
 				}
 		}
+			#if os(macOS)
+			// Five columns of photos at first; the window can't shrink below the content's minimum.
+			.defaultSize(width: 960, height: 760)
+			.windowResizability(.contentMinSize)
+			#endif
+			.commands {
+				AppCommands()
+			}
 			.onChange(of: scenePhase) { _, newPhase in
 				if newPhase == .active {
 					StateManager.shared.refresh()
 					Task {
-						await YearlyNotification.reschedule()
+						await Reminder.reschedule(mayAskPermission: true)
 					}
 				}
 			}
 	}
 }
 
+#if os(iOS)
 extension UIFont {
 	static func rounded(style: TextStyle, bold: Bool) -> UIFont {
 		let font = UIFont.preferredFont(forTextStyle: style)
@@ -75,3 +90,4 @@ extension UINavigationController: @retroactive UIGestureRecognizerDelegate {
 		viewControllers.count > 1
 	}
 }
+#endif

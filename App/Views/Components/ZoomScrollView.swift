@@ -1,4 +1,6 @@
 import SwiftUI
+
+#if os(iOS)
 import UIKit
 
 struct ZoomScrollView<Content: View>: UIViewRepresentable {
@@ -117,3 +119,107 @@ struct ZoomScrollView<Content: View>: UIViewRepresentable {
 		}
 	}
 }
+#else
+import AppKit
+
+/// Pinch on the trackpad or double-click to zoom, click to show or hide the bars. The Mac's version of the iPhone one above.
+struct ZoomScrollView<Content: View>: NSViewRepresentable {
+	private let content: Content
+	private let onZoom: (Bool) -> Void
+	private let onTap: () -> Void
+
+	/// `onPinchClose` is for iPhone; on the Mac, the back button and Escape close the viewer.
+	init(onZoom: @escaping (Bool) -> Void = { _ in }, onTap: @escaping () -> Void = {}, onPinchClose: (() -> Void)? = nil, @ViewBuilder content: () -> Content) {
+		self.onZoom = onZoom
+		self.onTap = onTap
+		self.content = content()
+	}
+
+	func makeNSView(context: Context) -> NSScrollView {
+		let scrollView = NSScrollView()
+		scrollView.allowsMagnification = true
+		scrollView.minMagnification = 1
+		scrollView.maxMagnification = 8
+		scrollView.drawsBackground = false
+		scrollView.hasVerticalScroller = false
+		scrollView.hasHorizontalScroller = false
+
+		let hostingView = context.coordinator.hostingView
+		hostingView.translatesAutoresizingMaskIntoConstraints = false
+		scrollView.documentView = hostingView
+		let clipView = scrollView.contentView
+		NSLayoutConstraint.activate([
+			hostingView.widthAnchor.constraint(equalTo: clipView.widthAnchor),
+			hostingView.heightAnchor.constraint(equalTo: clipView.heightAnchor),
+		])
+
+		NotificationCenter.default.addObserver(context.coordinator, selector: #selector(Coordinator.magnificationChanged), name: NSScrollView.didEndLiveMagnifyNotification, object: scrollView)
+		let doubleClick = NSClickGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.doubleClicked))
+		doubleClick.numberOfClicksRequired = 2
+		let click = NSClickGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.clicked))
+		click.delegate = context.coordinator
+		context.coordinator.doubleClick = doubleClick
+		scrollView.addGestureRecognizer(doubleClick)
+		scrollView.addGestureRecognizer(click)
+		return scrollView
+	}
+
+	func makeCoordinator() -> Coordinator {
+		Coordinator(hostingView: NSHostingView(rootView: content), onZoom: onZoom, onTap: onTap)
+	}
+
+	func updateNSView(_ scrollView: NSScrollView, context: Context) {
+		context.coordinator.hostingView.rootView = content
+		context.coordinator.onZoom = onZoom
+		context.coordinator.onTap = onTap
+	}
+
+	final class Coordinator: NSObject, NSGestureRecognizerDelegate {
+		let hostingView: NSHostingView<Content>
+		var onZoom: (Bool) -> Void
+		var onTap: () -> Void
+		weak var doubleClick: NSClickGestureRecognizer?
+		private var isZoomedIn = false
+
+		init(hostingView: NSHostingView<Content>, onZoom: @escaping (Bool) -> Void, onTap: @escaping () -> Void) {
+			self.hostingView = hostingView
+			self.onZoom = onZoom
+			self.onTap = onTap
+		}
+
+		/// A single click waits to be sure it isn't the first of a double-click.
+		func gestureRecognizer(_ gestureRecognizer: NSGestureRecognizer, shouldRequireFailureOf otherGestureRecognizer: NSGestureRecognizer) -> Bool {
+			otherGestureRecognizer === doubleClick
+		}
+
+		@objc func clicked() {
+			onTap()
+		}
+
+		/// Zooms in on the clicked spot, or back out when already zoomed.
+		@objc func doubleClicked(_ gesture: NSClickGestureRecognizer) {
+			guard let scrollView = gesture.view as? NSScrollView else { return }
+			let point = gesture.location(in: hostingView)
+			let magnification: CGFloat = scrollView.magnification > scrollView.minMagnification ? scrollView.minMagnification : 3
+			NSAnimationContext.runAnimationGroup { _ in
+				scrollView.animator().setMagnification(magnification, centeredAt: point)
+			} completionHandler: {
+				self.report(scrollView)
+			}
+		}
+
+		@objc func magnificationChanged(_ notification: Notification) {
+			guard let scrollView = notification.object as? NSScrollView else { return }
+			report(scrollView)
+		}
+
+		private func report(_ scrollView: NSScrollView) {
+			let isZoomedIn = scrollView.magnification > scrollView.minMagnification * 1.02
+			if isZoomedIn != self.isZoomedIn {
+				self.isZoomedIn = isZoomedIn
+				onZoom(isZoomedIn)
+			}
+		}
+	}
+}
+#endif

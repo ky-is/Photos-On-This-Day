@@ -10,6 +10,11 @@ Novidades da versão 1.1:
 • Selecione várias fotos de uma vez para compartilhar ou marcar como favoritas
 • Funciona na horizontal
 • O VoiceOver descreve cada foto
+• Crie uma colagem de antes e agora do dia, com uma foto de cada ano, para compartilhar
+• Veja as fotos do dia como uma apresentação de slides
+• Oculte álbuns inteiros no On This Day
+• Dias sem fotos indicam dias próximos que têm fotos
+• A cada poucos meses, se você não olhar há um tempo, um lembrete no aniversário de um dia com muitas fotos
 • Escolha qualquer data com o botão de calendário
 • O widget abre a foto que ele mostra
 • Novos widgets para a Tela Bloqueada com o número de fotos de hoje

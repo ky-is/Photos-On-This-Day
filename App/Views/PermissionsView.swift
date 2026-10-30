@@ -6,15 +6,17 @@ struct PermissionsView: View {
 
 	@State private var showPrivacy = false
 
+	@Environment(\.openURL) private var openURL
+
 	private func openSettings() {
-		UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
+		openURL(.photoPrivacySettings)
 	}
 
 	var body: some View {
 		if state.permission != .authorized && state.permission != .notDetermined {
 			ZStack {
 				RoundedRectangle(cornerRadius: 48, style: .continuous)
-					.fill(Color(uiColor: .secondarySystemFill))
+					.fill(.fill.secondary)
 					.onTapGesture(perform: openSettings)
 				VStack {
 					Label(state.permission == .limited ? "Photos Limited" : "Photos Unavailable", systemImage: "photo")
@@ -41,7 +43,7 @@ struct PermissionsView: View {
 							Label("Privacy", systemImage: "lock.shield.fill")
 								.padding(4)
 						}
-						Link(destination: URL(string: UIApplication.openSettingsURLString)!) {
+						Link(destination: .photoPrivacySettings) {
 							Label("Settings", systemImage: "gear")
 								.padding(4)
 						}
@@ -52,7 +54,7 @@ struct PermissionsView: View {
 					.padding(20)
 			}
 				.confirmationDialog("Privacy First", isPresented: $showPrivacy, titleVisibility: .visible) {
-					Link(destination: URL(string: UIApplication.openSettingsURLString)!) {
+					Link(destination: .photoPrivacySettings) {
 						Label("Go to Settings", systemImage: "gear")
 					}
 						.font(.headline)

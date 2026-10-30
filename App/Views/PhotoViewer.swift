@@ -18,7 +18,7 @@ struct PhotoViewer: View {
 	/// Hiding or deleting a photo takes it out of here too.
 	@State private var assets: [PHAsset]
 	/// The thumbnail already loaded for the opened photo, shown until a sharper image loads.
-	let placeholder: UIImage?
+	let placeholder: PlatformImage?
 
 	@State private var selectedID: String?
 	@State private var showsChrome = true
@@ -34,7 +34,7 @@ struct PhotoViewer: View {
 	@Environment(\.screenSize) private var screenSize
 	@Environment(\.displayScale) private var displayScale
 
-	init(selection: PhotoSelection, placeholder: UIImage? = nil) {
+	init(selection: PhotoSelection, placeholder: PlatformImage? = nil) {
 		_assets = State(initialValue: selection.assets)
 		self.placeholder = placeholder
 		_selectedID = State(initialValue: selection.selectedID)
@@ -80,7 +80,7 @@ struct PhotoViewer: View {
 			.onDisappear {
 				imageCache.stopCachingImagesForAllAssets()
 			}
-			.background(showsChrome ? Color(.systemBackground) : .black)
+			.background(showsChrome ? AnyShapeStyle(.background) : AnyShapeStyle(.black))
 			.safeAreaInset(edge: .bottom) {
 				if showsChrome && assets.count > 1 {
 					PhotoScrubber(assets: assets, selectedID: $selectedID)
@@ -95,11 +95,10 @@ struct PhotoViewer: View {
 						.padding()
 				}
 			}
-			.toolbarVisibility(showsChrome ? .visible : .hidden, for: .navigationBar, .bottomBar)
-			.statusBarHidden(!showsChrome)
-			.persistentSystemOverlays(showsChrome ? .automatic : .hidden)
+			.barsVisibility(showsChrome)
+			.hidesSystemOverlays(!showsChrome)
 			.toolbar {
-				ToolbarItem(placement: .topBarLeading) {
+				ToolbarItem(placement: .leadingBar) {
 					Button {
 						dismiss()
 					} label: {
@@ -109,7 +108,7 @@ struct PhotoViewer: View {
 					}
 						.accessibilityLabel("Back")
 				}
-				ToolbarItem(placement: .topBarTrailing) {
+				ToolbarItem(placement: .trailingBar) {
 					if let selectedAsset {
 						Menu {
 							Button("Hide from On This Day", systemImage: "eye.slash") {
@@ -129,7 +128,7 @@ struct PhotoViewer: View {
 						}
 					}
 				}
-				ToolbarItemGroup(placement: .bottomBar) {
+				ToolbarItemGroup(placement: .bottomActions) {
 					if let selectedAsset {
 						ShareLink(item: SharedAsset(asset: selectedAsset), preview: SharedAsset.preview(for: selectedAsset))
 						Spacer()
@@ -148,7 +147,7 @@ struct PhotoViewer: View {
 			.navigationTitle(title)
 			.navigationSubtitle(subtitle)
 			.navigationBarBackButtonHidden(true)
-			.navigationBarTitleDisplayMode(.inline)
+			.inlineNavigationTitle()
 			.modifier(ZoomTransition(sourceID: selectedID, namespace: photoTransition))
 			.task(id: selectedID) {
 				locationDescription = nil
@@ -316,7 +315,7 @@ private struct PhotoScrubber: View {
 private struct ScrubberThumbnail: View {
 	let asset: PHAsset
 
-	@State private var image: UIImage?
+	@State private var image: PlatformImage?
 
 	@Environment(\.displayScale) private var displayScale
 
@@ -324,7 +323,7 @@ private struct ScrubberThumbnail: View {
 		Color.secondary.opacity(0.2)
 			.overlay {
 				if let image {
-					Image(uiImage: image)
+					Image(platformImage: image)
 						.resizable()
 						.aspectRatio(contentMode: .fill)
 				}
@@ -361,18 +360,23 @@ private struct ZoomTransition: ViewModifier {
 	let namespace: Namespace.ID?
 
 	func body(content: Content) -> some View {
+		#if os(iOS)
 		if let namespace {
 			content.navigationTransition(.zoom(sourceID: sourceID, in: namespace))
 		} else {
 			content
 		}
+		#else
+		// The Mac has no zoom navigation transition.
+		content
+		#endif
 	}
 }
 
 /// One page of the viewer: a zoomable still or Live Photo, or a video.
 private struct PhotoPage: View {
 	let asset: PHAsset
-	let placeholder: UIImage?
+	let placeholder: PlatformImage?
 	let isSelected: Bool
 	let imageManager: PHImageManager
 	@Binding var showsChrome: Bool
@@ -380,7 +384,7 @@ private struct PhotoPage: View {
 	/// Fit, not fill: a landscape photo on a portrait screen needs only the pixels that show.
 	static let contentMode = PHImageContentMode.aspectFit
 
-	@State private var image: UIImage?
+	@State private var image: PlatformImage?
 	@State private var isZoomed = false
 
 	@Environment(\.screenSize) private var screenSize
@@ -407,7 +411,7 @@ private struct PhotoPage: View {
 				} content: {
 					ZStack {
 						if let shown = image ?? placeholder {
-							Image(uiImage: shown)
+							Image(platformImage: shown)
 								.resizable()
 								.aspectRatio(contentMode: .fit)
 						}
@@ -496,7 +500,13 @@ private struct LivePhotoLayer: View {
 	}
 }
 
-private struct LivePhotoView: UIViewRepresentable {
+#if os(iOS)
+private typealias PlatformViewRepresentable = UIViewRepresentable
+#else
+private typealias PlatformViewRepresentable = NSViewRepresentable
+#endif
+
+private struct LivePhotoView: PlatformViewRepresentable {
 	let livePhoto: PHLivePhoto
 	/// Plays the short preview once each time the photo becomes the current one.
 	let playsHint: Bool
@@ -509,6 +519,7 @@ private struct LivePhotoView: UIViewRepresentable {
 		Coordinator()
 	}
 
+	#if os(iOS)
 	func makeUIView(context: Context) -> PHLivePhotoView {
 		let view = PHLivePhotoView()
 		view.contentMode = .scaleAspectFit
@@ -516,6 +527,21 @@ private struct LivePhotoView: UIViewRepresentable {
 	}
 
 	func updateUIView(_ view: PHLivePhotoView, context: Context) {
+		update(view, context: context)
+	}
+	#else
+	func makeNSView(context: Context) -> PHLivePhotoView {
+		let view = PHLivePhotoView()
+		view.contentMode = .aspectFit
+		return view
+	}
+
+	func updateNSView(_ view: PHLivePhotoView, context: Context) {
+		update(view, context: context)
+	}
+	#endif
+
+	private func update(_ view: PHLivePhotoView, context: Context) {
 		if view.livePhoto !== livePhoto {
 			view.livePhoto = livePhoto
 		}

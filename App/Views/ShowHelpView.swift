@@ -13,7 +13,7 @@ struct ShowHelpView: View {
 			Button {
 				showAddWidgetHelp.toggle()
 			} label: {
-				Text("Add a Widget to your Home Screen!")
+				title
 					.font(.title3.weight(.medium))
 					.padding(8)
 			}
@@ -31,7 +31,15 @@ struct ShowHelpView: View {
 		}
 	}
 
-	/// Stops suggesting the widget once one is on the Home Screen.
+	private var title: Text {
+		#if os(macOS)
+		Text("Add a Widget to your Desktop!")
+		#else
+		Text("Add a Widget to your Home Screen!")
+		#endif
+	}
+
+	/// Stops suggesting the widget once one is on the Home Screen or desktop.
 	private func dismissIfWidgetAdded() async {
 		do {
 			if try await !WidgetCenter.shared.currentConfigurations().isEmpty {

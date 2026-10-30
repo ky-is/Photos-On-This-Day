@@ -47,4 +47,19 @@ struct OccasionPickerTests {
 		#expect(first.upperBound == day(2023, 3, 15, hour: 0))
 		#expect(ranges.count == OccasionPicker.milestones.count)
 	}
+
+	/// The reminder looks a couple of months ahead and falls back to any year when no round anniversary is in reach.
+	@Test func aShortWindowCanUseAnyYear() throws {
+		let all = photos(on: day(2019, 3, 1), count: 4)
+		let anyYear = Array(1...maxYearsBack)
+		#expect(try #require(OccasionPicker.best(photos: all, from: day(2027, 2, 1), days: 60, yearsAgo: anyYear)).yearsAgo == 8)
+		// March 1 is outside the 60 days from June 1.
+		#expect(OccasionPicker.best(photos: all, from: day(2027, 6, 1), days: 60, yearsAgo: anyYear) == nil)
+	}
+
+	@Test func shortRangesSpanTheWindow() throws {
+		let range = try #require(OccasionPicker.searchRanges(from: day(2027, 3, 15), days: 60, yearsAgo: [1]).first)
+		#expect(range.lowerBound == day(2026, 3, 15, hour: 0))
+		#expect(range.upperBound == day(2026, 5, 14, hour: 0))
+	}
 }
