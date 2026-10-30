@@ -1,28 +1,30 @@
 import AVKit
 import SwiftUI
 
-struct HelpAddWidgetView: View {
-	let inSheet: Bool
-
-	@Environment(\.dismiss) private var dismiss
-	@Environment(\.scenePhase) private var scenePhase
-
-	private var state = StateManager.shared
-
-	@State private var loading = false
-
-	private let player: AVQueuePlayer
+private final class LoopingVideo {
+	let player: AVQueuePlayer
 	private let looper: AVPlayerLooper
 
-	init(inSheet: Bool) {
-		self.inSheet = inSheet
-		let item = AVPlayerItem(url: URL(string: "https://cdn.ky.is/photos-on-this-day/widget.mp4")!)
+	init(url: URL) {
+		let item = AVPlayerItem(url: url)
 		player = AVQueuePlayer(playerItem: item)
 		player.isMuted = true
 		player.externalPlaybackVideoGravity = .resizeAspect
 		player.audiovisualBackgroundPlaybackPolicy = .pauses
 		looper = AVPlayerLooper(player: player, templateItem: item)
 	}
+}
+
+struct HelpAddWidgetView: View {
+	let inSheet: Bool
+
+	@Environment(\.dismiss) private var dismiss
+	@Environment(\.scenePhase) private var scenePhase
+	@Environment(\.screenSize) private var screenSize
+
+	@AppStorage(UserDefaults.Key.dismissedAddWidget) private var dismissedAddWidget = false
+
+	@State private var video: LoopingVideo?
 
 	var body: some View {
 		ScrollView {
@@ -31,25 +33,26 @@ struct HelpAddWidgetView: View {
 					ProgressView("Loading video")
 						.progressViewStyle(.circular)
 						.labelsHidden()
-					VideoPlayer(player: player)
-						.onAppear {
-							player.play()
-						}
-						.onDisappear {
-							player.pause()
-							player.seek(to: .zero)
-						}
-						.onChange(of: scenePhase) { oldPhase, newPhase in
-							switch newPhase {
-							case .active:
+					if let player = video?.player {
+						VideoPlayer(player: player)
+							.onAppear {
 								player.play()
-							default:
-								player.pause()
 							}
-						}
+							.onDisappear {
+								player.pause()
+								player.seek(to: .zero)
+							}
+							.onChange(of: scenePhase) { _, newPhase in
+								if newPhase == .active {
+									player.play()
+								} else {
+									player.pause()
+								}
+							}
+					}
 				}
 					.ignoresSafeArea()
-					.frame(maxWidth: .greatestFiniteMagnitude, minHeight: (UIScreen.main.bounds.height - 96) * 0.9)
+					.frame(maxWidth: .infinity, minHeight: (screenSize.height - 96) * 0.9)
 				Text("**1.** Long press in an empty spot on your Home Screen.")
 				Text("**2.** Tap the \"+\" button in the top-left.")
 				Text("**3.** Search for \"On This Day\" (it's been copied to your clipboard), or find it from the list.")
@@ -61,23 +64,26 @@ struct HelpAddWidgetView: View {
 					.font(.callout)
 				if inSheet {
 					Button("Don't show again") {
-						UserDefaults.shared.dismissedAddWidget = true
+						dismissedAddWidget = true
 						dismiss()
 					}
 						.buttonStyle(.bordered)
-						.frame(maxWidth: .greatestFiniteMagnitude)
+						.frame(maxWidth: .infinity)
 				}
 			}
-				.onAppear {
-					UIPasteboard.general.string = "On This Day"
-				}
 				.padding()
 		}
+			.onAppear {
+				UIPasteboard.general.string = "On This Day"
+				if video == nil {
+					video = LoopingVideo(url: URL(string: "https://cdn.ky.is/photos-on-this-day/widget.mp4")!)
+				}
+			}
 			.navigationTitle("Add a Widget")
 			.navigationBarTitleDisplayMode(.inline)
 			.toolbar {
-				ToolbarItem(placement: .cancellationAction) {
-					if inSheet {
+				if inSheet {
+					ToolbarItem(placement: .cancellationAction) {
 						ToolbarButtonView("Close") {
 							dismiss()
 						}

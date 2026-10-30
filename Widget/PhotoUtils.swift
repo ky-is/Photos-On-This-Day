@@ -1,49 +1,87 @@
 import Photos
+import UIKit
 
-typealias ScoreAsset = (score: Float, asset: PHAsset)
-
-func getBestPhotos(fromDate date: Date, yearDiffs: [Int], idealCount: Int, onlyFavorites: Bool) -> [ScoreAsset] {
-	var scoreAssetsByYear: [Int: [ScoreAsset]] = [:]
-	let dateID = Calendar.current.getDateID(from: date)
-	let showScreenshots = UserDefaults.shared.filterShowScreenshots
-	let showShared = UserDefaults.shared.filterShowShared
-	let filterPhotos = UserDefaults.shared.filterPhotos[dateID]
-	yearDiffs.forEach { yearsToSubtract in
-		PHAsset.fetchAssets(yearsBack: yearsToSubtract, from: date, dateID: dateID, onlyFavorites: onlyFavorites, showScreenshots: showScreenshots, showShared: showShared, filterPhotos: filterPhotos).enumerateObjects { asset, index, _ in
-			if scoreAssetsByYear[yearsToSubtract] == nil {
-				scoreAssetsByYear[yearsToSubtract] = []
-			}
-			var score: Float = 0
-			if asset.mediaType == .image {
-				score += 1
-			}
-			if asset.isFavorite {
-				score += 1
-			}
-			scoreAssetsByYear[yearsToSubtract]!.append((score, asset))
-		}
-	}
-	let scoreYearPhotoList = scoreAssetsByYear
-		.map { (year, scoreAssets) -> (yearsBack: Int, assets: [ScoreAsset]) in (year, scoreAssets.sorted { $0.score > $1.score }) }
-		.sorted { $0.yearsBack > $1.yearsBack }
-		.map(\.assets)
-	return getBestPhotos(scoreYearPhotoList: scoreYearPhotoList, idealCount: idealCount)
+nonisolated struct ScoredAsset: Sendable {
+	let score: Float
+	let asset: PHAsset
 }
 
-func getBestPhotos(scoreYearPhotoList: [[ScoreAsset]], idealCount: Int) -> [ScoreAsset] {
-	var results: [ScoreAsset] = []
-	var photosByYear = scoreYearPhotoList
-	while (results.count < idealCount) {
-		var foundPhoto = false
-		for index in photosByYear.indices {
-			if !photosByYear[index].isEmpty {
-				results.append(photosByYear[index].removeFirst())
-				foundPhoto = true
+/// Picks up to `idealCount` photos, round-robin across years, preferring favorited images.
+nonisolated func getBestPhotos(fromDate date: Date, yearDiffs: [Int], idealCount: Int, onlyFavorites: Bool) -> [ScoredAsset] {
+	let filters = PhotoFilters.current(for: date.dateID, onlyFavorites: onlyFavorites)
+	let byYearsBack = PHAsset.assetsByYearsBack(yearDiffs, from: date, filters: filters)
+	let byYear = byYearsBack.keys.sorted(by: >).map { yearsBack in
+		byYearsBack[yearsBack]!
+			.map { asset in
+				ScoredAsset(score: (asset.mediaType == .image ? 1 : 0) + (asset.isFavorite ? 1 : 0), asset: asset)
+			}
+			.sorted { $0.score > $1.score }
+	}
+	return roundRobin(byYear, limit: idealCount)
+}
+
+nonisolated func roundRobin<Element>(_ lists: [[Element]], limit: Int) -> [Element] {
+	var results: [Element] = []
+	var iterators = lists.map { $0.makeIterator() }
+	while results.count < limit {
+		var foundAny = false
+		for index in iterators.indices {
+			guard results.count < limit else { break }
+			if let next = iterators[index].next() {
+				results.append(next)
+				foundAny = true
 			}
 		}
-		if !foundPhoto {
+		if !foundAny {
 			break
 		}
 	}
 	return results
+}
+
+/// Widget images saved to disk for the current day; older days are cleared out.
+actor WidgetImageCache {
+	static let shared = WidgetImageCache()
+
+	private let containerURL = URL.cachesDirectory.appending(path: "widget", directoryHint: .isDirectory)
+
+	func directory(for date: Date) -> URL {
+		let name = date.dateID
+		let url = containerURL.appending(path: name, directoryHint: .isDirectory)
+		let fileManager = FileManager.default
+		do {
+			try fileManager.createDirectory(at: url, withIntermediateDirectories: true)
+			for child in try fileManager.contentsOfDirectory(atPath: containerURL.path()) where child != name {
+				try fileManager.removeItem(at: containerURL.appending(path: child))
+			}
+		} catch {
+			print(#function, error)
+		}
+		return url
+	}
+
+	/// Where the image for `asset` at `size` is stored. Widgets of different sizes crop differently, so each size gets its own file.
+	nonisolated func url(for asset: PHAsset, size: CGSize, in directory: URL) -> URL {
+		let id = String(asset.localIdentifier.split(separator: "/")[0])
+		return directory.appending(path: "\(id)-\(Int(size.width))x\(Int(size.height)).jpg")
+	}
+
+	func cachedURL(for asset: PHAsset, size: CGSize, in directory: URL) -> URL? {
+		let url = url(for: asset, size: size, in: directory)
+		return FileManager.default.fileExists(atPath: url.path()) ? url : nil
+	}
+
+	func save(_ image: UIImage, for asset: PHAsset, size: CGSize, in directory: URL) -> URL? {
+		let url = url(for: asset, size: size, in: directory)
+		return autoreleasepool {
+			guard let data = image.jpegData(compressionQuality: 0.8) else { return nil }
+			do {
+				try data.write(to: url)
+				return url
+			} catch {
+				print(#function, error)
+				return nil
+			}
+		}
+	}
 }

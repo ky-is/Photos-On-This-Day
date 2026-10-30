@@ -1,3 +1,3 @@
-let MaxYearsBack = 64
+nonisolated let maxYearsBack = 64
 
-let WidgetKind = "PhotosOnThisDayWidget"
+nonisolated let widgetKind = "PhotosOnThisDayWidget"

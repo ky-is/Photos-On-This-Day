@@ -1,3 +1,4 @@
+import Photos
 import SwiftUI
 
 struct PermissionsView: View {
@@ -57,7 +58,7 @@ struct PermissionsView: View {
 						.font(.headline)
 						.labelStyle(.titleAndIcon)
 				} message: {
-					Text("Your privacy is of the utmost importance. Photos are only used to display in the Widget and App UI. This app never stores or uploads your photos anywhere, nor does it make any changes to your photo library.")
+					Text("Your privacy is of the utmost importance. Photos are only used to display in the Widget and App UI. This app never stores or uploads your photos anywhere, and only changes your photo library when you favorite a photo.")
 				}
 		}
 	}

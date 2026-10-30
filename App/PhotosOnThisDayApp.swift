@@ -1,67 +1,66 @@
-import Photos
+import AVFoundation
 import SwiftUI
 import WidgetKit
+import os
 
 @main
 struct PhotosOnThisDayApp: App {
-	@UIApplicationDelegateAdaptor(AppDelegate.self) private var delegate
-
 	@Environment(\.scenePhase) private var scenePhase
+
+	init() {
+		UIView.appearance(whenContainedInInstancesOf: [UIAlertController.self]).tintColor = .accent
+		UINavigationBar.appearance().largeTitleTextAttributes = [.font: UIFont.rounded(style: .largeTitle, bold: true)]
+		UINavigationBar.appearance().titleTextAttributes = [.font: UIFont.rounded(style: .headline, bold: false)]
+		do {
+			try AVAudioSession.sharedInstance().setCategory(.ambient, mode: .default)
+		} catch {
+			logger.error("Audio session: \(error.localizedDescription)")
+		}
+	}
 
 	var body: some Scene {
 		WindowGroup {
-			GeometryReader { geometryProxy in
+			GeometryReader { geometry in
 				ContentView()
-					.environment(\.screenSize, geometryProxy.size)
+					.environment(\.screenSize, geometry.size)
 					.fontDesign(.rounded)
-					.defaultAppStorage(UserDefaults.shared)
+					.defaultAppStorage(.shared)
 			}
+				.task {
+					let state = StateManager.shared
+					await state.requestPermission()
+					if state.canShowPhotos {
+						WidgetCenter.shared.reloadTimelines(ofKind: widgetKind)
+					}
+				}
 		}
 			.onChange(of: scenePhase) { _, newPhase in
-				#if !targetEnvironment(simulator)
-				switch newPhase {
-				case .active:
-					let newDay = Calendar.current.component(.day, from: Date())
-					let oldDay = Calendar.current.component(.day, from: StateManager.shared.date)
-					if newDay != oldDay { //TODO only when tapping the photo widget
-						Task { @MainActor in
-							StateManager.shared.daysChange = 0
-						}
-					}
-				default: break
+				if newPhase == .active {
+					StateManager.shared.refresh()
 				}
-				#endif
 			}
 	}
 }
 
-final class AppDelegate: NSObject, UIApplicationDelegate, PHPhotoLibraryAvailabilityObserver {
-	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
-		UIView.appearance(whenContainedInInstancesOf: [UIAlertController.self]).tintColor = .accent
-		UINavigationBar.appearance().largeTitleTextAttributes = [.font: UIFont.rounded(style: .largeTitle, bold: true)]
-		UINavigationBar.appearance().titleTextAttributes = [.font: UIFont.rounded(style: .headline, bold: false)]
+extension UIFont {
+	static func rounded(style: TextStyle, bold: Bool) -> UIFont {
+		let font = UIFont.preferredFont(forTextStyle: style)
+		var descriptor = font.fontDescriptor.withDesign(.rounded)!
+		if bold {
+			descriptor = descriptor.withSymbolicTraits(.traitBold)!
+		}
+		return UIFont(descriptor: descriptor, size: font.pointSize)
+	}
+}
 
-		do {
-			let audioSession = AVAudioSession.sharedInstance()
-			try audioSession.setCategory(.ambient, mode: .default)
-		} catch {
-			print(error)
-		}
-
-		PHPhotoLibrary.shared().register(self)
-		if StateManager.shared.permission != .authorized && StateManager.shared.permission != .limited {
-			Task(priority: .userInitiated) {
-				StateManager.shared.permission = await PHPhotoLibrary.requestAuthorization(for: .readWrite)
-			}
-		}
-		if StateManager.shared.permission == .authorized || StateManager.shared.permission == .limited {
-			WidgetCenter.shared.reloadTimelines(ofKind: WidgetKind)
-		}
-		UserDefaults.shared.updateAddedWidget()
-		return true
+/// Keeps swipe-to-go-back working on screens that hide the back button.
+extension UINavigationController: @retroactive UIGestureRecognizerDelegate {
+	override open func viewDidLoad() {
+		super.viewDidLoad()
+		interactivePopGestureRecognizer?.delegate = self
 	}
 
-	func photoLibraryDidBecomeUnavailable(_ photoLibrary: PHPhotoLibrary) {
-		print(#function, photoLibrary.unavailabilityReason?.localizedDescription ?? "nil")
+	public func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+		viewControllers.count > 1
 	}
 }

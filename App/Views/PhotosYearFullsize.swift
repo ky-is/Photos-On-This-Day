@@ -1,35 +1,41 @@
+import MapKit
 import Photos
 import SwiftUI
+import os
 
 struct PhotosYearFullsize: View {
 	let asset: PHAsset?
-	@State var image: UIImage
 
-	init(asset: PHAsset?, image: UIImage) {
-		self.asset = asset
-		self._image = State(initialValue: image)
-	}
-
+	@State private var image: UIImage
 	@State private var fullQualityImage: UIImage?
 	@State private var locationDescription: String? = "..."
 
 	@Environment(\.dismiss) private var dismiss
 	@Environment(\.screenSize) private var screenSize
+	@Environment(\.displayScale) private var displayScale
+
+	init(asset: PHAsset?, image: UIImage) {
+		self.asset = asset
+		_image = State(initialValue: image)
+	}
+
+	private var isPhone: Bool {
+		UIDevice.current.userInterfaceIdiom == .phone
+	}
 
 	var body: some View {
 		GeometryReader { geometry in
 			ZoomScrollView {
-				let shouldInset = UIDevice.current.userInterfaceIdiom == .phone
 				Image(uiImage: image)
 					.resizable()
 					.aspectRatio(contentMode: .fit)
-					.padding(.top, shouldInset ? -geometry.safeAreaInsets.top : nil)
-					.padding(.bottom, shouldInset ? geometry.safeAreaInsets.bottom : nil)
+					.padding(.top, isPhone ? -geometry.safeAreaInsets.top : nil)
+					.padding(.bottom, isPhone ? geometry.safeAreaInsets.bottom : nil)
 			}
-				.edgesIgnoringSafeArea(.all)
+				.ignoresSafeArea()
 		}
 			.toolbar {
-				ToolbarItemGroup(placement: .navigationBarLeading) {
+				ToolbarItemGroup(placement: .topBarLeading) {
 					Button {
 						dismiss()
 					} label: {
@@ -38,8 +44,12 @@ struct PhotosYearFullsize: View {
 							.modifier(ToolbarButtonContentModifier())
 					}
 				}
-				ToolbarItemGroup(placement: .navigationBarTrailing) {
-					ShareImageButton(image: fullQualityImage ?? image)
+				ToolbarItemGroup(placement: .topBarTrailing) {
+					let shareImage = fullQualityImage ?? image
+					ShareLink(item: Image(uiImage: shareImage), preview: SharePreview("Photo", image: Image(uiImage: shareImage))) {
+						Label("Share", systemImage: "square.and.arrow.up")
+							.modifier(ToolbarButtonContentModifier())
+					}
 						.disabled(fullQualityImage == nil)
 					if let asset {
 						PhotoFavoriteButton(asset: asset)
@@ -57,43 +67,39 @@ struct PhotosYearFullsize: View {
 								.font(.caption2)
 						}
 					}
-//						.frame(maxWidth: .greatestFiniteMagnitude)
 				}
 			}
 			.navigationBarBackButtonHidden(true)
 			.navigationBarTitleDisplayMode(.inline)
 			.task {
 				guard let asset else { return }
-				PHImageManager.default().requestImage(for: asset, size: screenSize, isSynchronous: false, cropped: false) { loadedImage, userInfo in
-					guard let loadedImage else { return }
-					let rotatedImage = UIDevice.current.userInterfaceIdiom == .phone && loadedImage.size.width > loadedImage.size.height ? UIImage(cgImage: loadedImage.cgImage!, scale:1, orientation: UIImage.Orientation.right) : loadedImage
-					Task { @MainActor in
-						image = rotatedImage
-						let isDegraded = userInfo?[PHImageResultIsDegradedKey] as? Bool
-						if isDegraded == nil || isDegraded == false {
-							fullQualityImage = loadedImage
-						}
-					}
-					if let location = asset.location {
-						CLGeocoder().reverseGeocodeLocation(location) { (placemarks, error) in
-							Task { @MainActor in
-								guard let placemark = placemarks?.first else {
-									locationDescription = nil
-									return
-								}
-								locationDescription = [placemark.thoroughfare, placemark.subLocality, placemark.locality, placemark.subAdministrativeArea, placemark.administrativeArea]
-									.compactMap({ $0 })
-									.prefix(2)
-									.joined(separator: ", ")
-							}
-						}
+				for await result in PHImageManager.default().images(for: asset, size: screenSize, scale: displayScale, cropped: false) {
+					let loaded = result.image
+					if isPhone, loaded.size.width > loaded.size.height, let cgImage = loaded.cgImage {
+						// Fill the portrait screen with landscape photos.
+						image = UIImage(cgImage: cgImage, scale: loaded.scale, orientation: .right)
 					} else {
-						Task { @MainActor in
-							locationDescription = nil
-						}
+						image = loaded
+					}
+					if !result.isDegraded {
+						fullQualityImage = loaded
 					}
 				}
 			}
+			.task {
+				locationDescription = await Self.describeLocation(of: asset)
+			}
+	}
+
+	private static func describeLocation(of asset: PHAsset?) async -> String? {
+		guard let location = asset?.location, let request = MKReverseGeocodingRequest(location: location) else { return nil }
+		do {
+			let mapItem = try await request.mapItems.first
+			return mapItem?.addressRepresentations?.cityWithContext ?? mapItem?.address?.shortAddress
+		} catch {
+			logger.error("Reverse geocode failed: \(error.localizedDescription)")
+			return nil
+		}
 	}
 }
 

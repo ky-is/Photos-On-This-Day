@@ -1,24 +1,23 @@
 import SwiftUI
 
 struct ContentView: View {
-	var state = StateManager.shared
+	private var state = StateManager.shared
 
 	@State private var showAbout = false
 
 	var body: some View {
-		NavigationView {
-			let canShowPhotos = state.permission == .authorized || state.permission == .limited
+		NavigationStack {
 			ScrollView {
 				PermissionsView()
 					.padding()
-				if canShowPhotos {
+				if state.canShowPhotos {
 					ShowHelpView()
 					PhotosView(date: state.date)
 				}
 			}
-				.navigationTitle(DateFormatter.monthDay.string(from: state.date))
+				.navigationTitle(state.date.formatted(.monthDay))
 				.toolbar {
-					ToolbarItemGroup(placement: .navigationBarLeading) {
+					ToolbarItemGroup(placement: .topBarLeading) {
 						Group {
 							Button {
 								state.daysChange -= 1
@@ -42,10 +41,10 @@ struct ContentView: View {
 							}
 								.keyboardShortcut(.rightArrow)
 						}
-							.disabled(!canShowPhotos)
+							.disabled(!state.canShowPhotos || state.isScanning)
 					}
-					ToolbarItemGroup(placement: .navigationBarTrailing) {
-						if canShowPhotos {
+					ToolbarItemGroup(placement: .topBarTrailing) {
+						if state.canShowPhotos {
 							FilterLibraryMenu()
 							ToolbarButtonView("About", imageName: "questionmark.circle") {
 								showAbout.toggle()
@@ -57,18 +56,16 @@ struct ContentView: View {
 					AboutView()
 				}
 		}
-			.navigationViewStyle(.stack)
 	}
 }
 
 struct FilterLibraryMenu: View {
-	@AppStorage(UserDefaults.Key.filterShowShared) private var filterShowShared = false
-	@AppStorage(UserDefaults.Key.filterShowScreenshots) private var filterShowScreenshots = false
+	@Bindable private var filters = Filters.shared
 
 	var body: some View {
 		Menu {
-			Toggle("Show iCloud Shared", isOn: $filterShowShared)
-			Toggle("Show Screenshots", isOn: $filterShowScreenshots)
+			Toggle("Show iCloud Shared", isOn: $filters.showShared)
+			Toggle("Show Screenshots", isOn: $filters.showScreenshots)
 		} label: {
 			Image(systemName: "line.3.horizontal.decrease.circle")
 				.modifier(ToolbarButtonContentModifier())
@@ -79,4 +76,3 @@ struct FilterLibraryMenu: View {
 #Preview {
 	ContentView()
 }
-

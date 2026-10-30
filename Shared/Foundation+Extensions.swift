@@ -1,79 +1,43 @@
 import Foundation
 
-extension Bundle {
+nonisolated extension Bundle {
 	var versionName: String {
-		Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
+		object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? ""
 	}
 
 	var versionNumber: Int {
-		guard let string = object(forInfoDictionaryKey: kCFBundleVersionKey as String) as? String else { return 0 }
-		return Int(string) ?? 0
+		Int(object(forInfoDictionaryKey: kCFBundleVersionKey as String) as? String ?? "") ?? 0
 	}
 }
 
-extension Date {
+nonisolated extension Date {
 	static func current() -> Self {
 #if targetEnvironment(simulator)
-		return try! Date("2022-06-07T18:00:00Z", strategy: .iso8601)
+		try! Date("2022-06-07T18:00:00Z", strategy: .iso8601)
 #else
-		return Date()
+		Date()
 #endif
 	}
 
-	func getStartAndEndOfDay() -> (startDate: Date, endDate: Date) {
+	var startAndEndOfDay: (start: Date, end: Date) {
 		let calendar = Calendar.current
-		let startDate = calendar.startOfDay(for: self)
-		let endDate = calendar.startOfDay(for: calendar.date(byAdding: .day, value: 1, to: self)!)
-		return (startDate, endDate)
+		let start = calendar.startOfDay(for: self)
+		return (start, calendar.date(byAdding: .day, value: 1, to: start)!)
+	}
+
+	var year: Int {
+		Calendar.current.component(.year, from: self)
+	}
+
+	/// Identifies a day of the year (month and day), shared across years.
+	var dateID: String {
+		let components = Calendar.current.dateComponents([.month, .day], from: self)
+		return "\(components.month!)-\(components.day!)"
 	}
 }
 
-extension DateFormatter {
-	static let monthDay: DateFormatter = {
-		let currentLocale: Locale = Locale.current
-		let dateComponents = "MMMMd"
-		let dateFormat = DateFormatter.dateFormat(fromTemplate: dateComponents, options: 0, locale: currentLocale)
-		let formatter = DateFormatter()
-		formatter.dateFormat = dateFormat
-		return formatter
-	}()
-}
-
-extension String {
-	func pluralized(_ count: Int) -> String {
-		return count == 1 ? self : "\(self)s"
-	}
-
-	func pluralize(_ count: Int) -> String {
-		return "\(count) \(pluralized(count))"
-	}
-}
-
-extension TimeInterval {
-	static let second: Self = 1
-	static let minute = .second * 60
-	static let hour = .minute * 60
-	static let day = .hour * 24
-}
-
-extension Calendar {
-	func getDateID(from date: Date) -> String {
-		return "\(component(.month, from: date))-\(component(.day, from: date))"
-	}
-}
-
-extension Dictionary: RawRepresentable where Key == String, Value == [String] {
-	public init?(rawValue: String) {
-		guard let data = rawValue.data(using: .utf8), let result = try? JSONDecoder().decode([String:[String]].self, from: data) else {
-			return nil
-		}
-		self = result
-	}
-
-	public var rawValue: String {
-		guard let data = try? JSONEncoder().encode(self), let result = String(data: data, encoding: .utf8) else {
-			return "{}"
-		}
-		return result
+nonisolated extension FormatStyle where Self == Date.FormatStyle {
+	static var monthDay: Self {
+		.dateTime.month(.wide).day()
 	}
 }

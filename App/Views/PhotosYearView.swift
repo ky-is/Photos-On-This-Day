@@ -1,42 +1,38 @@
+import Photos
 import SwiftUI
 
 private struct PhotosYearHeader: View {
-	let fetch: PhotosFetch
+	let year: Int
 
 	var body: some View {
-		Text((currentYear - fetch.yearsBack).description)
+		Text(String(year))
 			.font(.headline)
 			.padding(.horizontal)
 			.frame(height: 32)
-			.frame(maxWidth: .greatestFiniteMagnitude, alignment: .leading)
+			.frame(maxWidth: .infinity, alignment: .leading)
 			.background(.regularMaterial)
 	}
 }
 
 struct PhotosYearView: View {
-	var fetch: PhotosFetch
+	let year: PhotoYear
 
 	@Environment(\.screenSize) private var screenSize
 
 	var body: some View {
-		if !fetch.assets.isEmpty {
-			Section(header: PhotosYearHeader(fetch: fetch)) {
-				let columns: [GridItem] = Array(repeating: .init(.flexible(minimum: 64, maximum: 256), spacing: 1, alignment: .leading), count: Int(ceil(screenSize.width / 187)))
-				LazyVGrid(columns: columns, alignment: .leading, spacing: 1) {
-					ForEach(fetch.assets, id: \.localIdentifier) { asset in
-						GeometryReader { geometry in
-							PhotosYearThumbnail(asset: asset, dateID: fetch.dateID, size: geometry.size)
-						}
-							.aspectRatio(1, contentMode: .fill)
+		Section {
+			let columns = Array(repeating: GridItem(.flexible(minimum: 64, maximum: 256), spacing: 1, alignment: .leading), count: max(1, Int((screenSize.width / 187).rounded(.up))))
+			LazyVGrid(columns: columns, alignment: .leading, spacing: 1) {
+				ForEach(year.assets, id: \.localIdentifier) { asset in
+					GeometryReader { geometry in
+						PhotosYearThumbnail(asset: asset, dateID: year.dateID, size: geometry.size)
 					}
+						.aspectRatio(1, contentMode: .fill)
 				}
-					.padding(.vertical, 1)
 			}
+				.padding(.vertical, 1)
+		} header: {
+			PhotosYearHeader(year: year.year)
 		}
 	}
-}
-
-#Preview {
-	PhotosYearView(fetch: PhotosFetch(fromDate: Date.current(), yearsBack: 1))
-		.environment(\.screenSize, UIScreen.main.bounds.size)
 }

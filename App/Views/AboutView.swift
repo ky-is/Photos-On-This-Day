@@ -1,56 +1,37 @@
 import SwiftUI
 
+private let appStoreURL = URL(string: "https://apps.apple.com/app/photos-on-this-day/id1620659723")!
+
 struct AboutView: View {
 	@Environment(\.dismiss) private var dismiss
 
-	@State private var loading = false
-	@AppStorage(UserDefaults.Key.filterPhotos) private var filterPhotos = [String: [String]]()
+	private var filters = Filters.shared
 
 	var body: some View {
-		NavigationView {
+		NavigationStack {
 			Form {
 				Section("Help") {
-					NavigationLink {
+					NavigationLink("How to add a Widget") {
 						HelpAddWidgetView(inSheet: false)
-					} label: {
-						Text("How to add a Widget")
 					}
 				}
-				if !filterPhotos.isEmpty {
-					Section {
-						NavigationLink {
+				if !filters.hiddenPhotos.isEmpty {
+					Section("Manage") {
+						NavigationLink("Hidden photos") {
 							HelpHiddenPhotos()
-						} label: {
-							Text("Hidden photos")
 						}
-					} header: {
-						Text("Manage")
 					}
 				}
 				Section("Share") {
-					UIViewButton { backing in
-						openReviews()
-					} label: {
+					Link(destination: URL(string: "\(appStoreURL.absoluteString)?action=write-review")!) {
 						HStack {
 							Text("Rate _Photos On This Day_")
 							Image(systemName: "arrow.up.forward.square")
 						}
 					}
-					UIViewButton { backing in
-						loading = true
-						let url = URL(string: "https://apps.apple.com/app/photos-on-this-day/id\(Bundle.iTunesIdentifier)")!
-						if let vc = UIApplication.shared.frontViewController {
-							let activityController = UIActivityViewController(activityItems: [url], applicationActivities: nil)
-							activityController.popoverPresentationController?.sourceView = backing.uiView
-							vc.present(activityController, animated: true, completion: nil)
-						} else {
-							UIPasteboard.general.url = url
-						}
-						loading = false
-					} label: {
+					ShareLink(item: appStoreURL) {
 						Text("Share with a friend...")
 					}
-						.disabled(loading)
 				}
 				Section("v\(Bundle.main.versionName) build \(Bundle.main.versionNumber)") {
 					Link(destination: URL(string: "https://github.com/ky-is/Photos-On-This-Day")!) {
@@ -71,7 +52,6 @@ struct AboutView: View {
 					}
 				}
 		}
-			.navigationViewStyle(.stack)
 	}
 }
 
