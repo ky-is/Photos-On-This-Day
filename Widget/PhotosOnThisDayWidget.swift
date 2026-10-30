@@ -1,3 +1,4 @@
+import AppIntents
 import Photos
 import SwiftUI
 import WidgetKit
@@ -29,14 +30,19 @@ nonisolated struct Provider: AppIntentTimelineProvider {
 
 		let directory = await WidgetImageCache.shared.directory(for: currentDate)
 		let timeForUpdates = nextDayStart.timeIntervalSince(currentDate)
-		let maxEntries = Int((timeForUpdates / (30 * 60)).rounded(.up))
-		let photos = getBestPhotos(fromDate: currentDate, yearDiffs: configuration.yearDiffs(from: currentDate), idealCount: maxEntries, onlyFavorites: configuration.onlyShowFavorites).shuffled()
+		let maxEntries = configuration.updateFrequency.slots(until: nextDayStart, from: currentDate)
+		var photos = getBestPhotos(fromDate: currentDate, yearDiffs: configuration.yearDiffs(from: currentDate), idealCount: maxEntries, onlyFavorites: configuration.onlyShowFavorites).shuffled()
+		// After a shuffle, start with a different photo than the one that was showing.
+		if photos.count > 1, let shuffledID = UserDefaults.shared.widgetShuffledPhotoID, photos[0].asset.localIdentifier == shuffledID {
+			photos.swapAt(0, photos.count - 1)
+		}
+		let canShuffle = configuration.showShuffleButton && photos.count > 1
 
 		let timePerUpdate = timeForUpdates / Double(max(1, photos.count))
 		var entries: [PhotosOnThisDayEntry] = []
 		for (offset, photo) in photos.enumerated() {
 			guard let url = await Self.imageURL(for: photo.asset, context: context, in: directory) else { continue }
-			entries.append(PhotosOnThisDayEntry(date: currentDate.addingTimeInterval(timePerUpdate * Double(offset)), photo: photo, imageURL: url))
+			entries.append(PhotosOnThisDayEntry(date: currentDate.addingTimeInterval(timePerUpdate * Double(offset)), photo: photo, imageURL: url, canShuffle: canShuffle))
 		}
 		if entries.isEmpty {
 			entries.append(.empty(at: currentDate))
@@ -80,20 +86,23 @@ nonisolated struct PhotosOnThisDayEntry: TimelineEntry {
 	/// For Lock Screen widgets: how many photos there are today, and from which years.
 	let photoCount: Int
 	let years: [Int]
+	/// Whether there are other photos today for the shuffle button to switch to.
+	let canShuffle: Bool
 	let relevance: TimelineEntryRelevance?
 
-	init(date: Date, photoDate: Date? = nil, assetID: String? = nil, imageURL: URL? = nil, score: Float, photoCount: Int = 0, years: [Int] = []) {
+	init(date: Date, photoDate: Date? = nil, assetID: String? = nil, imageURL: URL? = nil, score: Float, photoCount: Int = 0, years: [Int] = [], canShuffle: Bool = false) {
 		self.date = date
 		self.photoDate = photoDate
 		self.assetID = assetID
 		self.imageURL = imageURL
 		self.photoCount = photoCount
 		self.years = years
+		self.canShuffle = canShuffle
 		self.relevance = TimelineEntryRelevance(score: score)
 	}
 
-	init(date: Date, photo: ScoredAsset, imageURL: URL?) {
-		self.init(date: date, photoDate: photo.asset.creationDate, assetID: photo.asset.localIdentifier, imageURL: imageURL, score: photo.score)
+	init(date: Date, photo: ScoredAsset, imageURL: URL?, canShuffle: Bool = false) {
+		self.init(date: date, photoDate: photo.asset.creationDate, assetID: photo.asset.localIdentifier, imageURL: imageURL, score: photo.score, canShuffle: canShuffle)
 	}
 
 	static func empty(at date: Date) -> Self {
@@ -101,7 +110,6 @@ nonisolated struct PhotosOnThisDayEntry: TimelineEntry {
 	}
 }
 
-@main
 struct PhotosOnThisDayWidget: Widget {
 	var body: some WidgetConfiguration {
 		AppIntentConfiguration(kind: widgetKind, intent: ConfigurationAppIntent.self, provider: Provider()) { entry in
@@ -117,28 +125,98 @@ struct PhotosOnThisDayWidget: Widget {
 
 // View
 
+/// A cached widget photo, cropped to `size`.
+struct WidgetPhoto: View {
+	let imageURL: URL?
+	let size: CGSize
+
+	var body: some View {
+		if let imageURL, let image = UIImage(contentsOfFile: imageURL.path()) {
+			Image(uiImage: image)
+				.resizable()
+				// Tinted and Clear Home Screens show the photo in the tint, like the Photos widget.
+				.widgetAccentedRenderingMode(.accentedDesaturated)
+				.aspectRatio(contentMode: .fill)
+				.frame(width: size.width, height: size.height)
+				.clipped()
+		}
+	}
+}
+
+/// Fills the widget when there's no photo to show.
+struct EmptyPhotoBackground: View {
+	let size: CGSize
+
+	var body: some View {
+		Image(systemName: "photo")
+			.font(.system(size: max(size.width * 1.05, size.height * 1.36)))
+			.foregroundStyle(Color(white: 0.08))
+			.frame(width: size.width, height: size.height)
+			.clipped()
+			.unredacted()
+	}
+}
+
 struct PhotoWidgetView: View {
 	let entry: PhotosOnThisDayEntry
 	let size: CGSize
 
 	var body: some View {
 		Group {
-			if let imageURL = entry.imageURL, let image = UIImage(contentsOfFile: imageURL.path()) {
-				Image(uiImage: image)
-					.resizable()
-					.aspectRatio(contentMode: .fill)
-					.frame(width: size.width, height: size.height)
+			if entry.imageURL != nil {
+				WidgetPhoto(imageURL: entry.imageURL, size: size)
 			} else if entry.photoDate == nil {
-				Image(systemName: "photo")
-					.font(.system(size: max(size.width * 1.05, size.height * 1.36)))
-					.foregroundStyle(Color(white: 0.08))
-					.frame(width: size.width, height: size.height)
-					.unredacted()
+				EmptyPhotoBackground(size: size)
 			}
 		}
 			.containerBackground(for: .widget) {
 				Color.black
 			}
+	}
+}
+
+/// Shown instead of photos when the app can't read the library.
+struct AccessRestrictedView: View {
+	let showsIcon: Bool
+
+	var body: some View {
+		VStack(alignment: .trailing, spacing: 4) {
+			if showsIcon {
+				Image(systemName: "photo")
+					.font(.system(size: 24))
+					.foregroundStyle(.secondary)
+			}
+			Text("Access restricted")
+				.font(.headline)
+			Text("Tap to configure!")
+				.font(.body)
+		}
+			.foregroundStyle(.white)
+			.multilineTextAlignment(.trailing)
+	}
+}
+
+extension PHPhotoLibrary {
+	static var canReadLibrary: Bool {
+		[.authorized, .limited].contains(authorizationStatus(for: .readWrite))
+	}
+}
+
+/// Switches the widget to another of today's photos.
+private struct ShuffleButton: View {
+	let currentID: String?
+
+	var body: some View {
+		Button(intent: ShufflePhotoIntent(currentID: currentID)) {
+			Image(systemName: "shuffle")
+				.font(.system(size: 13, weight: .bold))
+				.foregroundStyle(.white)
+				.frame(width: 30, height: 30)
+				.background(.black.opacity(0.35), in: .circle)
+				.contentShape(.circle)
+		}
+			.buttonStyle(.plain)
+			.accessibilityLabel("Shuffle")
 	}
 }
 
@@ -162,7 +240,7 @@ struct PhotosOnThisDayWidgetEntryView: View {
 				.overlay(alignment: .bottomTrailing) {
 					VStack(alignment: .trailing) {
 						let isSmall = widgetFamily == .systemSmall
-						if [.authorized, .limited].contains(PHPhotoLibrary.authorizationStatus(for: .readWrite)) {
+						if PHPhotoLibrary.canReadLibrary {
 							Group {
 								let isLarge = !isSmall && widgetFamily != .systemMedium
 								if !isSmall || entry.photoDate == nil {
@@ -183,23 +261,17 @@ struct PhotosOnThisDayWidgetEntryView: View {
 								.foregroundStyle(.white)
 								.shadow(color: .black, radius: 1.5, x: 0, y: 1)
 						} else {
-							VStack(alignment: .trailing, spacing: 4) {
-								if !isSmall {
-									Image(systemName: "photo")
-										.font(.system(size: 24))
-										.foregroundStyle(.secondary)
-								}
-								Text("Access restricted")
-									.font(.headline)
-								Text("Tap to configure!")
-									.font(.body)
-							}
-								.foregroundStyle(.white)
-								.multilineTextAlignment(.trailing)
+							AccessRestrictedView(showsIcon: !isSmall)
 						}
 					}
 						.padding()
 						.padding(.bottom, -2)
+				}
+				.overlay(alignment: .topTrailing) {
+					if entry.canShuffle {
+						ShuffleButton(currentID: entry.assetID)
+							.padding(10)
+					}
 				}
 		}
 			.fontDesign(.rounded)

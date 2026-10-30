@@ -23,7 +23,7 @@ let logger = Logger(subsystem: "is.ky.Photos-On-This-Day", category: "App")
 	var permission = PHPhotoLibrary.authorizationStatus(for: .readWrite) {
 		didSet {
 			if canShowPhotos {
-				WidgetCenter.shared.reloadTimelines(ofKind: widgetKind)
+				WidgetCenter.shared.reloadAllTimelines()
 			}
 		}
 	}
@@ -55,6 +55,32 @@ let logger = Logger(subsystem: "is.ky.Photos-On-This-Day", category: "App")
 		guard canShowPhotos, let asset = PHAsset.fetchAssets(withLocalIdentifiers: [id], options: nil).firstObject else { return }
 		let dayAssets = await Self.pastYearAssets(on: today, filters: Filters.shared.photoFilters(for: today.dateID))
 		openedPhoto = PhotoSelection(assets: dayAssets.contains(asset) ? dayAssets : [asset], selectedID: id)
+	}
+
+	/// Opens a random photo from past years on `day`, returning it, or nil when there are none.
+	func openRandomPhoto(on day: Date) async -> PHAsset? {
+		refresh()
+		go(to: day)
+		let dayAssets = await pastYearAssets(on: date)
+		guard let asset = dayAssets.randomElement() else { return nil }
+		openedPhoto = PhotoSelection(assets: dayAssets, selectedID: asset.localIdentifier)
+		return asset
+	}
+
+	/// Opens today's first photo from `year`, returning it, or nil when that year has none today.
+	func openPhoto(fromYear year: Int) async -> PHAsset? {
+		refresh()
+		daysChange = 0
+		let dayAssets = await pastYearAssets(on: today)
+		guard let asset = dayAssets.first(where: { $0.creationDate?.year == year }) else { return nil }
+		openedPhoto = PhotoSelection(assets: dayAssets, selectedID: asset.localIdentifier)
+		return asset
+	}
+
+	/// Photos from past years on `day`, with the library filters applied.
+	func pastYearAssets(on day: Date) async -> [PHAsset] {
+		guard canShowPhotos else { return [] }
+		return await Self.pastYearAssets(on: day, filters: Filters.shared.photoFilters(for: day.dateID))
 	}
 
 	@concurrent private static func pastYearAssets(on date: Date, filters: PhotoFilters) async -> [PHAsset] {
@@ -163,7 +189,7 @@ private final class LibraryObserver: NSObject, PHPhotoLibraryChangeObserver, Sen
 	}
 
 	private func reloadWidget() {
-		WidgetCenter.shared.reloadTimelines(ofKind: widgetKind)
+		WidgetCenter.shared.reloadAllTimelines()
 	}
 }
 

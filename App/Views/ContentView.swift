@@ -69,6 +69,8 @@ struct ContentView: View {
 				}
 				.navigationDestination(item: $state.openedPhoto) { selection in
 					PhotoViewer(selection: selection)
+						// A new link while the viewer is open starts over at that photo.
+						.id(selection.id)
 				}
 		}
 	}

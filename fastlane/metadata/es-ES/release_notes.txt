@@ -8,7 +8,8 @@ Novedades de la versión 1.1:
 • Nuevos widgets para la pantalla bloqueada con el número de fotos de hoy
 • Nuevo widget Años: una foto de cada año pasado en este día
 • Botón de aleatorio en el widget para ver otra foto de hoy
-• Siri y Atajos: muestra las fotos de un día, un recuerdo al azar o cuenta las fotos de hoy
+• Siri y Atajos: muestra las fotos de un día o de un año concreto, un recuerdo al azar o cuenta las fotos de hoy
+• Elige cada cuánto cambian las fotos de los widgets y oculta el botón de aleatorio si quieres
 • Nuevo icono de la app
 • Disponible en 8 idiomas más
 • Carga más rápida

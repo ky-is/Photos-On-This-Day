@@ -8,7 +8,8 @@ Neu in 1.1:
 • Neue Widgets für den Sperrbildschirm mit der Anzahl der heutigen Fotos
 • Neues Jahre-Widget: ein Foto aus jedem vergangenen Jahr an diesem Tag
 • Zufallstaste im Widget für ein anderes Foto von heute
-• Siri und Kurzbefehle: Fotos eines Tages zeigen, eine zufällige Erinnerung oder die heutigen Fotos zählen
+• Siri und Kurzbefehle: Fotos eines Tages oder eines gewählten Jahres zeigen, eine zufällige Erinnerung oder die heutigen Fotos zählen
+• Lege fest, wie oft Widgets die Fotos wechseln, und blende die Zufallstaste bei Bedarf aus
 • Neues App-Symbol
 • Jetzt in 8 weiteren Sprachen
 • Schnelleres Laden

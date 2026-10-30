@@ -36,6 +36,12 @@ nonisolated extension PHAsset {
 		return byYearsBack
 	}
 
+	/// Photos taken in any of the given date ranges.
+	static func fetchAssets(createdInAnyOf ranges: [Range<Date>], filters: PhotoFilters) -> PHFetchResult<PHAsset> {
+		let predicates = ranges.map { NSPredicate(format: "creationDate >= %@ AND creationDate < %@", $0.lowerBound as NSDate, $0.upperBound as NSDate) }
+		return fetchAssets(with: fetchOptions(filters: filters, extra: [NSCompoundPredicate(orPredicateWithSubpredicates: predicates)]))
+	}
+
 	private static func fetchOptions(filters: PhotoFilters, extra predicates: [NSPredicate]) -> PHFetchOptions {
 		var predicates = predicates
 		if filters.onlyFavorites {

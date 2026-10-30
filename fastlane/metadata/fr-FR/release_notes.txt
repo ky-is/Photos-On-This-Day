@@ -8,7 +8,8 @@ Nouveautés de la version 1.1 :
 • Nouveaux widgets pour l'écran verrouillé avec le nombre de photos du jour
 • Nouveau widget Années : une photo de chaque année passée à cette date
 • Bouton aléatoire dans le widget pour une autre photo du jour
-• Siri et Raccourcis : afficher les photos d’un jour, un souvenir au hasard ou compter les photos du jour
+• Siri et Raccourcis : afficher les photos d’un jour ou d’une année choisie, un souvenir au hasard ou compter les photos du jour
+• Choisissez la fréquence à laquelle les widgets changent de photo, et masquez le bouton aléatoire si vous le souhaitez
 • Nouvelle icône
 • Disponible dans 8 langues supplémentaires
 • Chargement plus rapide

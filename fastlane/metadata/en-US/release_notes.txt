@@ -8,7 +8,8 @@ What's new in 1.1:
 • New Lock Screen widgets with today's photo count
 • New Years widget: one photo from each past year on this day
 • Shuffle button on the widget for another of today's photos
-• Siri and Shortcuts: show a day's photos, a random memory, or count today's photos
+• Siri and Shortcuts: show a day's photos, photos from a chosen year, a random memory, or count today's photos
+• Choose how often widgets change photos, and hide the shuffle button if you like
 • A fresh new app icon
 • Now available in 8 more languages
 • Faster loading

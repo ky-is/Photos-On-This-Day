@@ -1,4 +1,5 @@
 import AVFoundation
+import AppIntents
 import SwiftUI
 import WidgetKit
 import os
@@ -32,16 +33,21 @@ struct PhotosOnThisDayApp: App {
 					}
 			}
 				.task {
+					// Siri phrases name a year, so it needs the list of years.
+					PhotosOnThisDayShortcuts.updateAppShortcutParameters()
 					let state = StateManager.shared
 					await state.requestPermission()
 					if state.canShowPhotos {
-						WidgetCenter.shared.reloadTimelines(ofKind: widgetKind)
+						WidgetCenter.shared.reloadAllTimelines()
 					}
 				}
 		}
 			.onChange(of: scenePhase) { _, newPhase in
 				if newPhase == .active {
 					StateManager.shared.refresh()
+					Task {
+						await YearlyNotification.reschedule()
+					}
 				}
 			}
 	}
