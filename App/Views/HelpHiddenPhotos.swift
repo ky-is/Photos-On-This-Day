@@ -13,12 +13,7 @@ struct HelpHiddenPhotos: View {
 	private var hiddenDays: [HiddenDay] {
 		filters.hiddenPhotos
 			.filter { !$0.value.isEmpty }
-			.map { dateID, ids in
-				let parts = dateID.split(separator: "-").compactMap { Int($0) }
-				// A leap year, so February 29 is valid.
-				let date = parts.count == 2 ? Calendar.current.date(from: DateComponents(year: 2000, month: parts[0], day: parts[1])) : nil
-				return HiddenDay(id: dateID, date: date, count: ids.count)
-			}
+			.map { HiddenDay(id: $0.key, date: DayMath.date(fromDateID: $0.key), count: $0.value.count) }
 			.sorted { ($0.date ?? .distantFuture) < ($1.date ?? .distantFuture) }
 	}
 

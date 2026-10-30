@@ -48,13 +48,14 @@ struct PhotosView: View {
 					noPastPhotos
 					if let currentYear = loaded.currentYear {
 						LazyVStack(alignment: .leading, spacing: 0, pinnedViews: [.sectionHeaders]) {
-							PhotosYearView(year: currentYear)
+							PhotosYearView(year: currentYear, dayAssets: currentYear.assets)
 						}
 					}
 				} else {
 					LazyVStack(alignment: .leading, spacing: 0, pinnedViews: [.sectionHeaders]) {
+						let dayAssets = loaded.pastYears.flatMap(\.assets)
 						ForEach(loaded.pastYears) { year in
-							PhotosYearView(year: year)
+							PhotosYearView(year: year, dayAssets: dayAssets)
 						}
 					}
 				}

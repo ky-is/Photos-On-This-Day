@@ -3,6 +3,7 @@ import SwiftUI
 
 struct PhotosYearThumbnail: View {
 	let asset: PHAsset?
+	var dayAssets: [PHAsset] = []
 	let dateID: String
 	let size: CGSize
 
@@ -14,7 +15,7 @@ struct PhotosYearThumbnail: View {
 		Group {
 			if let asset, let image {
 				NavigationLink {
-					PhotosYearFullsize(asset: asset, image: image)
+					PhotoViewer(selection: PhotoSelection(assets: dayAssets.isEmpty ? [asset] : dayAssets, selectedID: asset.localIdentifier), placeholder: image)
 				} label: {
 					Image(uiImage: image)
 						.resizable()
@@ -23,6 +24,13 @@ struct PhotosYearThumbnail: View {
 						.overlay(alignment: .bottomTrailing) {
 							HStack {
 								Group {
+									if asset.mediaType == .video {
+										Text(Duration.seconds(asset.duration.rounded()), format: .time(pattern: .minuteSecond))
+											.font(.caption.weight(.semibold).monospacedDigit())
+										Image(systemName: "play.fill")
+									} else if asset.mediaSubtypes.contains(.photoLive) {
+										Image(systemName: "livephoto")
+									}
 									if asset.sourceType == .typeCloudShared {
 										Image(systemName: "icloud")
 									} else {

@@ -1,9 +1,10 @@
 import SwiftUI
 
 struct ContentView: View {
-	private var state = StateManager.shared
+	@Bindable private var state = StateManager.shared
 
 	@State private var showAbout = false
+	@State private var showDatePicker = false
 
 	var body: some View {
 		NavigationStack {
@@ -27,11 +28,9 @@ struct ContentView: View {
 									.modifier(ToolbarButtonContentModifier())
 							}
 								.keyboardShortcut(.leftArrow)
-							ToolbarButtonView("Today", imageName: "calendar.badge.clock") {
-								state.daysChange = 0
+							ToolbarButtonView("Choose a Date", imageName: state.daysChange == 0 ? "calendar" : "calendar.badge.clock") {
+								showDatePicker = true
 							}
-								.keyboardShortcut(.cancelAction)
-								.disabled(state.daysChange == 0)
 							Button {
 								state.daysChange += 1
 							} label: {
@@ -55,7 +54,44 @@ struct ContentView: View {
 				.sheet(isPresented: $showAbout) {
 					AboutView()
 				}
+				.sheet(isPresented: $showDatePicker) {
+					DatePickerSheet()
+				}
+				.navigationDestination(item: $state.openedPhoto) { selection in
+					PhotoViewer(selection: selection)
+				}
 		}
+	}
+}
+
+private struct DatePickerSheet: View {
+	private var state = StateManager.shared
+
+	@Environment(\.dismiss) private var dismiss
+
+	var body: some View {
+		NavigationStack {
+			DatePicker("Date", selection: Binding { state.date } set: { state.go(to: $0) }, displayedComponents: .date)
+				.datePickerStyle(.graphical)
+				.padding()
+				.navigationTitle("Choose a Date")
+				.navigationBarTitleDisplayMode(.inline)
+				.toolbar {
+					ToolbarItem(placement: .cancellationAction) {
+						Button("Today") {
+							state.daysChange = 0
+							dismiss()
+						}
+							.disabled(state.daysChange == 0)
+					}
+					ToolbarItem(placement: .confirmationAction) {
+						Button("Done") {
+							dismiss()
+						}
+					}
+				}
+		}
+			.presentationDetents([.medium, .large])
 	}
 }
 

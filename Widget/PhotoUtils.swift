@@ -17,26 +17,7 @@ nonisolated func getBestPhotos(fromDate date: Date, yearDiffs: [Int], idealCount
 			}
 			.sorted { $0.score > $1.score }
 	}
-	return roundRobin(byYear, limit: idealCount)
-}
-
-nonisolated func roundRobin<Element>(_ lists: [[Element]], limit: Int) -> [Element] {
-	var results: [Element] = []
-	var iterators = lists.map { $0.makeIterator() }
-	while results.count < limit {
-		var foundAny = false
-		for index in iterators.indices {
-			guard results.count < limit else { break }
-			if let next = iterators[index].next() {
-				results.append(next)
-				foundAny = true
-			}
-		}
-		if !foundAny {
-			break
-		}
-	}
-	return results
+	return DayMath.roundRobin(byYear, limit: idealCount)
 }
 
 /// Widget images saved to disk for the current day; older days are cleared out.

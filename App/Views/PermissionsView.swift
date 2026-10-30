@@ -17,7 +17,7 @@ struct PermissionsView: View {
 					.fill(Color(uiColor: .secondarySystemFill))
 					.onTapGesture(perform: openSettings)
 				VStack {
-					Label("Photos \(state.permission == .limited ? "Limited" : "Unavailable")", systemImage: "photo")
+					Label(state.permission == .limited ? "Photos Limited" : "Photos Unavailable", systemImage: "photo")
 						.font(.headline)
 						.padding(.bottom, 1)
 					VStack(alignment: .leading, spacing: 8) {
@@ -30,7 +30,7 @@ struct PermissionsView: View {
 							if state.permission == .restricted {
 								Text("Please enable apps to access photos with permission via Settings.app.")
 							} else {
-								Text("Please allow photos access to \"**All Photos**\" in Settings.app.")
+								Text("Please set photo access to \"**Full Access**\" in Settings.")
 							}
 						}
 					}

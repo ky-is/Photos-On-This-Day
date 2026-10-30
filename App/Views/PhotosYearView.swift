@@ -16,6 +16,8 @@ private struct PhotosYearHeader: View {
 
 struct PhotosYearView: View {
 	let year: PhotoYear
+	/// Every photo shown for the day, so the viewer can swipe across years.
+	let dayAssets: [PHAsset]
 
 	@Environment(\.screenSize) private var screenSize
 
@@ -25,7 +27,7 @@ struct PhotosYearView: View {
 			LazyVGrid(columns: columns, alignment: .leading, spacing: 1) {
 				ForEach(year.assets, id: \.localIdentifier) { asset in
 					GeometryReader { geometry in
-						PhotosYearThumbnail(asset: asset, dateID: year.dateID, size: geometry.size)
+						PhotosYearThumbnail(asset: asset, dayAssets: dayAssets, dateID: year.dateID, size: geometry.size)
 					}
 						.aspectRatio(1, contentMode: .fill)
 				}

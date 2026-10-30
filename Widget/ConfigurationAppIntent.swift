@@ -14,9 +14,7 @@ struct ConfigurationAppIntent: WidgetConfigurationIntent, CustomIntentMigratedAp
 
 	/// Years back from `date` to show photos from.
 	nonisolated func yearDiffs(from date: Date) -> [Int] {
-		let currentYear = date.year
-		let selected = (onlyShowYears ?? []).compactMap { Int($0.id).map { currentYear - $0 } }.filter { $0 > 0 }
-		return selected.isEmpty ? Array(1...maxYearsBack) : selected
+		DayMath.yearDiffs(selectedYears: (onlyShowYears ?? []).map(\.id), from: date)
 	}
 }
 

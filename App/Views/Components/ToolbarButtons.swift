@@ -1,11 +1,11 @@
 import SwiftUI
 
 struct ToolbarButtonView: View {
-	let title: String
+	let title: LocalizedStringKey
 	let imageName: String?
 	let action: () -> Void
 
-	init(_ title: String, imageName: String? = nil, action: @escaping () -> Void) {
+	init(_ title: LocalizedStringKey, imageName: String? = nil, action: @escaping () -> Void) {
 		self.title = title
 		self.imageName = imageName
 		self.action = action
@@ -16,7 +16,7 @@ struct ToolbarButtonView: View {
 			Group {
 				if let imageName {
 					Image(systemName: imageName)
-						.accessibilityLabel(title)
+						.accessibilityLabel(Text(title))
 				} else {
 					Text(title)
 				}

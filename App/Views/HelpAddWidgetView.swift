@@ -1,67 +1,31 @@
-import AVKit
 import SwiftUI
-
-private final class LoopingVideo {
-	let player: AVQueuePlayer
-	private let looper: AVPlayerLooper
-
-	init(url: URL) {
-		let item = AVPlayerItem(url: url)
-		player = AVQueuePlayer(playerItem: item)
-		player.isMuted = true
-		player.externalPlaybackVideoGravity = .resizeAspect
-		player.audiovisualBackgroundPlaybackPolicy = .pauses
-		looper = AVPlayerLooper(player: player, templateItem: item)
-	}
-}
 
 struct HelpAddWidgetView: View {
 	let inSheet: Bool
 
 	@Environment(\.dismiss) private var dismiss
-	@Environment(\.scenePhase) private var scenePhase
-	@Environment(\.screenSize) private var screenSize
 
 	@AppStorage(UserDefaults.Key.dismissedAddWidget) private var dismissedAddWidget = false
-
-	@State private var video: LoopingVideo?
 
 	var body: some View {
 		ScrollView {
 			VStack(alignment: .leading, spacing: 16) {
-				ZStack {
-					ProgressView("Loading video")
-						.progressViewStyle(.circular)
-						.labelsHidden()
-					if let player = video?.player {
-						VideoPlayer(player: player)
-							.onAppear {
-								player.play()
-							}
-							.onDisappear {
-								player.pause()
-								player.seek(to: .zero)
-							}
-							.onChange(of: scenePhase) { _, newPhase in
-								if newPhase == .active {
-									player.play()
-								} else {
-									player.pause()
-								}
-							}
-					}
-				}
-					.ignoresSafeArea()
-					.frame(maxWidth: .infinity, minHeight: (screenSize.height - 96) * 0.9)
-				Text("**1.** Long press in an empty spot on your Home Screen.")
-				Text("**2.** Tap the \"+\" button in the top-left.")
-				Text("**3.** Search for \"On This Day\" (it's been copied to your clipboard), or find it from the list.")
-				Text("**4.** Swipe left to choose a size, then press the \"Add Widget\" button at the bottom. You can configure the Widget by tapping it while edit mode is active!")
+				Image(systemName: "apps.iphone.badge.plus")
+					.font(.system(size: 72))
+					.foregroundStyle(.tint)
+					.frame(maxWidth: .infinity)
+					.padding(.vertical)
+				Text("**1.** Touch and hold an empty spot on your Home Screen until the apps jiggle.")
+				Text("**2.** Tap **Edit** in the top-left corner, then **Add Widget**.")
+				Text("**3.** Search for \"On This Day\" (it's been copied to your clipboard), or find it in the list.")
+				Text("**4.** Swipe to choose a size, then tap **Add Widget**.")
+				Text("To choose which years it shows, or only show favorites, touch and hold the widget and tap **Edit Widget**.")
 				Group {
-					Text("Tip: If your photo library is sparse, the _On This Day_ Widget works best in a Smart Stack.")
-					Text("Drag a system Photos Widget (with the same size) on top of this Widget to create a new Smart Stack. This lets _On This Day_ show at the top for days with photos, and otherwise the default Photos Widget will be shown as a fallback.")
+					Text("Tip: If your photo library is sparse, the _On This Day_ widget works best in a Smart Stack.")
+					Text("Drag a Photos widget of the same size on top of this widget to create a Smart Stack. _On This Day_ then shows on days with photos, and the Photos widget shows otherwise.")
 				}
 					.font(.callout)
+					.foregroundStyle(.secondary)
 				if inSheet {
 					Button("Don't show again") {
 						dismissedAddWidget = true
@@ -75,9 +39,6 @@ struct HelpAddWidgetView: View {
 		}
 			.onAppear {
 				UIPasteboard.general.string = "On This Day"
-				if video == nil {
-					video = LoopingVideo(url: URL(string: "https://cdn.ky.is/photos-on-this-day/widget.mp4")!)
-				}
 			}
 			.navigationTitle("Add a Widget")
 			.navigationBarTitleDisplayMode(.inline)
@@ -95,5 +56,7 @@ struct HelpAddWidgetView: View {
 }
 
 #Preview {
-	HelpAddWidgetView(inSheet: true)
+	NavigationStack {
+		HelpAddWidgetView(inSheet: true)
+	}
 }

@@ -2,9 +2,11 @@ import SwiftUI
 import UIKit
 
 struct ZoomScrollView<Content: View>: UIViewRepresentable {
-	private var content: Content
+	private let content: Content
+	private let onZoom: (CGFloat) -> Void
 
-	init(@ViewBuilder content: () -> Content) {
+	init(onZoom: @escaping (CGFloat) -> Void = { _ in }, @ViewBuilder content: () -> Content) {
+		self.onZoom = onZoom
 		self.content = content()
 	}
 
@@ -20,28 +22,36 @@ struct ZoomScrollView<Content: View>: UIViewRepresentable {
 		let hostedView = context.coordinator.hostingController.view!
 		hostedView.translatesAutoresizingMaskIntoConstraints = true
 		hostedView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+		hostedView.backgroundColor = .clear
 
 		scrollView.addSubview(hostedView)
 		return scrollView
 	}
 
 	func makeCoordinator() -> Coordinator {
-		return Coordinator(hostingController: UIHostingController(rootView: content))
+		Coordinator(hostingController: UIHostingController(rootView: content), onZoom: onZoom)
 	}
 
 	func updateUIView(_ uiView: UIScrollView, context: Context) {
 		context.coordinator.hostingController.rootView = content
+		context.coordinator.onZoom = onZoom
 	}
 
 	final class Coordinator: NSObject, UIScrollViewDelegate {
-		var hostingController: UIHostingController<Content>
+		let hostingController: UIHostingController<Content>
+		var onZoom: (CGFloat) -> Void
 
-		init(hostingController: UIHostingController<Content>) {
+		init(hostingController: UIHostingController<Content>, onZoom: @escaping (CGFloat) -> Void) {
 			self.hostingController = hostingController
+			self.onZoom = onZoom
 		}
 
 		func viewForZooming(in scrollView: UIScrollView) -> UIView? {
-			return hostingController.view
+			hostingController.view
+		}
+
+		func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
+			onZoom(scale)
 		}
 	}
 }

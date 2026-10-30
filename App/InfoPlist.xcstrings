@@ -1,0 +1,67 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "CFBundleDisplayName" : {
+      "shouldTranslate" : false
+    },
+    "NSPhotoLibraryUsageDescription" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This app needs access to your photo library to show you photos from past years. Photos never leave your device and aren't used for anything else."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diese App benötigt Zugriff auf deine Fotomediathek, um dir Fotos aus früheren Jahren zu zeigen. Fotos verlassen nie dein Gerät und werden für nichts anderes verwendet."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta app necesita acceder a tu fototeca para mostrarte fotos de años anteriores. Las fotos nunca salen de tu dispositivo y no se usan para nada más."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cette app a besoin d’accéder à votre photothèque pour vous montrer des photos des années passées. Les photos ne quittent jamais votre appareil et ne sont utilisées à aucune autre fin."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Questa app ha bisogno di accedere alla tua libreria foto per mostrarti le foto degli anni passati. Le foto non lasciano mai il dispositivo e non vengono usate per nessun altro scopo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "過去の年の写真を表示するために、このAppは写真ライブラリへのアクセスを必要とします。写真がデバイスから外部に送信されたり、ほかの目的に使用されたりすることはありません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "지난 몇 년간의 사진을 보여 주기 위해 이 앱은 사진 보관함에 접근해야 합니다. 사진은 기기 밖으로 전송되지 않으며 다른 용도로 사용되지 않습니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este app precisa acessar a sua fototeca para mostrar fotos de anos anteriores. As fotos nunca saem do seu dispositivo e não são usadas para nenhum outro fim."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此 App 需要访问你的图库，以便向你显示往年的照片。照片绝不会离开你的设备，也不会用于任何其他用途。"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

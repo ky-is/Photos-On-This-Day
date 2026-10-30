@@ -39,6 +39,30 @@ let logger = Logger(subsystem: "is.ky.Photos-On-This-Day", category: "App")
 		observeLibrary()
 	}
 
+	/// A photo opened from the widget, shown full screen.
+	var openedPhoto: PhotoSelection?
+
+	func go(to day: Date) {
+		let calendar = Calendar.current
+		daysChange = calendar.dateComponents([.day], from: calendar.startOfDay(for: today), to: calendar.startOfDay(for: day)).day ?? 0
+	}
+
+	/// Opens a widget's photo among today's photos.
+	func open(_ url: URL) async {
+		guard let id = DeepLink.photoID(from: url) else { return }
+		refresh()
+		daysChange = 0
+		guard canShowPhotos, let asset = PHAsset.fetchAssets(withLocalIdentifiers: [id], options: nil).firstObject else { return }
+		let dayAssets = await Self.pastYearAssets(on: today, filters: Filters.shared.photoFilters(for: today.dateID))
+		openedPhoto = PhotoSelection(assets: dayAssets.contains(asset) ? dayAssets : [asset], selectedID: id)
+	}
+
+	@concurrent private static func pastYearAssets(on date: Date, filters: PhotoFilters) async -> [PHAsset] {
+		PHAsset.assetsByYearsBack(Array(1...maxYearsBack), from: date, filters: filters)
+			.sorted { $0.key < $1.key }
+			.flatMap(\.value)
+	}
+
 	/// Picks up a new day and permission changes made in Settings when the app becomes active.
 	func refresh() {
 		let now = Date.current()
@@ -89,9 +113,7 @@ let logger = Logger(subsystem: "is.ky.Photos-On-This-Day", category: "App")
 				}
 			}
 		}
-		return (1...365).first { daysBack in
-			dayIDsWithPhotos.contains(calendar.date(byAdding: .day, value: -daysBack, to: date)!.dateID)
-		}
+		return DayMath.nearestDaysBack(from: date, toAnyOf: dayIDsWithPhotos, calendar: calendar)
 	}
 }
 

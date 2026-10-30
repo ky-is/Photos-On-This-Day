@@ -25,6 +25,11 @@ struct PhotosOnThisDayApp: App {
 					.environment(\.screenSize, geometry.size)
 					.fontDesign(.rounded)
 					.defaultAppStorage(.shared)
+					.onOpenURL { url in
+						Task {
+							await StateManager.shared.open(url)
+						}
+					}
 			}
 				.task {
 					let state = StateManager.shared

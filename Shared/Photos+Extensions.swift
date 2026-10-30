@@ -45,7 +45,8 @@ nonisolated extension PHAsset {
 			predicates.append(NSPredicate(format: "NOT (localIdentifier IN %@)", filters.hiddenIDs))
 		}
 		if !filters.showScreenshots {
-			predicates.append(NSPredicate(format: "(mediaSubtypes & %d) == 0", PHAssetMediaSubtype.photoScreenshot.rawValue))
+			// Photos mistranslates "(mediaSubtypes & x) == 0" and drops every asset without subtypes, so keep this form.
+			predicates.append(NSPredicate(format: "NOT ((mediaSubtypes & %d) != 0)", PHAssetMediaSubtype.photoScreenshot.rawValue))
 		}
 		let options = PHFetchOptions()
 		options.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
