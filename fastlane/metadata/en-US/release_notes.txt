@@ -1,0 +1,15 @@
+What's new in 1.1:
+
+• Swipe between the day's photos in full screen
+• Videos and Live Photos now play
+• Sharper zoom
+• Pick any date with the calendar button
+• Tapping the widget opens the photo it shows
+• New Lock Screen widgets with today's photo count
+• New Years widget: one photo from each past year on this day
+• Shuffle button on the widget for another of today's photos
+• Siri and Shortcuts: show a day's photos, a random memory, or count today's photos
+• A fresh new app icon
+• Now available in 8 more languages
+• Faster loading
+• Fixes for photos missing when screenshots are hidden, year headers around New Year, and settings changes not refreshing

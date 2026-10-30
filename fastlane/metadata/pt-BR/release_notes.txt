@@ -1,0 +1,15 @@
+Novidades da versão 1.1:
+
+• Deslize entre as fotos do dia em tela cheia
+• Vídeos e Live Photos agora são reproduzidos
+• Zoom mais nítido
+• Escolha qualquer data com o botão de calendário
+• O widget abre a foto que ele mostra
+• Novos widgets para a Tela Bloqueada com o número de fotos de hoje
+• Novo widget Anos: uma foto de cada ano passado neste dia
+• Botão de embaralhar no widget para ver outra foto de hoje
+• Siri e Atalhos: mostre as fotos de um dia, uma lembrança aleatória ou conte as fotos de hoje
+• Novo ícone do app
+• Disponível em mais 8 idiomas
+• Carregamento mais rápido
+• Correções para fotos ausentes quando as capturas de tela estão ocultas, cabeçalhos de ano na virada do ano e ajustes que não eram atualizados

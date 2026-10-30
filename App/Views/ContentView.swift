@@ -17,6 +17,16 @@ struct ContentView: View {
 				}
 			}
 				.navigationTitle(state.date.formatted(.monthDay))
+				.background {
+					// Escape jumps back to today from a hardware keyboard; the visible way is the date picker.
+					Button("Today") {
+						state.daysChange = 0
+					}
+						.keyboardShortcut(.cancelAction)
+						.disabled(state.daysChange == 0)
+						.hidden()
+						.accessibilityHidden(true)
+				}
 				.toolbar {
 					ToolbarItemGroup(placement: .topBarLeading) {
 						Group {

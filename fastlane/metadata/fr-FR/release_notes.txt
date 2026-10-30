@@ -1,0 +1,15 @@
+Nouveautés de la version 1.1 :
+
+• Balayez les photos du jour en plein écran
+• Les vidéos et les Live Photos sont lues
+• Zoom plus net
+• Choisissez n'importe quelle date avec le bouton calendrier
+• Le widget ouvre la photo qu'il affiche
+• Nouveaux widgets pour l'écran verrouillé avec le nombre de photos du jour
+• Nouveau widget Années : une photo de chaque année passée à cette date
+• Bouton aléatoire dans le widget pour une autre photo du jour
+• Siri et Raccourcis : afficher les photos d’un jour, un souvenir au hasard ou compter les photos du jour
+• Nouvelle icône
+• Disponible dans 8 langues supplémentaires
+• Chargement plus rapide
+• Corrections : photos manquantes quand les captures d'écran sont masquées, en-têtes d'année autour du Nouvel An et réglages qui ne s'actualisaient pas

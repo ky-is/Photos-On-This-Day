@@ -76,6 +76,7 @@ struct PhotosView: View {
 			}
 		}
 			.padding(.bottom, 32)
+			.screenshotSupport()
 			.task(id: FetchKey(date: date, filters: filters.photoFilters(for: dateID), libraryRevision: state.libraryRevision)) {
 				let photos = await Self.load(date: date, filters: filters.photoFilters(for: dateID))
 				if !Task.isCancelled {

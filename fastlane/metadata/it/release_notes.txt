@@ -1,0 +1,15 @@
+Novità della versione 1.1:
+
+• Scorri le foto del giorno a schermo intero
+• Video e Live Photo ora vengono riprodotti
+• Zoom più nitido
+• Scegli qualsiasi data con il pulsante del calendario
+• Il widget apre la foto che mostra
+• Nuovi widget per la schermata di blocco con il numero di foto di oggi
+• Nuovo widget Anni: una foto per ogni anno passato in questo giorno
+• Pulsante casuale nel widget per un’altra foto di oggi
+• Siri e Comandi Rapidi: mostra le foto di un giorno, un ricordo a caso o conta le foto di oggi
+• Nuova icona dell'app
+• Disponibile in altre 8 lingue
+• Caricamento più veloce
+• Correzioni per foto mancanti quando gli screenshot sono nascosti, intestazioni degli anni intorno a Capodanno e impostazioni che non si aggiornavano

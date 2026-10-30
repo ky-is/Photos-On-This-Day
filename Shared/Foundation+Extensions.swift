@@ -13,7 +13,9 @@ nonisolated extension Bundle {
 nonisolated extension Date {
 	static func current() -> Self {
 #if targetEnvironment(simulator)
-		try! Date("2022-06-07T18:00:00Z", strategy: .iso8601)
+		// A fixed day for the simulator's sample library; `-screenshotDate 2022-08-08T18:00:00Z` picks another.
+		let date = UserDefaults.standard.string(forKey: "screenshotDate") ?? "2022-06-07T18:00:00Z"
+		return (try? Date(date, strategy: .iso8601)) ?? Date()
 #else
 		Date()
 #endif

@@ -1,2 +1,12 @@
 Art/
 xcuserdata
+
+# fastlane
+fastlane/.env
+fastlane/build/
+fastlane/report.xml
+fastlane/test_output/
+fastlane/screenshots/
+
+# Local builds
+build/

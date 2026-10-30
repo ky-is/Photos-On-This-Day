@@ -1,0 +1,15 @@
+Neu in 1.1:
+
+• Im Vollbild zwischen den Fotos des Tages wischen
+• Videos und Live Photos werden abgespielt
+• Schärferes Zoomen
+• Mit der Kalendertaste ein beliebiges Datum wählen
+• Das Widget öffnet das Foto, das es zeigt
+• Neue Widgets für den Sperrbildschirm mit der Anzahl der heutigen Fotos
+• Neues Jahre-Widget: ein Foto aus jedem vergangenen Jahr an diesem Tag
+• Zufallstaste im Widget für ein anderes Foto von heute
+• Siri und Kurzbefehle: Fotos eines Tages zeigen, eine zufällige Erinnerung oder die heutigen Fotos zählen
+• Neues App-Symbol
+• Jetzt in 8 weiteren Sprachen
+• Schnelleres Laden
+• Fehlerbehebungen: fehlende Fotos bei ausgeblendeten Bildschirmfotos, Jahresüberschriften rund um Neujahr und Einstellungen, die nicht aktualisiert wurden
