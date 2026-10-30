@@ -1,8 +1,15 @@
 Novedades de la versión 1.1:
 
-• Desliza entre las fotos del día a pantalla completa
+• Nuevo visor de fotos como en Fotos: las fotos se amplían desde la cuadrícula, desliza hacia abajo o pellizca para cerrar y toca para ocultarlo todo
+• Recorre todas las fotos del día con la tira de miniaturas
 • Los vídeos y las Live Photos se reproducen
-• Zoom más nítido
+• Pellizca o toca dos veces para ampliar, con más detalle
+• Consulta en un mapa dónde se hizo cada foto
+• Comparte las fotos y vídeos originales, márcalos como favoritos, ocúltalos en On This Day o elimínalos
+• Pellizca la cuadrícula para ver miniaturas más grandes o más pequeñas, o muestra las fotos completas con la cuadrícula con relación de aspecto
+• Selecciona varias fotos a la vez para compartirlas o marcarlas como favoritas
+• Funciona en horizontal
+• VoiceOver describe cada foto
 • Elige cualquier fecha con el botón del calendario
 • El widget abre la foto que muestra
 • Nuevos widgets para la pantalla bloqueada con el número de fotos de hoy

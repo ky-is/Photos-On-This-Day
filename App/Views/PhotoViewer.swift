@@ -3,7 +3,6 @@ import MapKit
 import Photos
 import PhotosUI
 import SwiftUI
-import UniformTypeIdentifiers
 import os
 
 /// The photos of a day, opened at one of them. Used for navigation and widget deep links.
@@ -16,7 +15,8 @@ struct PhotoSelection: Hashable, Identifiable {
 
 /// Full screen photos for a day: swipe between them, zoom stills, play videos and Live Photos.
 struct PhotoViewer: View {
-	let assets: [PHAsset]
+	/// Hiding or deleting a photo takes it out of here too.
+	@State private var assets: [PHAsset]
 	/// The thumbnail already loaded for the opened photo, shown until a sharper image loads.
 	let placeholder: UIImage?
 
@@ -30,11 +30,12 @@ struct PhotoViewer: View {
 
 	@Environment(\.dismiss) private var dismiss
 	@Environment(\.photoTransition) private var photoTransition
+	@Environment(\.viewerShowsPhoto) private var viewerShowsPhoto
 	@Environment(\.screenSize) private var screenSize
 	@Environment(\.displayScale) private var displayScale
 
 	init(selection: PhotoSelection, placeholder: UIImage? = nil) {
-		assets = selection.assets
+		_assets = State(initialValue: selection.assets)
 		self.placeholder = placeholder
 		_selectedID = State(initialValue: selection.selectedID)
 	}
@@ -48,16 +49,7 @@ struct PhotoViewer: View {
 			ScrollView(.horizontal) {
 				LazyHStack(spacing: 0) {
 					ForEach(assets, id: \.localIdentifier) { asset in
-						PhotoPage(asset: asset, placeholder: asset.localIdentifier == selectedID ? placeholder : nil, isSelected: asset.localIdentifier == selectedID, imageManager: imageCache) {
-							withAnimation {
-								showsChrome.toggle()
-							}
-						} onZoom: { zoomed in
-							// Zooming in clears the screen for the photo, and zooming back out brings the bars back, like in Photos.
-							withAnimation {
-								showsChrome = !zoomed
-							}
-						}
+						PhotoPage(asset: asset, placeholder: asset.localIdentifier == selectedID ? placeholder : nil, isSelected: asset.localIdentifier == selectedID, imageManager: imageCache, showsChrome: $showsChrome)
 							.containerRelativeFrame([.horizontal, .vertical])
 					}
 				}
@@ -67,13 +59,23 @@ struct PhotoViewer: View {
 				.scrollPosition(id: $selectedID)
 				.scrollIndicators(.hidden)
 				.ignoresSafeArea()
-				// Jumps from the scrubber can land on pages the lazy stack hasn't made yet, which only scrollTo reaches.
-				.onChange(of: selectedID) { _, id in
+				.onChange(of: selectedID, initial: true) { _, id in
+					guard let id else { return }
+					// Jumps from the scrubber can land on pages the lazy stack hasn't made yet, which only scrollTo reaches.
 					proxy.scrollTo(id)
+					cacheNeighbors()
+					viewerShowsPhoto(id)
 				}
 		}
-			.onChange(of: selectedID, initial: true) {
-				cacheNeighbors()
+			.background {
+				// Arrow keys page through the photos and Escape closes, from a hardware keyboard.
+				Group {
+					KeyboardShortcutButton(.leftArrow) { step(by: -1) }
+					KeyboardShortcutButton(.rightArrow) { step(by: 1) }
+					KeyboardShortcutButton(.escape) { dismiss() }
+				}
+					.hidden()
+					.accessibilityHidden(true)
 			}
 			.onDisappear {
 				imageCache.stopCachingImagesForAllAssets()
@@ -107,6 +109,26 @@ struct PhotoViewer: View {
 					}
 						.accessibilityLabel("Back")
 				}
+				ToolbarItem(placement: .topBarTrailing) {
+					if let selectedAsset {
+						Menu {
+							Button("Hide from On This Day", systemImage: "eye.slash") {
+								Filters.shared.setHidden(true, asset: selectedAsset, on: StateManager.shared.date.dateID)
+								remove(selectedAsset)
+							}
+							if selectedAsset.sourceType == .typeUserLibrary {
+								Button("Delete", systemImage: "trash", role: .destructive) {
+									Task {
+										await delete(selectedAsset)
+									}
+								}
+							}
+						} label: {
+							Label("More", systemImage: "ellipsis")
+								.modifier(ToolbarButtonContentModifier())
+						}
+					}
+				}
 				ToolbarItemGroup(placement: .bottomBar) {
 					if let selectedAsset {
 						ShareLink(item: SharedAsset(asset: selectedAsset), preview: SharedAsset.preview(for: selectedAsset))
@@ -132,6 +154,40 @@ struct PhotoViewer: View {
 				locationDescription = nil
 				locationDescription = await Self.describeLocation(of: selectedAsset)
 			}
+	}
+
+	/// Moves to the next photo, or the one before at the end, and takes this one out; closes when none are left.
+	private func remove(_ asset: PHAsset) {
+		guard let index = assets.firstIndex(of: asset) else { return }
+		let neighbor = assets.indices.contains(index + 1) ? index + 1 : index - 1
+		guard assets.indices.contains(neighbor) else {
+			dismiss()
+			return
+		}
+		selectedID = assets[neighbor].localIdentifier
+		withAnimation {
+			_ = assets.remove(at: index)
+		}
+	}
+
+	/// Moves the photo to Recently Deleted. Photos asks to confirm first, like deleting in Photos.
+	private func delete(_ asset: PHAsset) async {
+		do {
+			try await PHPhotoLibrary.shared().performChanges(onAssetsWith: [asset.localIdentifier]) { assets in
+				PHAssetChangeRequest.deleteAssets(assets)
+			}
+			remove(asset)
+		} catch {
+			// Also where it lands when the delete isn't confirmed.
+			logger.info("Delete not done: \(error.localizedDescription)")
+		}
+	}
+
+	private func step(by change: Int) {
+		guard let index = assets.firstIndex(where: { $0.localIdentifier == selectedID }), assets.indices.contains(index + change) else { return }
+		withAnimation {
+			selectedID = assets[index + change].localIdentifier
+		}
 	}
 
 	/// Keeps the two photos on each side of the current one prepared, and lets go of the rest.
@@ -281,6 +337,24 @@ private struct ScrubberThumbnail: View {
 	}
 }
 
+/// A button with no look, there only for its keyboard shortcut.
+private struct KeyboardShortcutButton: View {
+	let key: KeyEquivalent
+	let action: () -> Void
+
+	init(_ key: KeyEquivalent, action: @escaping () -> Void) {
+		self.key = key
+		self.action = action
+	}
+
+	var body: some View {
+		Button(action: action) {
+			EmptyView()
+		}
+			.keyboardShortcut(key, modifiers: [])
+	}
+}
+
 /// Zooms in from the tapped thumbnail, and back out to the current photo's thumbnail when closed or swiped down.
 private struct ZoomTransition: ViewModifier {
 	let sourceID: String?
@@ -295,14 +369,13 @@ private struct ZoomTransition: ViewModifier {
 	}
 }
 
-/// One page of the viewer: a zoomable still, a video, or a Live Photo.
+/// One page of the viewer: a zoomable still or Live Photo, or a video.
 private struct PhotoPage: View {
 	let asset: PHAsset
 	let placeholder: UIImage?
 	let isSelected: Bool
 	let imageManager: PHImageManager
-	let onTap: () -> Void
-	let onZoom: (Bool) -> Void
+	@Binding var showsChrome: Bool
 
 	/// Fit, not fill: a landscape photo on a portrait screen needs only the pixels that show.
 	static let contentMode = PHImageContentMode.aspectFit
@@ -312,23 +385,36 @@ private struct PhotoPage: View {
 
 	@Environment(\.screenSize) private var screenSize
 	@Environment(\.displayScale) private var displayScale
+	@Environment(\.dismiss) private var dismiss
 
 	var body: some View {
 		Group {
 			if asset.mediaType == .video {
 				VideoPage(asset: asset, isSelected: isSelected)
 			} else {
-				ZoomScrollView(onZoom: { zoomed in
+				ZoomScrollView { zoomed in
 					isZoomed = zoomed
-					onZoom(zoomed)
-				}, onTap: onTap) {
-					if asset.mediaSubtypes.contains(.photoLive) {
-						// Zoomed in, the sharper still stands in for the screen-sized Live Photo.
-						LivePhotoPage(asset: asset, size: screenSize, placeholder: image ?? placeholder, showsStill: isZoomed)
-					} else if let shown = image ?? placeholder {
-						Image(uiImage: shown)
-							.resizable()
-							.aspectRatio(contentMode: .fit)
+					// Zooming in clears the screen for the photo, and zooming back out brings the bars back, like in Photos.
+					withAnimation {
+						showsChrome = !zoomed
+					}
+				} onTap: {
+					withAnimation {
+						showsChrome.toggle()
+					}
+				} onPinchClose: {
+					dismiss()
+				} content: {
+					ZStack {
+						if let shown = image ?? placeholder {
+							Image(uiImage: shown)
+								.resizable()
+								.aspectRatio(contentMode: .fit)
+						}
+						// Zoomed in, the sharper still shows instead of the screen-sized Live Photo.
+						if asset.mediaSubtypes.contains(.photoLive), !isZoomed {
+							LivePhotoLayer(asset: asset, playsHint: isSelected)
+						}
 					}
 				}
 			}
@@ -387,30 +473,24 @@ private struct VideoPage: View {
 	}
 }
 
-/// Touch and hold to play, like in Photos.
-private struct LivePhotoPage: View {
+/// Covers the still once the Live Photo loads: a moment of motion on arriving, then touch and hold to play it all, like in Photos.
+private struct LivePhotoLayer: View {
 	let asset: PHAsset
-	let size: CGSize
-	let placeholder: UIImage?
-	let showsStill: Bool
+	let playsHint: Bool
 
 	@State private var livePhoto: PHLivePhoto?
 
+	@Environment(\.screenSize) private var screenSize
 	@Environment(\.displayScale) private var displayScale
 
 	var body: some View {
 		Group {
-			if let livePhoto, !showsStill {
-				LivePhotoView(livePhoto: livePhoto)
-			} else if let placeholder {
-				Image(uiImage: placeholder)
-					.resizable()
-					.aspectRatio(contentMode: .fit)
-					.frame(maxWidth: .infinity, maxHeight: .infinity)
+			if let livePhoto {
+				LivePhotoView(livePhoto: livePhoto, playsHint: playsHint)
 			}
 		}
 			.task {
-				let target = CGSize(width: size.width * displayScale, height: size.height * displayScale)
+				let target = CGSize(width: screenSize.width * displayScale, height: screenSize.height * displayScale)
 				livePhoto = await PHImageManager.default().livePhoto(for: asset, targetSize: target)?.value
 			}
 	}
@@ -418,6 +498,16 @@ private struct LivePhotoPage: View {
 
 private struct LivePhotoView: UIViewRepresentable {
 	let livePhoto: PHLivePhoto
+	/// Plays the short preview once each time the photo becomes the current one.
+	let playsHint: Bool
+
+	final class Coordinator {
+		var hasPlayedHint = false
+	}
+
+	func makeCoordinator() -> Coordinator {
+		Coordinator()
+	}
 
 	func makeUIView(context: Context) -> PHLivePhotoView {
 		let view = PHLivePhotoView()
@@ -426,67 +516,14 @@ private struct LivePhotoView: UIViewRepresentable {
 	}
 
 	func updateUIView(_ view: PHLivePhotoView, context: Context) {
-		view.livePhoto = livePhoto
-	}
-}
-
-/// A photo or video shared as its original file, edits included, like sharing from Photos.
-nonisolated struct SharedAsset: Transferable, @unchecked Sendable {
-	let asset: PHAsset
-
-	static func preview(for asset: PHAsset) -> SharePreview<Never, Never> {
-		SharePreview(asset.mediaType == .video ? "Video" : "Photo")
-	}
-
-	static var transferRepresentation: some TransferRepresentation {
-		FileRepresentation(exportedContentType: .movie) { try await $0.exportFile() }
-			.exportingCondition { $0.asset.mediaType == .video }
-		FileRepresentation(exportedContentType: .image) { try await $0.exportFile() }
-			.exportingCondition { $0.asset.mediaType != .video }
-	}
-
-	private func exportFile() async throws -> SentTransferredFile {
-		let resources = PHAssetResource.assetResources(for: asset)
-		let types: [PHAssetResourceType] = asset.mediaType == .video ? [.fullSizeVideo, .video] : [.fullSizePhoto, .photo]
-		guard let resource = types.lazy.compactMap({ type in resources.first { $0.type == type } }).first else {
-			throw CocoaError(.fileNoSuchFile)
+		if view.livePhoto !== livePhoto {
+			view.livePhoto = livePhoto
 		}
-		let folder = URL.temporaryDirectory.appending(path: UUID().uuidString)
-		try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
-		let url = folder.appending(path: resource.originalFilename)
-		let options = PHAssetResourceRequestOptions()
-		options.isNetworkAccessAllowed = true
-		try await PHAssetResourceManager.default().writeData(for: resource, toFile: url, options: options)
-		return SentTransferredFile(url)
-	}
-}
-
-/// Holds a value that Photos hands back on its own queue.
-struct PhotosResult<Value>: @unchecked Sendable {
-	let value: Value
-}
-
-extension PHImageManager {
-	func playerItem(for asset: PHAsset) async -> PhotosResult<AVPlayerItem>? {
-		let options = PHVideoRequestOptions()
-		options.isNetworkAccessAllowed = true
-		options.deliveryMode = .automatic
-		return await withCheckedContinuation { continuation in
-			requestPlayerItem(forVideo: asset, options: options) { item, _ in
-				continuation.resume(returning: item.map(PhotosResult.init))
-			}
-		}
-	}
-
-	/// The final Live Photo; Photos may first deliver a lower quality one, which is skipped.
-	func livePhoto(for asset: PHAsset, targetSize: CGSize) async -> PhotosResult<PHLivePhoto>? {
-		let options = PHLivePhotoRequestOptions()
-		options.isNetworkAccessAllowed = true
-		options.deliveryMode = .highQualityFormat
-		return await withCheckedContinuation { continuation in
-			requestLivePhoto(for: asset, targetSize: targetSize, contentMode: .aspectFit, options: options) { livePhoto, _ in
-				continuation.resume(returning: livePhoto.map(PhotosResult.init))
-			}
+		if playsHint, !context.coordinator.hasPlayedHint, !context.environment.accessibilityReduceMotion {
+			context.coordinator.hasPlayedHint = true
+			view.startPlayback(with: .hint)
+		} else if !playsHint {
+			context.coordinator.hasPlayedHint = false
 		}
 	}
 }

@@ -1,8 +1,15 @@
 What's new in 1.1:
 
-• Swipe between the day's photos in full screen
-• Videos and Live Photos now play
-• Sharper zoom
+• A new photo viewer, like in Photos: photos zoom open from the grid, swipe down or pinch to close, and tap to hide everything
+• Skim all of the day's photos with the thumbnail strip
+• Videos and Live Photos play
+• Pinch or double-tap to zoom, with sharper detail
+• See where each photo was taken on a map
+• Share original photos and videos, favorite them, hide them from On This Day, or delete them
+• Pinch the grid for bigger or smaller thumbnails, or show whole photos with Aspect Ratio Grid
+• Select several photos at once to share or favorite them
+• Works in landscape
+• VoiceOver describes every photo
 • Pick any date with the calendar button
 • Tapping the widget opens the photo it shows
 • New Lock Screen widgets with today's photo count

@@ -1,8 +1,15 @@
 Neu in 1.1:
 
-• Im Vollbild zwischen den Fotos des Tages wischen
+• Neue Fotoansicht wie in Fotos: Fotos zoomen aus dem Raster auf, nach unten wischen oder zusammenziehen zum Schließen, tippen blendet alles aus
+• Mit der Miniaturleiste durch alle Fotos des Tages blättern
 • Videos und Live Photos werden abgespielt
-• Schärferes Zoomen
+• Mit Aufziehen oder Doppeltippen zoomen, mit schärferen Details
+• Auf einer Karte sehen, wo ein Foto aufgenommen wurde
+• Originalfotos und -videos teilen, als Favoriten markieren, in On This Day ausblenden oder löschen
+• Das Raster aufziehen oder zusammenziehen für größere oder kleinere Miniaturen, oder mit dem Seitenverhältnis-Raster ganze Fotos zeigen
+• Mehrere Fotos auswählen, um sie zusammen zu teilen oder als Favoriten zu markieren
+• Funktioniert im Querformat
+• VoiceOver beschreibt jedes Foto
 • Mit der Kalendertaste ein beliebiges Datum wählen
 • Das Widget öffnet das Foto, das es zeigt
 • Neue Widgets für den Sperrbildschirm mit der Anzahl der heutigen Fotos

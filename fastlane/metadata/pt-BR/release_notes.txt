@@ -1,8 +1,15 @@
 Novidades da versão 1.1:
 
-• Deslize entre as fotos do dia em tela cheia
-• Vídeos e Live Photos agora são reproduzidos
-• Zoom mais nítido
+• Novo visualizador como no Fotos: as fotos abrem com zoom a partir da grade, deslize para baixo ou faça o gesto de pinça para fechar e toque para ocultar tudo
+• Percorra todas as fotos do dia com a faixa de miniaturas
+• Vídeos e Live Photos são reproduzidos
+• Use o gesto de pinça ou toque duas vezes para ampliar, com mais detalhes
+• Veja em um mapa onde cada foto foi tirada
+• Compartilhe fotos e vídeos originais, marque como favoritos, oculte no On This Day ou apague
+• Use o gesto de pinça na grade para miniaturas maiores ou menores, ou mostre as fotos inteiras com a Grade com Proporção
+• Selecione várias fotos de uma vez para compartilhar ou marcar como favoritas
+• Funciona na horizontal
+• O VoiceOver descreve cada foto
 • Escolha qualquer data com o botão de calendário
 • O widget abre a foto que ele mostra
 • Novos widgets para a Tela Bloqueada com o número de fotos de hoje

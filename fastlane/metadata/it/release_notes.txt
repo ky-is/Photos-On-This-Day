@@ -1,8 +1,15 @@
 Novità della versione 1.1:
 
-• Scorri le foto del giorno a schermo intero
-• Video e Live Photo ora vengono riprodotti
-• Zoom più nitido
+• Nuovo visore come in Foto: le foto si aprono con uno zoom dalla griglia, scorri verso il basso o pizzica per chiudere e tocca per nascondere tutto
+• Scorri tutte le foto del giorno con la striscia di miniature
+• Video e Live Photo vengono riprodotti
+• Pizzica o tocca due volte per ingrandire, con più dettagli
+• Guarda su una mappa dove è stata scattata ogni foto
+• Condividi foto e video originali, aggiungili ai preferiti, nascondili in On This Day o eliminali
+• Pizzica la griglia per miniature più grandi o più piccole, oppure mostra le foto intere con la griglia con proporzioni
+• Seleziona più foto insieme per condividerle o aggiungerle ai preferiti
+• Funziona in orizzontale
+• VoiceOver descrive ogni foto
 • Scegli qualsiasi data con il pulsante del calendario
 • Il widget apre la foto che mostra
 • Nuovi widget per la schermata di blocco con il numero di foto di oggi

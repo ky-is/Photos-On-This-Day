@@ -206,8 +206,10 @@ private final class LibraryObserver: NSObject, PHPhotoLibraryChangeObserver, Sen
 	func toggle(_ asset: PHAsset) async {
 		let willFavorite = !isFavorite(asset)
 		do {
-			try await PHPhotoLibrary.shared().performChanges {
-				PHAssetChangeRequest(for: asset).isFavorite = willFavorite
+			try await PHPhotoLibrary.shared().performChanges(onAssetsWith: [asset.localIdentifier]) { assets in
+				assets.enumerateObjects { asset, _, _ in
+					PHAssetChangeRequest(for: asset).isFavorite = willFavorite
+				}
 			}
 			cache[asset.localIdentifier] = willFavorite
 		} catch {

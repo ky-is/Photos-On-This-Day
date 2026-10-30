@@ -1,8 +1,15 @@
 Nouveautés de la version 1.1 :
 
-• Balayez les photos du jour en plein écran
+• Nouveau visualiseur comme dans Photos : les photos s’ouvrent en zoomant depuis la grille, balayez vers le bas ou pincez pour fermer, et touchez pour tout masquer
+• Parcourez toutes les photos du jour avec la bande de vignettes
 • Les vidéos et les Live Photos sont lues
-• Zoom plus net
+• Pincez ou touchez deux fois pour zoomer, avec plus de détails
+• Voyez sur une carte où chaque photo a été prise
+• Partagez les photos et vidéos originales, ajoutez-les aux favoris, masquez-les dans On This Day ou supprimez-les
+• Pincez la grille pour des vignettes plus grandes ou plus petites, ou affichez les photos entières avec la grille au format d’origine
+• Sélectionnez plusieurs photos à la fois pour les partager ou les ajouter aux favoris
+• Fonctionne en mode paysage
+• VoiceOver décrit chaque photo
 • Choisissez n'importe quelle date avec le bouton calendrier
 • Le widget ouvre la photo qu'il affiche
 • Nouveaux widgets pour l'écran verrouillé avec le nombre de photos du jour

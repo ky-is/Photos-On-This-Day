@@ -3,12 +3,14 @@ import UIKit
 
 struct ZoomScrollView<Content: View>: UIViewRepresentable {
 	private let content: Content
-	/// Whether the content is zoomed in: true as a pinch begins, then whether it ended above full size.
+	/// Whether the content is zoomed in, each time that changes.
 	private let onZoom: (Bool) -> Void
 	private let onTap: () -> Void
+	private let onPinchClose: (() -> Void)?
 
-	/// Pinch or double-tap to zoom, like in Photos.
-	init(onZoom: @escaping (Bool) -> Void = { _ in }, onTap: @escaping () -> Void = {}, @ViewBuilder content: () -> Content) {
+	/// Pinch or double-tap to zoom, like in Photos. Pinching in below full size calls `onPinchClose`.
+	init(onZoom: @escaping (Bool) -> Void = { _ in }, onTap: @escaping () -> Void = {}, onPinchClose: (() -> Void)? = nil, @ViewBuilder content: () -> Content) {
+		self.onPinchClose = onPinchClose
 		self.onZoom = onZoom
 		self.onTap = onTap
 		self.content = content()
@@ -44,24 +46,29 @@ struct ZoomScrollView<Content: View>: UIViewRepresentable {
 	}
 
 	func makeCoordinator() -> Coordinator {
-		Coordinator(hostingController: UIHostingController(rootView: content), onZoom: onZoom, onTap: onTap)
+		Coordinator(hostingController: UIHostingController(rootView: content), onZoom: onZoom, onTap: onTap, onPinchClose: onPinchClose)
 	}
 
 	func updateUIView(_ uiView: UIScrollView, context: Context) {
 		context.coordinator.hostingController.rootView = content
 		context.coordinator.onZoom = onZoom
 		context.coordinator.onTap = onTap
+		context.coordinator.onPinchClose = onPinchClose
 	}
 
 	final class Coordinator: NSObject, UIScrollViewDelegate, UIGestureRecognizerDelegate {
 		let hostingController: UIHostingController<Content>
 		var onZoom: (Bool) -> Void
 		var onTap: () -> Void
+		var onPinchClose: (() -> Void)?
+		private var isZoomedIn = false
+		private var isClosing = false
 
-		init(hostingController: UIHostingController<Content>, onZoom: @escaping (Bool) -> Void, onTap: @escaping () -> Void) {
+		init(hostingController: UIHostingController<Content>, onZoom: @escaping (Bool) -> Void, onTap: @escaping () -> Void, onPinchClose: (() -> Void)?) {
 			self.hostingController = hostingController
 			self.onZoom = onZoom
 			self.onTap = onTap
+			self.onPinchClose = onPinchClose
 		}
 
 		/// Leaves taps on the toolbars floating over the photo to their buttons.
@@ -89,13 +96,24 @@ struct ZoomScrollView<Content: View>: UIViewRepresentable {
 			hostingController.view
 		}
 
-		func scrollViewWillBeginZooming(_ scrollView: UIScrollView, with view: UIView?) {
-			onZoom(true)
+		func scrollViewDidZoom(_ scrollView: UIScrollView) {
+			// Pinching in below full size closes the photo, like in Photos.
+			if scrollView.isZooming, scrollView.zoomScale < scrollView.minimumZoomScale * 0.8, let onPinchClose, !isClosing {
+				isClosing = true
+				onPinchClose()
+				return
+			}
+			// Report crossing into or out of zoomed in, not every step of the pinch.
+			let isZoomedIn = scrollView.zoomScale > scrollView.minimumZoomScale * 1.02
+			if isZoomedIn != self.isZoomedIn {
+				self.isZoomedIn = isZoomedIn
+				scrollView.panGestureRecognizer.isEnabled = isZoomedIn
+				onZoom(isZoomedIn)
+			}
 		}
 
 		func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
-			scrollView.panGestureRecognizer.isEnabled = scale > scrollView.minimumZoomScale
-			onZoom(scale > scrollView.minimumZoomScale)
+			isClosing = false
 		}
 	}
 }
