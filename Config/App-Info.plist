@@ -13,5 +13,16 @@
 			</array>
 		</dict>
 	</array>
+	<key>INAlternativeAppNames</key>
+	<array>
+		<dict>
+			<key>INAlternativeAppName</key>
+			<string>On This Day</string>
+		</dict>
+		<dict>
+			<key>INAlternativeAppName</key>
+			<string>Photos On This Day</string>
+		</dict>
+	</array>
 </dict>
 </plist>

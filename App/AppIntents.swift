@@ -88,19 +88,19 @@ struct PhotosOnThisDayShortcuts: AppShortcutsProvider {
 	static var appShortcuts: [AppShortcut] {
 		AppShortcut(intent: OpenDayIntent(), phrases: [
 			"Show \(.applicationName)",
-			"Show my \(.applicationName) photos",
-		], shortTitle: "Show Today", systemImageName: "calendar")
+			"Open \(.applicationName)",
+		], shortTitle: "Photos On This Day", systemImageName: "calendar")
 		AppShortcut(intent: OpenRandomMemoryIntent(), phrases: [
 			"Show a random memory in \(.applicationName)",
 			"Surprise me with \(.applicationName)",
 		], shortTitle: "Random Memory", systemImageName: "shuffle")
 		AppShortcut(intent: OpenYearIntent(), phrases: [
-			"Show my \(.applicationName) photos from \(\.$year)",
+			"Show photos from \(\.$year) in \(.applicationName)",
 			"Show \(\.$year) in \(.applicationName)",
 		], shortTitle: "Photos From a Year", systemImageName: "calendar.badge.clock")
 		AppShortcut(intent: CountPhotosIntent(), phrases: [
 			"How many photos are in \(.applicationName)",
-			"Count my \(.applicationName) photos",
+			"Count photos in \(.applicationName)",
 		], shortTitle: "Count Photos", systemImageName: "number")
 	}
 }

@@ -1,13 +1,13 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "Count my ${applicationName} photos" : {
+    "Count photos in ${applicationName}" : {
       "localizations" : {
         "de" : {
           "stringSet" : {
             "state" : "translated",
             "values" : [
-              "Zähl meine ${applicationName}-Fotos"
+              "Fotos in ${applicationName} zählen"
             ]
           }
         },
@@ -15,7 +15,7 @@
           "stringSet" : {
             "state" : "translated",
             "values" : [
-              "Cuenta mis fotos de ${applicationName}"
+              "Contar fotos en ${applicationName}"
             ]
           }
         },
@@ -23,7 +23,7 @@
           "stringSet" : {
             "state" : "translated",
             "values" : [
-              "Compte mes photos ${applicationName}"
+              "Compter les photos dans ${applicationName}"
             ]
           }
         },
@@ -31,7 +31,7 @@
           "stringSet" : {
             "state" : "translated",
             "values" : [
-              "Conta le mie foto di ${applicationName}"
+              "Conta le foto in ${applicationName}"
             ]
           }
         },
@@ -39,7 +39,7 @@
           "stringSet" : {
             "state" : "translated",
             "values" : [
-              "${applicationName}の写真を数えて"
+              "${applicationName}の写真を数える"
             ]
           }
         },
@@ -47,7 +47,7 @@
           "stringSet" : {
             "state" : "translated",
             "values" : [
-              "${applicationName} 사진 세어 줘"
+              "${applicationName}에서 사진 세기"
             ]
           }
         },
@@ -55,7 +55,7 @@
           "stringSet" : {
             "state" : "translated",
             "values" : [
-              "Conte minhas fotos do ${applicationName}"
+              "Contar fotos no ${applicationName}"
             ]
           }
         },
@@ -63,7 +63,7 @@
           "stringSet" : {
             "state" : "translated",
             "values" : [
-              "统计我的${applicationName}照片"
+              "数一数${applicationName}里的照片"
             ]
           }
         }
@@ -132,6 +132,74 @@
             "state" : "translated",
             "values" : [
               "${applicationName}里有多少张照片"
+            ]
+          }
+        }
+      }
+    },
+    "Open ${applicationName}" : {
+      "localizations" : {
+        "de" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "${applicationName} öffnen"
+            ]
+          }
+        },
+        "es" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Abrir ${applicationName}"
+            ]
+          }
+        },
+        "fr" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Ouvrir ${applicationName}"
+            ]
+          }
+        },
+        "it" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Apri ${applicationName}"
+            ]
+          }
+        },
+        "ja" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "${applicationName}を開く"
+            ]
+          }
+        },
+        "ko" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "${applicationName} 열기"
+            ]
+          }
+        },
+        "pt-BR" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Abrir ${applicationName}"
+            ]
+          }
+        },
+        "zh-Hans" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "打开${applicationName}"
             ]
           }
         }
@@ -341,13 +409,13 @@
         }
       }
     },
-    "Show my ${applicationName} photos" : {
+    "Show photos from ${year} in ${applicationName}" : {
       "localizations" : {
         "de" : {
           "stringSet" : {
             "state" : "translated",
             "values" : [
-              "Meine ${applicationName}-Fotos anzeigen"
+              "Fotos aus ${year} in ${applicationName} anzeigen"
             ]
           }
         },
@@ -355,7 +423,7 @@
           "stringSet" : {
             "state" : "translated",
             "values" : [
-              "Mostrar mis fotos de ${applicationName}"
+              "Mostrar fotos de ${year} en ${applicationName}"
             ]
           }
         },
@@ -363,7 +431,7 @@
           "stringSet" : {
             "state" : "translated",
             "values" : [
-              "Afficher mes photos ${applicationName}"
+              "Afficher les photos de ${year} dans ${applicationName}"
             ]
           }
         },
@@ -371,7 +439,7 @@
           "stringSet" : {
             "state" : "translated",
             "values" : [
-              "Mostra le mie foto di ${applicationName}"
+              "Mostra le foto del ${year} in ${applicationName}"
             ]
           }
         },
@@ -379,7 +447,7 @@
           "stringSet" : {
             "state" : "translated",
             "values" : [
-              "${applicationName}の写真を見せて"
+              "${applicationName}で${year}年の写真を表示"
             ]
           }
         },
@@ -387,7 +455,7 @@
           "stringSet" : {
             "state" : "translated",
             "values" : [
-              "${applicationName} 사진 보여줘"
+              "${applicationName}에서 ${year}년 사진 보기"
             ]
           }
         },
@@ -395,7 +463,7 @@
           "stringSet" : {
             "state" : "translated",
             "values" : [
-              "Mostrar minhas fotos do ${applicationName}"
+              "Mostrar fotos de ${year} no ${applicationName}"
             ]
           }
         },
@@ -403,75 +471,7 @@
           "stringSet" : {
             "state" : "translated",
             "values" : [
-              "显示我的${applicationName}照片"
-            ]
-          }
-        }
-      }
-    },
-    "Show my ${applicationName} photos from ${year}" : {
-      "localizations" : {
-        "de" : {
-          "stringSet" : {
-            "state" : "translated",
-            "values" : [
-              "Meine ${applicationName}-Fotos aus ${year} anzeigen"
-            ]
-          }
-        },
-        "es" : {
-          "stringSet" : {
-            "state" : "translated",
-            "values" : [
-              "Mostrar mis fotos de ${applicationName} de ${year}"
-            ]
-          }
-        },
-        "fr" : {
-          "stringSet" : {
-            "state" : "translated",
-            "values" : [
-              "Afficher mes photos ${applicationName} de ${year}"
-            ]
-          }
-        },
-        "it" : {
-          "stringSet" : {
-            "state" : "translated",
-            "values" : [
-              "Mostra le mie foto di ${applicationName} del ${year}"
-            ]
-          }
-        },
-        "ja" : {
-          "stringSet" : {
-            "state" : "translated",
-            "values" : [
-              "${applicationName}で${year}年の写真を見せて"
-            ]
-          }
-        },
-        "ko" : {
-          "stringSet" : {
-            "state" : "translated",
-            "values" : [
-              "${applicationName}에서 ${year}년 사진 보여줘"
-            ]
-          }
-        },
-        "pt-BR" : {
-          "stringSet" : {
-            "state" : "translated",
-            "values" : [
-              "Mostrar minhas fotos do ${applicationName} de ${year}"
-            ]
-          }
-        },
-        "zh-Hans" : {
-          "stringSet" : {
-            "state" : "translated",
-            "values" : [
-              "显示我${year}年的${applicationName}照片"
+              "在${applicationName}中显示${year}年的照片"
             ]
           }
         }
