@@ -303,8 +303,9 @@ private struct PhotoScrubber: View {
 	/// The strip's own position, so dragging it and paging the photos don't fight over the selection.
 	@State private var scrubbedID: String?
 	@State private var isScrubbing = false
+	/// The strip's own width: less than the screen's where bars sit beside it, like the iPhone Duo cover screen's side rail.
+	@State private var width: CGFloat = 0
 
-	@Environment(\.screenSize) private var screenSize
 	@Environment(\.accessibilityReduceMotion) private var reduceMotion
 
 	private static let itemWidth: CGFloat = 32
@@ -330,7 +331,10 @@ private struct PhotoScrubber: View {
 				.scrollTargetLayout()
 		}
 			// Lets the first and last photos reach the middle.
-			.contentMargins(.horizontal, max(0, (screenSize.width - Self.itemWidth) / 2), for: .scrollContent)
+			.contentMargins(.horizontal, max(0, (width - Self.itemWidth) / 2), for: .scrollContent)
+			// Kept to its own frame, inside the safe area, rather than scrolling under bars at the sides
+			.clipped()
+			.onGeometryChange(for: CGFloat.self) { $0.size.width } action: { width = $0 }
 			.scrollTargetBehavior(.viewAligned)
 			.scrollPosition(id: $scrubbedID)
 			.scrollIndicators(.hidden)
