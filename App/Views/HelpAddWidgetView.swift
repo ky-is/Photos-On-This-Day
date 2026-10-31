@@ -5,8 +5,6 @@ struct HelpAddWidgetView: View {
 
 	@Environment(\.dismiss) private var dismiss
 
-	@AppStorage(UserDefaults.Key.dismissedAddWidget) private var dismissedAddWidget = false
-
 	#if os(macOS)
 	private static let iconName = "widget.small.badge.plus"
 	#else
@@ -40,14 +38,6 @@ struct HelpAddWidgetView: View {
 					.font(.callout)
 					.foregroundStyle(.secondary)
 				#endif
-				if inSheet {
-					Button("Don't show again") {
-						dismissedAddWidget = true
-						dismiss()
-					}
-						.buttonStyle(.bordered)
-						.frame(maxWidth: .infinity)
-				}
 			}
 				.padding()
 		}

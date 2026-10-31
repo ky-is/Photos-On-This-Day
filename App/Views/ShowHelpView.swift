@@ -19,7 +19,8 @@ struct ShowHelpView: View {
 			}
 				.buttonStyle(.bordered)
 				.padding()
-				.sheet(isPresented: $showAddWidgetHelp) {
+				// Seen once is enough: however the help is closed, the suggestion goes away. About still has it.
+				.sheet(isPresented: $showAddWidgetHelp, onDismiss: { dismissedAddWidget = true }) {
 					NavigationStack {
 						HelpAddWidgetView(inSheet: true)
 					}
