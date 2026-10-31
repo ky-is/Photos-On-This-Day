@@ -88,18 +88,27 @@ def sync_screenshots(key, dry_run: false)
 		UI.message("#{type}: #{dry_run ? 'would remove' : 'removed'}")
 		sets[type].delete! unless dry_run
 	end
+	# File by file: a screenshot App Store Connect already has (the same checksum) stays as it is, only new files upload,
+	# and only the ones no longer here are removed, so an unchanged screenshot is never sent again
 	local.each do |type, paths|
 		set = sets[type]
-		remote = (set&.app_screenshots || []).map(&:source_file_checksum)
-		if remote == paths.map { |path| Digest::MD5.file(path).hexdigest }
+		remote = (set&.app_screenshots || []).group_by(&:source_file_checksum)
+		checksums = paths.map { |path| Digest::MD5.file(path).hexdigest }
+		if (set&.app_screenshots || []).map(&:source_file_checksum) == checksums
 			UI.message("#{type}: unchanged (#{paths.size})")
 			next
 		end
-		UI.message("#{type}: #{dry_run ? 'would upload' : 'uploading'} #{paths.size}")
+		kept = paths.zip(checksums).filter_map { |path, sum| remote[sum]&.first && File.basename(path) }
+		changed = paths.zip(checksums).reject { |_, sum| remote[sum] }.map { |path, _| File.basename(path) }
+		stale = (set&.app_screenshots || []).count { |shot| !checksums.include?(shot.source_file_checksum) }
+		UI.message("#{type}: #{dry_run ? 'would upload' : 'uploading'} #{changed.join(', ')}#{kept.empty? ? '' : "; keeping #{kept.join(', ')}"}#{stale.zero? ? '' : "; removing #{stale} old"}")
 		next if dry_run
-		(set&.app_screenshots || []).each(&:delete!)
 		set ||= localization.create_app_screenshot_set(attributes: { screenshotDisplayType: type })
-		ids = paths.map { |path| Spaceship::ConnectAPI::AppScreenshot.create(app_screenshot_set_id: set.id, path: path, wait_for_processing: false).id }
+		ids = paths.zip(checksums).map do |path, sum|
+			existing = remote[sum]&.shift
+			existing ? existing.id : Spaceship::ConnectAPI::AppScreenshot.create(app_screenshot_set_id: set.id, path: path, wait_for_processing: false).id
+		end
+		remote.values.flatten.each(&:delete!)
 		set.reorder_screenshots(app_screenshot_ids: ids)
 	end
 	# App Store Connect processes the uploads on its own; a submit only needs them uploaded, so this doesn't wait for it
@@ -133,10 +142,14 @@ platform :ios do
 	lane :submit do |options|
 		uploads = options[:uploads].to_s != 'false'
 		key = api_key
-		sync_screenshots(key) if uploads
+		if uploads
+			# The text first, since a new language's screenshots need its text on the version
+			upload_to_app_store(api_key: key, app_version: versions[:version], skip_binary_upload: true, skip_screenshots: true, metadata_path: METADATA, submit_for_review: false, force: true, run_precheck_before_submit: false)
+			sync_screenshots(key)
+		end
 		build = latest_testflight_build_number(api_key: key, app_identifier: CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier), version: versions[:version], platform: 'ios')
 		# Released by hand once approved
-		upload_to_app_store(api_key: key, app_version: versions[:version], build_number: build.to_s, skip_binary_upload: true, skip_metadata: !uploads, skip_screenshots: true, metadata_path: METADATA, submit_for_review: true, automatic_release: false, force: true, precheck_include_in_app_purchases: false, submission_information: { add_id_info_uses_idfa: false })
+		upload_to_app_store(api_key: key, app_version: versions[:version], build_number: build.to_s, skip_binary_upload: true, skip_metadata: true, skip_screenshots: true, submit_for_review: true, automatic_release: false, force: true, precheck_include_in_app_purchases: false, submission_information: { add_id_info_uses_idfa: false })
 	end
 
 	desc 'Build and upload to TestFlight (internal testers only; not submitted for external testing)'
