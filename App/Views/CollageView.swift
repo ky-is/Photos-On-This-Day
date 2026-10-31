@@ -59,6 +59,14 @@ struct CollageView: View {
 		var value = 0.0
 	}
 
+	private struct Job: Hashable {
+		let revision: Int
+		/// In Low Power Mode the video is only made once the Video tab is picked, so picking it starts the work again.
+		let waitsForVideo: Bool
+	}
+
+	private static var savesPower: Bool { ProcessInfo.processInfo.isLowPowerModeEnabled }
+
 	private var title: Text { Text(date, format: .dateTime.month(.wide).day()) }
 
 	var body: some View {
@@ -78,11 +86,15 @@ struct CollageView: View {
 					.font(.footnote)
 					.foregroundStyle(.secondary)
 					.opacity(format == .video ? 0 : 1)
-				// The image already names the app; the link is only sent if they want to.
-				ShareLink(item: appStoreURL) {
-					Label("Share with a friend...", systemImage: "link")
+				HStack(spacing: 12) {
+					shareButton
+						.buttonStyle(.borderedProminent)
+					// The image already names the app; the link is only sent if they want to.
+					ShareLink(item: appStoreURL) {
+						Label("Share App", systemImage: "link")
+					}
+						.buttonStyle(.bordered)
 				}
-					.buttonStyle(.bordered)
 			}
 				.padding()
 				#if os(macOS)
@@ -95,11 +107,8 @@ struct CollageView: View {
 							dismiss()
 						}
 					}
-					ToolbarItem(placement: .primaryAction) {
-						shareButton
-					}
 				}
-				.task(id: revision) {
+				.task(id: Job(revision: revision, waitsForVideo: Self.savesPower && format == .video)) {
 					await prepareAll()
 				}
 				.onChange(of: format) { _, format in
@@ -115,16 +124,26 @@ struct CollageView: View {
 		}
 	}
 
+	/// Shares the card or the video once it's ready; until then it waits, greyed out, in the same place.
 	@ViewBuilder private var shareButton: some View {
-		if format == .video {
-			if let video, video.revision == revision {
-				ShareLink(item: video.url, preview: SharePreview(title, image: Image(decorative: video.poster, scale: 1)))
+		let label = Label("Share", systemImage: "square.and.arrow.up")
+		if format == .video, let video, video.revision == revision {
+			ShareLink(item: video.url, preview: SharePreview(title, image: Image(decorative: video.poster, scale: 1))) {
+				label
 			}
-		} else if let card = cards[format], card.revision == revision, let cgImage = card.image {
+		} else if format != .video, let card = cards[format], card.revision == revision, let cgImage = card.image {
 			let image = Image(decorative: cgImage, scale: 3)
-			ShareLink(item: image, preview: SharePreview(title, image: image))
+			ShareLink(item: image, preview: SharePreview(title, image: image)) {
+				label
+			}
+		} else {
+			Button {} label: {
+				label
+			}
+				.disabled(true)
 		}
 	}
+
 
 	@ViewBuilder private var preview: some View {
 		if format == .video {
@@ -174,7 +193,8 @@ struct CollageView: View {
 		for format in [format] + [CollageFormat.post, .story, .video].filter({ $0 != format }) {
 			guard !Task.isCancelled else { return }
 			if format == .video {
-				if video?.revision != revision {
+				// Making the video is the heavy part: in Low Power Mode it waits until someone picks the Video tab.
+				if video?.revision != revision, format == self.format || !Self.savesPower {
 					await makeVideo(chosen: chosen, ranked: ranked, revision: revision)
 				}
 			} else if cards[format]?.revision != revision || cards[format]?.image == nil {
@@ -324,7 +344,7 @@ struct CollageView: View {
 		}
 		let backdrop = CollageCard(format: .story, date: date, yearCount: years.count, yearRange: yearRange(chosen), rows: [], columns: 1, tileHeight: 0)
 		guard let poster = slides.first?.image, let backdropImage = render(backdrop) else { return }
-		let url = URL.temporaryDirectory.appending(path: "\(date.formatted(.dateTime.month(.wide).day())).mp4")
+		let url = TemporaryFiles.collageVideo(named: date.formatted(.dateTime.month(.wide).day()))
 		let pixelArea = CGRect(x: area.minX * 3, y: area.minY * 3, width: area.width * 3, height: area.height * 3)
 		do {
 			try await CollageVideo.make(backdrop: backdropImage, photoArea: pixelArea, cornerRadius: 36, slides: slides, to: url) { value in
@@ -353,11 +373,24 @@ struct CollageView: View {
 	}
 }
 
-/// Ranks a day's photos ahead of time, while the grid is on screen, so the collage opens instantly.
+/// Ranks a day's photos for the collage, and keeps the latest day's ranking so opening it again is instant.
+/// The first day the app shows is ranked ahead of time, since people rarely change days; others wait for the collage.
 @MainActor final class CollagePrep {
 	static let shared = CollagePrep()
 
 	private var current: (key: [[String]], task: Task<[[PHAsset]], Never>)?
+	private var didPrepareFirstDay = false
+
+	/// Ranks the first day shown after launch in the background, unless in Low Power Mode. Later days are left alone.
+	func prepareFirstDay(_ years: [PhotoYear]) async {
+		guard !didPrepareFirstDay else { return }
+		didPrepareFirstDay = true
+		guard !years.isEmpty, !ProcessInfo.processInfo.isLowPowerModeEnabled else { return }
+		// After the grid's own thumbnails have had their turn.
+		try? await Task.sleep(for: .seconds(1))
+		guard !Task.isCancelled else { return }
+		_ = ranking(for: Self.chosenYears(years), priority: .utility)
+	}
 
 	/// At most 9 years: the newest, the oldest, and an even spread between.
 	static func chosenYears(_ years: [PhotoYear]) -> [PhotoYear] {
@@ -367,13 +400,13 @@ struct CollageView: View {
 	}
 
 	/// Starts ranking these years, or hands back the ranking already under way. Only the latest day is kept.
-	func ranking(for chosen: [PhotoYear]) -> Task<[[PHAsset]], Never> {
+	func ranking(for chosen: [PhotoYear], priority: TaskPriority = .userInitiated) -> Task<[[PHAsset]], Never> {
 		let key = chosen.map { $0.assets.map(\.localIdentifier) }
 		if let current, current.key == key {
 			return current.task
 		}
 		current?.task.cancel()
-		let task = Task(priority: .utility) {
+		let task = Task(priority: priority) {
 			await PhotoRanker.ranked(years: chosen)
 		}
 		current = (key, task)

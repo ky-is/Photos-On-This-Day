@@ -19,7 +19,8 @@ import SwiftUI
 
 /// The menu bar on a Mac, and the keyboard shortcut menu on iPad.
 struct AppCommands: Commands {
-	@AppStorage(GridSelection.aspectRatioGridKey) private var showsAspectRatio = false
+	// Menu commands are outside the views, which get the shared store from the app's .defaultAppStorage.
+	@AppStorage(GridSelection.aspectRatioGridKey, store: .shared) private var showsAspectRatio = false
 
 	private var state = StateManager.shared
 	private var actions = MenuActions.shared

@@ -7,6 +7,8 @@ import os
 nonisolated struct OccasionPhoto: Sendable {
 	let created: Date
 	let isFavorite: Bool
+	/// How many photos this one stands for, when only some of a big library are looked at.
+	var weight = 1
 }
 
 /// A milestone anniversary worth a notification, e.g. 10 years since a day with many photos.
@@ -14,7 +16,7 @@ nonisolated struct Occasion: Equatable, Sendable {
 	/// The start of the anniversary day.
 	let day: Date
 	let yearsAgo: Int
-	let photoCount: Int
+	var photoCount: Int
 }
 
 nonisolated enum OccasionPicker {
@@ -51,7 +53,7 @@ nonisolated enum OccasionPicker {
 				guard let anniversary = calendar.date(byAdding: .year, value: yearsAgo, to: photoDay), anniversary >= startDay, anniversary < end else { continue }
 				let key = Key(day: anniversary, yearsAgo: yearsAgo)
 				let current = scores[key] ?? (0, 0)
-				scores[key] = (current.score + (photo.isFavorite ? 3 : 1), current.count + 1)
+				scores[key] = (current.score + photo.weight * (photo.isFavorite ? 3 : 1), current.count + photo.weight)
 			}
 		}
 		let best = scores
@@ -62,7 +64,7 @@ nonisolated enum OccasionPicker {
 }
 
 /// Every few months, reminds people who haven't seen their photos lately, on an anniversary of a day with many photos.
-/// Opening the app or a widget refreshing replaces the pending reminder with one at least `quietDays` away,
+/// Opening the app or a widget refreshing moves the pending reminder to at least `quietDays` away when it's any nearer,
 /// so it only goes out after that long with neither. WidgetKit refreshes widgets that are on a screen, so a widget
 /// someone keeps on their Home Screen counts as seeing their photos.
 nonisolated enum Reminder {
@@ -73,6 +75,8 @@ nonisolated enum Reminder {
 	/// How far past the quiet time to look for a good day.
 	static let windowDays = 60
 	static let hour = 10
+	/// The most photos read to find the busiest day. Bigger libraries are sampled: only which day is busiest matters.
+	static let sampleSize = 1500
 
 	private static let logger = Logger(subsystem: "is.ky.Photos-On-This-Day", category: "Reminder")
 
@@ -84,23 +88,23 @@ nonisolated enum Reminder {
 		if let pending = defaults.reminderDate, pending <= now {
 			defaults.lastReminderDate = pending
 		}
+		let calendar = Calendar.current
+		let earliest = calendar.date(byAdding: .day, value: quietDays, to: now)!
+		// Still far enough off: leave it, rather than search the library again on every open and widget refresh.
+		if let pending = defaults.reminderDate, pending >= earliest, await center.pendingNotificationRequests().contains(where: { $0.identifier == identifier }) {
+			return
+		}
 		defaults.reminderDate = nil
 		center.removePendingNotificationRequests(withIdentifiers: [identifier])
 
 		guard [.authorized, .limited].contains(PHPhotoLibrary.authorizationStatus(for: .readWrite)) else { return }
-		let calendar = Calendar.current
-		var start = calendar.date(byAdding: .day, value: quietDays, to: now)!
+		var start = earliest
 		if let last = defaults.lastReminderDate {
 			start = max(start, calendar.date(byAdding: .day, value: quietDays, to: last)!)
 		}
 		let filters = PhotoFilters(showScreenshots: defaults.filterShowScreenshots, showShared: defaults.filterShowShared, hiddenAlbumIDs: defaults.filterHiddenAlbums)
 		let hiddenIDs = Set(defaults.filterPhotos.values.joined())
-		// A round anniversary if there's one in the window, otherwise any year.
-		var occasion = await findOccasion(from: start, yearsAgo: OccasionPicker.milestones, filters: filters, hiddenIDs: hiddenIDs)
-		if occasion == nil {
-			occasion = await findOccasion(from: start, yearsAgo: Array(1...maxYearsBack), filters: filters, hiddenIDs: hiddenIDs)
-		}
-		guard let occasion else {
+		guard let occasion = await findOccasion(from: start, filters: filters, hiddenIDs: hiddenIDs) else {
 			logger.info("Reminder: no occasion found")
 			return
 		}
@@ -134,12 +138,25 @@ nonisolated enum Reminder {
 		}
 	}
 
-	@concurrent private static func findOccasion(from start: Date, yearsAgo: [Int], filters: PhotoFilters, hiddenIDs: Set<String>) async -> Occasion? {
+	/// One look at the window in every past year, sampled in big libraries; then the chosen day's photos are counted exactly for the message.
+	@concurrent private static func findOccasion(from start: Date, filters: PhotoFilters, hiddenIDs: Set<String>) async -> Occasion? {
+		let anyYear = Array(1...maxYearsBack)
+		let fetch = PHAsset.fetchAssets(createdInAnyOf: OccasionPicker.searchRanges(from: start, days: windowDays, yearsAgo: anyYear), filters: filters)
+		let step = max(1, fetch.count / sampleSize)
 		var photos: [OccasionPhoto] = []
-		PHAsset.fetchAssets(createdInAnyOf: OccasionPicker.searchRanges(from: start, days: windowDays, yearsAgo: yearsAgo), filters: filters).enumerateObjects { asset, _, _ in
+		fetch.enumerateObjects(at: IndexSet(stride(from: 0, to: fetch.count, by: step)), options: []) { asset, _, _ in
 			guard let created = asset.creationDate, !hiddenIDs.contains(asset.localIdentifier) else { return }
-			photos.append(OccasionPhoto(created: created, isFavorite: asset.isFavorite))
+			photos.append(OccasionPhoto(created: created, isFavorite: asset.isFavorite, weight: step))
 		}
-		return OccasionPicker.best(photos: photos, from: start, days: windowDays, yearsAgo: yearsAgo)
+		// A round anniversary if there's one in the window, otherwise any year.
+		guard var occasion = OccasionPicker.best(photos: photos, from: start, days: windowDays) ?? OccasionPicker.best(photos: photos, from: start, days: windowDays, yearsAgo: anyYear) else { return nil }
+		if step > 1 {
+			// Counting a fetch doesn't load its photos, so the one day can be exact.
+			let calendar = Calendar.current
+			let photoDay = calendar.date(byAdding: .year, value: -occasion.yearsAgo, to: occasion.day)!
+			let dayFilters = PhotoFilters(showScreenshots: filters.showScreenshots, showShared: filters.showShared, hiddenIDs: Array(hiddenIDs), hiddenAlbumIDs: filters.hiddenAlbumIDs)
+			occasion.photoCount = PHAsset.fetchAssets(createdInAnyOf: [photoDay..<calendar.date(byAdding: .day, value: 1, to: photoDay)!], filters: dayFilters).count
+		}
+		return occasion
 	}
 }

@@ -3,6 +3,7 @@ import MapKit
 import Photos
 import PhotosUI
 import SwiftUI
+import WidgetKit
 import os
 
 /// The photos of a day, opened at one of them. Used for navigation and widget deep links.
@@ -176,6 +177,8 @@ struct PhotoViewer: View {
 				PHAssetChangeRequest.deleteAssets(assets)
 			}
 			remove(asset)
+			// So a widget isn't left showing it.
+			WidgetCenter.shared.reloadAllTimelines()
 		} catch {
 			// Also where it lands when the delete isn't confirmed.
 			logger.info("Delete not done: \(error.localizedDescription)")

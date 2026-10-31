@@ -84,6 +84,12 @@ private struct LoadedPhotos {
 	let currentYear: PhotoYear?
 	/// When no past years have photos: the days within three either side that do, nearest first.
 	var nearbyDays: [NearbyDay] = []
+
+	/// Everything that shows: which photos, and whether each is a favorite or has been edited. When a library change
+	/// leaves it the same, the grid is left alone.
+	var contentID: [String] {
+		(pastYears + (currentYear.map { [$0] } ?? [])).flatMap(\.assets).map { "\($0.localIdentifier) \($0.isFavorite) \($0.modificationDate?.timeIntervalSinceReferenceDate ?? 0)" } + nearbyDays.map { "\($0.date.timeIntervalSinceReferenceDate) \($0.photoCount)" }
+	}
 }
 
 private struct NearbyDay: Identifiable {
@@ -217,12 +223,10 @@ struct PhotosView: View {
 			.onChange(of: hasPastPhotos, initial: true) { _, hasPastPhotos in
 				menuActions.hasPastPhotos = hasPastPhotos
 			}
-			// Ranks the day's best photos in the background once the day has been on screen a moment, so the collage opens instantly.
-			.task(id: loaded?.pastYears.map { "\($0.dateID) \($0.year) \($0.assets.count)" }) {
-				guard let years = loaded?.pastYears, !years.isEmpty else { return }
-				try? await Task.sleep(for: .seconds(1))
-				guard !Task.isCancelled else { return }
-				_ = CollagePrep.shared.ranking(for: CollagePrep.chosenYears(years))
+			.task(id: loaded?.date) {
+				if let years = loaded?.pastYears {
+					await CollagePrep.shared.prepareFirstDay(years)
+				}
 			}
 			.sheet(isPresented: Binding { menuActions.showsCollage && hasPastPhotos } set: { menuActions.showsCollage = $0 }) {
 				CollageView(date: date, years: loaded?.pastYears ?? [])
@@ -261,8 +265,11 @@ struct PhotosView: View {
 			}
 			.screenshotSupport()
 			.task(id: FetchKey(date: date, filters: filters.photoFilters(for: dateID), libraryRevision: state.libraryRevision)) {
+				let fetchedAt = ContinuousClock.now
 				let photos = await Self.load(date: date, filters: filters.photoFilters(for: dateID))
-				if !Task.isCancelled {
+				guard !Task.isCancelled else { return }
+				Favorites.shared.forgetToggles(before: fetchedAt)
+				if loaded?.date != photos.date || loaded?.contentID != photos.contentID {
 					loaded = photos
 				}
 			}

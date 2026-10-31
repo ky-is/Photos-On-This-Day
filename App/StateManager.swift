@@ -11,8 +11,10 @@ let logger = Logger(subsystem: "is.ky.Photos-On-This-Day", category: "App")
 	private(set) var today = Date.current()
 	var daysChange = 0
 	private(set) var isScanning = false
-	/// Bumped whenever the photo library changes, so loaded photos refresh.
+	/// Bumped when the photo library changes, so loaded photos refresh. Changes are gathered for a moment first:
+	/// Photos reports every change in the library, and iCloud syncing sends a steady stream of them.
 	private(set) var libraryRevision = 0
+	private var pendingLibraryChange: Task<Void, Never>?
 
 	private var libraryObserver: LibraryObserver?
 
@@ -107,11 +109,20 @@ let logger = Logger(subsystem: "is.ky.Photos-On-This-Day", category: "App")
 		guard canShowPhotos, libraryObserver == nil else { return }
 		let observer = LibraryObserver {
 			Task { @MainActor in
-				StateManager.shared.libraryRevision += 1
+				StateManager.shared.libraryDidChange()
 			}
 		}
 		PHPhotoLibrary.shared().register(observer)
 		libraryObserver = observer
+	}
+
+	private func libraryDidChange() {
+		guard pendingLibraryChange == nil else { return }
+		pendingLibraryChange = Task {
+			try? await Task.sleep(for: .milliseconds(300))
+			pendingLibraryChange = nil
+			libraryRevision += 1
+		}
 	}
 
 	/// Steps back to the nearest earlier day that has photos from past years.
@@ -196,14 +207,19 @@ private final class LibraryObserver: NSObject, PHPhotoLibraryChangeObserver, Sen
 	}
 }
 
-/// Favorite state, cached so toggles show immediately.
+/// Favorite state, cached so toggles show immediately, until photos fetched after the toggle know about it.
 @Observable final class Favorites {
 	static let shared = Favorites()
 
-	private var cache: [String: Bool] = [:]
+	private var cache: [String: (isFavorite: Bool, at: ContinuousClock.Instant)] = [:]
 
 	func isFavorite(_ asset: PHAsset) -> Bool {
-		cache[asset.localIdentifier] ?? asset.isFavorite
+		cache[asset.localIdentifier]?.isFavorite ?? asset.isFavorite
+	}
+
+	/// Photos fetched from `time` on have every toggle made before it, and any change made since in Photos, so those win.
+	func forgetToggles(before time: ContinuousClock.Instant) {
+		cache = cache.filter { $0.value.at >= time }
 	}
 
 	func toggle(_ asset: PHAsset) async {
@@ -214,7 +230,9 @@ private final class LibraryObserver: NSObject, PHPhotoLibraryChangeObserver, Sen
 					PHAssetChangeRequest(for: asset).isFavorite = willFavorite
 				}
 			}
-			cache[asset.localIdentifier] = willFavorite
+			cache[asset.localIdentifier] = (willFavorite, .now)
+			// A widget set to favorites only may need to change.
+			WidgetCenter.shared.reloadAllTimelines()
 		} catch {
 			logger.error("Favorite failed: \(error.localizedDescription)")
 		}

@@ -26,9 +26,7 @@ nonisolated struct SharedAsset: Transferable, @unchecked Sendable {
 		guard let resource = types.lazy.compactMap({ type in resources.first { $0.type == type } }).first else {
 			throw CocoaError(.fileNoSuchFile)
 		}
-		let folder = URL.temporaryDirectory.appending(path: UUID().uuidString)
-		try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
-		let url = folder.appending(path: resource.originalFilename)
+		let url = try TemporaryFiles.newExportFolder().appending(path: resource.originalFilename)
 		let options = PHAssetResourceRequestOptions()
 		options.isNetworkAccessAllowed = true
 		try await PHAssetResourceManager.default().writeData(for: resource, toFile: url, options: options)

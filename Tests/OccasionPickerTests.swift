@@ -63,3 +63,14 @@ struct OccasionPickerTests {
 		#expect(range.upperBound == day(2026, 5, 14, hour: 0))
 	}
 }
+
+struct OccasionPickerSamplingTests {
+	/// In a sampled library each photo read stands for several, so one sampled photo can outweigh a few counted ones.
+	@Test func weightsStandForSkippedPhotos() throws {
+		let sampled = [OccasionPhoto(created: day(2017, 8, 1), isFavorite: false, weight: 10)]
+		let counted = photos(on: day(2017, 6, 7), count: 4)
+		let occasion = try #require(OccasionPicker.best(photos: sampled + counted, from: day(2027, 1, 1)))
+		#expect(occasion.day == day(2027, 8, 1, hour: 0))
+		#expect(occasion.photoCount == 10)
+	}
+}

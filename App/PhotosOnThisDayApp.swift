@@ -8,18 +8,9 @@ import os
 struct PhotosOnThisDayApp: App {
 	@Environment(\.scenePhase) private var scenePhase
 
-	init() {
-		#if os(iOS)
-		UIView.appearance(whenContainedInInstancesOf: [UIAlertController.self]).tintColor = .accent
-		UINavigationBar.appearance().largeTitleTextAttributes = [.font: UIFont.rounded(style: .largeTitle, bold: true)]
-		UINavigationBar.appearance().titleTextAttributes = [.font: UIFont.rounded(style: .headline, bold: false)]
-		do {
-			try AVAudioSession.sharedInstance().setCategory(.ambient, mode: .default)
-		} catch {
-			logger.error("Audio session: \(error.localizedDescription)")
-		}
-		#endif
-	}
+	#if os(iOS)
+	@UIApplicationDelegateAdaptor private var appDelegate: AppDelegate
+	#endif
 
 	var body: some Scene {
 		WindowGroup {
@@ -39,6 +30,8 @@ struct PhotosOnThisDayApp: App {
 				.frame(minWidth: 480, minHeight: 560)
 				#endif
 				.task {
+					// Nothing from an earlier launch is still being shared.
+					TemporaryFiles.clearAll()
 					// Siri phrases name a year, so it needs the list of years.
 					PhotosOnThisDayShortcuts.updateAppShortcutParameters()
 					let state = StateManager.shared
@@ -68,6 +61,21 @@ struct PhotosOnThisDayApp: App {
 }
 
 #if os(iOS)
+/// UIKit setup that has to wait for launch to finish: done in the App's init, it stops iOS from applying the accent color.
+final class AppDelegate: NSObject, UIApplicationDelegate {
+	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
+		UIView.appearance(whenContainedInInstancesOf: [UIAlertController.self]).tintColor = .accent
+		UINavigationBar.appearance().largeTitleTextAttributes = [.font: UIFont.rounded(style: .largeTitle, bold: true)]
+		UINavigationBar.appearance().titleTextAttributes = [.font: UIFont.rounded(style: .headline, bold: false)]
+		do {
+			try AVAudioSession.sharedInstance().setCategory(.ambient, mode: .default)
+		} catch {
+			logger.error("Audio session: \(error.localizedDescription)")
+		}
+		return true
+	}
+}
+
 extension UIFont {
 	static func rounded(style: TextStyle, bold: Bool) -> UIFont {
 		let font = UIFont.preferredFont(forTextStyle: style)
