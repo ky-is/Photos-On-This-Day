@@ -13,8 +13,10 @@ nonisolated extension Bundle {
 nonisolated extension Date {
 	static func current() -> Self {
 #if targetEnvironment(simulator)
-		// A fixed day for the simulator's sample library; `-screenshotDate 2022-08-08T18:00:00Z` picks another.
-		let date = UserDefaults.standard.string(forKey: "screenshotDate") ?? "2022-06-07T18:00:00Z"
+		// A fixed day for the simulator's sample library; `-screenshotDate 2022-08-08T18:00:00Z` picks another. Widgets get the
+		// app's through the app group (ScreenshotSupport), since launch arguments only reach the app.
+		let isWidget = Bundle.main.bundleURL.pathExtension == "appex"
+		let date = UserDefaults.standard.string(forKey: "screenshotDate") ?? (isWidget ? UserDefaults.shared.string(forKey: "screenshotDate") : nil) ?? "2022-06-07T18:00:00Z"
 		return (try? Date(date, strategy: .iso8601)) ?? Date()
 #else
 		Date()

@@ -34,6 +34,11 @@ nonisolated struct Provider: AppIntentTimelineProvider {
 		let timeForUpdates = nextDayStart.timeIntervalSince(currentDate)
 		let maxEntries = configuration.updateFrequency.slots(until: nextDayStart, from: currentDate)
 		var photos = getBestPhotos(fromDate: currentDate, yearDiffs: configuration.yearDiffs(from: currentDate), idealCount: maxEntries, onlyFavorites: configuration.onlyShowFavorites).shuffled()
+		#if DEBUG && targetEnvironment(simulator)
+		if ScreenshotWidgets.isActive, let photo = ScreenshotWidgets.photo(from: getBestPhotos(fromDate: currentDate, yearDiffs: configuration.yearDiffs(from: currentDate), idealCount: 64, onlyFavorites: configuration.onlyShowFavorites), family: context.family) {
+			photos = [photo]
+		}
+		#endif
 		// After a shuffle, start with a different photo than the one that was showing.
 		if photos.count > 1, let shuffledID = UserDefaults.shared.widgetShuffledPhotoID, photos[0].asset.localIdentifier == shuffledID {
 			photos.swapAt(0, photos.count - 1)
@@ -73,6 +78,31 @@ nonisolated struct Provider: AppIntentTimelineProvider {
 		return await cache.save(image, for: asset, size: size, in: directory)
 	}
 }
+
+#if DEBUG && targetEnvironment(simulator)
+/// App Store screenshots (bin/app-store-screenshots.zsh): while the app has handed widgets a screenshot date, each widget
+/// size shows one fixed photo, a different one per size, so the widgets side by side don't repeat. (Widgets of the same size
+/// and settings share one timeline, so two of one size always match.)
+nonisolated enum ScreenshotWidgets {
+	static var isActive: Bool {
+		UserDefaults.shared.string(forKey: "screenshotDate") != nil
+	}
+
+	/// The place in the day's best photos (a round of one per year, oldest first, then the next round; within a year in
+	/// Photos' order) for each size, picked for the screenshot photos (the list in bin/app-store-screenshots.zsh): the cat
+	/// sticking its tongue out, the snowy Alta valley, the Grand Canyon at sunset and Crystal Ridge.
+	static func photo(from photos: [ScoredAsset], family: WidgetFamily) -> ScoredAsset? {
+		guard !photos.isEmpty else { return nil }
+		let index = switch family {
+		case .systemSmall: 1
+		case .systemMedium: 7
+		case .systemLarge: 10
+		default: 3
+		}
+		return photos[index % photos.count]
+	}
+}
+#endif
 
 nonisolated extension WidgetFamily {
 	/// Lock Screen sizes, which only iPhone and iPad have.

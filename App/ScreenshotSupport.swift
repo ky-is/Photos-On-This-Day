@@ -1,5 +1,6 @@
 import Photos
 import SwiftUI
+import WidgetKit
 
 extension View {
 	/// App Store screenshots (bin/app-store-screenshots.zsh): in Debug builds, `-screenshotViewer` opens the full-screen
@@ -19,6 +20,16 @@ private struct ScreenshotSupport: ViewModifier {
 	func body(content: Content) -> some View {
 		content
 			.task {
+#if targetEnvironment(simulator)
+				// Widgets show the same day as the app: `-screenshotDate`'s, or their usual one once launched without it
+				// The stored value: reading through UserDefaults.shared would find the launch argument too
+				let stored = UserDefaults.shared.persistentDomain(forName: "group.is.ky.Photos-On-This-Day")?["screenshotDate"] as? String
+				let date = UserDefaults.standard.string(forKey: "screenshotDate")
+				if stored != date {
+					UserDefaults.shared.set(date, forKey: "screenshotDate")
+					WidgetCenter.shared.reloadAllTimelines()
+				}
+#endif
 				// `-screenshotCollage` opens the share collage instead.
 				if UserDefaults.standard.bool(forKey: "screenshotCollage") {
 					try? await Task.sleep(for: .seconds(1.5))
