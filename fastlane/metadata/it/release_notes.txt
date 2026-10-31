@@ -1,28 +1,19 @@
-Novità della versione 1.1:
+Novità della versione 2.0:
 
-• Nuovo visore come in Foto: le foto si aprono con uno zoom dalla griglia, scorri verso il basso o pizzica per chiudere e tocca per nascondere tutto
-• Scorri tutte le foto del giorno con la striscia di miniature
+• Nuovo visore: le foto si aprono con uno zoom dalla griglia, scorri verso il basso o pizzica per chiudere e tocca per nascondere tutto. Scorri tutte le foto del giorno con la striscia di miniature.
 • Video e Live Photo vengono riprodotti
 • Pizzica o tocca due volte per ingrandire, con più dettagli
 • Guarda su una mappa dove è stata scattata ogni foto
-• Condividi foto e video originali, aggiungili ai preferiti, nascondili in On This Day o eliminali
-• Pizzica la griglia per miniature più grandi o più piccole, oppure mostra le foto intere con la griglia con proporzioni
-• Seleziona più foto insieme per condividerle o aggiungerle ai preferiti
-• Funziona in orizzontale
-• VoiceOver descrive ogni foto
-• Crea un collage di ieri e oggi del giorno, una foto per ogni anno, da condividere
+• Condividi il giorno come post, storia o video di presentazione, con le foto migliori di ogni anno scelte per te.
 • Guarda le foto del giorno come presentazione
-• Nascondi interi album in On This Day
 • I giorni senza foto ti indicano i giorni vicini che ne hanno
-• Ogni qualche mese, se non guardi da un po’, un promemoria nell’anniversario di un giorno con tante foto
-• Scegli qualsiasi data con il pulsante del calendario
+• Ogni qualche mese, se non guardi da un po’, un promemoria di un giorno con tante foto
 • Il widget apre la foto che mostra
-• Nuovi widget per la schermata di blocco con il numero di foto di oggi
-• Nuovo widget Anni: una foto per ogni anno passato in questo giorno
-• Pulsante casuale nel widget per un’altra foto di oggi
+• Widget per la schermata di blocco con il numero di foto di oggi
+• Widget Anni: una foto per ogni anno passato in questo giorno
 • Siri e Comandi Rapidi: mostra le foto di un giorno o di un anno a scelta, un ricordo a caso o conta le foto di oggi
-• Scegli ogni quanto i widget cambiano foto e nascondi il pulsante casuale se preferisci
-• Nuova icona dell'app
+• Scegli ogni quanto i widget cambiano foto, con un pulsante casuale facoltativo per cambiare subito la foto
 • Disponibile in altre 8 lingue
-• Caricamento più veloce
 • Correzioni per foto mancanti quando gli screenshot sono nascosti, intestazioni degli anni intorno a Capodanno e impostazioni che non si aggiornavano
+• Caricamento e scorrimento più veloci
+• Accessibilità migliorata

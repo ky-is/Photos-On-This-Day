@@ -1,28 +1,19 @@
-What's new in 1.1:
+What's new in 2.0:
 
-• A new photo viewer, like in Photos: photos zoom open from the grid, swipe down or pinch to close, and tap to hide everything
-• Skim all of the day's photos with the thumbnail strip
+• A new photo viewer: photos zoom open from the grid, swipe down or pinch to close, and tap to hide everything. Skim all of the day's photos with the thumbnail strip.
 • Videos and Live Photos play
 • Pinch or double-tap to zoom, with sharper detail
 • See where each photo was taken on a map
-• Share original photos and videos, favorite them, hide them from On This Day, or delete them
-• Pinch the grid for bigger or smaller thumbnails, or show whole photos with Aspect Ratio Grid
-• Select several photos at once to share or favorite them
-• Works in landscape
-• VoiceOver describes every photo
-• Make a then-and-now collage of the day, one photo from each year, to share
+• Share the day as a post, a story or a slideshow video, with the best photos from each year picked for you.
 • Watch the day's photos as a slideshow
-• Hide whole albums from On This Day
 • Days without photos point you to nearby days that have some
-• Every few months, if you haven't looked in a while, a reminder on the anniversary of a day with lots of photos
-• Pick any date with the calendar button
+• Every few months, if you haven't looked in a while, a reminder on a day with lots of photos
 • Tapping the widget opens the photo it shows
-• New Lock Screen widgets with today's photo count
-• New Years widget: one photo from each past year on this day
-• Shuffle button on the widget for another of today's photos
+• Lock Screen widgets with today's photo count
+• Years widget: one photo from each past year on this day
 • Siri and Shortcuts: show a day's photos, photos from a chosen year, a random memory, or count today's photos
-• Choose how often widgets change photos, and hide the shuffle button if you like
-• A fresh new app icon
-• Now available in 8 more languages
-• Faster loading
+• Choose how often widgets change photos, and an optional shuffle button to rotate the photo now
+• Available in 8 more languages
 • Fixes for photos missing when screenshots are hidden, year headers around New Year, and settings changes not refreshing
+• Faster loading and scrolling
+• Improve accessibility

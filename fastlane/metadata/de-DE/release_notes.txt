@@ -1,28 +1,19 @@
-Neu in 1.1:
+Neu in 2.0:
 
-• Neue Fotoansicht wie in Fotos: Fotos zoomen aus dem Raster auf, nach unten wischen oder zusammenziehen zum Schließen, tippen blendet alles aus
-• Mit der Miniaturleiste durch alle Fotos des Tages blättern
+• Neue Fotoansicht: Fotos zoomen aus dem Raster auf, nach unten wischen oder zusammenziehen zum Schließen, tippen blendet alles aus. Mit der Miniaturleiste durch alle Fotos des Tages blättern.
 • Videos und Live Photos werden abgespielt
 • Mit Aufziehen oder Doppeltippen zoomen, mit schärferen Details
 • Auf einer Karte sehen, wo ein Foto aufgenommen wurde
-• Originalfotos und -videos teilen, als Favoriten markieren, in On This Day ausblenden oder löschen
-• Das Raster aufziehen oder zusammenziehen für größere oder kleinere Miniaturen, oder mit dem Seitenverhältnis-Raster ganze Fotos zeigen
-• Mehrere Fotos auswählen, um sie zusammen zu teilen oder als Favoriten zu markieren
-• Funktioniert im Querformat
-• VoiceOver beschreibt jedes Foto
-• Eine Damals-und-heute-Collage des Tages mit einem Foto aus jedem Jahr erstellen und teilen
+• Teile den Tag als Beitrag, Story oder Diashow-Video, mit den besten Fotos aus jedem Jahr, für dich ausgewählt.
 • Die Fotos des Tages als Diashow ansehen
-• Ganze Alben in On This Day ausblenden
 • Tage ohne Fotos verweisen auf Tage in der Nähe, die welche haben
-• Alle paar Monate, wenn du länger nicht reingeschaut hast, eine Erinnerung am Jahrestag eines Tages mit vielen Fotos
-• Mit der Kalendertaste ein beliebiges Datum wählen
+• Alle paar Monate, wenn du länger nicht reingeschaut hast, eine Erinnerung an einen Tag mit vielen Fotos
 • Das Widget öffnet das Foto, das es zeigt
-• Neue Widgets für den Sperrbildschirm mit der Anzahl der heutigen Fotos
-• Neues Jahre-Widget: ein Foto aus jedem vergangenen Jahr an diesem Tag
-• Zufallstaste im Widget für ein anderes Foto von heute
+• Widgets für den Sperrbildschirm mit der Anzahl der heutigen Fotos
+• Jahre-Widget: ein Foto aus jedem vergangenen Jahr an diesem Tag
 • Siri und Kurzbefehle: Fotos eines Tages oder eines gewählten Jahres zeigen, eine zufällige Erinnerung oder die heutigen Fotos zählen
-• Lege fest, wie oft Widgets die Fotos wechseln, und blende die Zufallstaste bei Bedarf aus
-• Neues App-Symbol
-• Jetzt in 8 weiteren Sprachen
-• Schnelleres Laden
+• Lege fest, wie oft Widgets die Fotos wechseln, mit einer optionalen Zufallstaste, um sofort ein anderes Foto zu zeigen
+• In 8 weiteren Sprachen verfügbar
 • Fehlerbehebungen: fehlende Fotos bei ausgeblendeten Bildschirmfotos, Jahresüberschriften rund um Neujahr und Einstellungen, die nicht aktualisiert wurden
+• Schnelleres Laden und Scrollen
+• Verbesserte Bedienungshilfen

@@ -13,50 +13,52 @@ import SwiftUI
 	var columnStep: ColumnStep?
 	var showsSlideshow = false
 	var showsCollage = false
+	/// Whether the day has photos from past years, so Slideshow and Collage have something to show.
+	var hasPastPhotos = false
 }
 
 /// The menu bar on a Mac, and the keyboard shortcut menu on iPad.
 struct AppCommands: Commands {
-	@AppStorage(GridSelection.aspectRatioGridKey, store: .shared) private var showsAspectRatio = false
+	@AppStorage(GridSelection.aspectRatioGridKey) private var showsAspectRatio = false
 
 	private var state = StateManager.shared
 	private var actions = MenuActions.shared
 
 	var body: some Commands {
 		CommandGroup(after: .newItem) {
-			Button("Slideshow") {
+			Button("Slideshow", systemImage: "play.rectangle") {
 				actions.showsSlideshow = true
 			}
 				.keyboardShortcut("p", modifiers: [.command, .option])
-				.disabled(!state.canShowPhotos)
-			Button("Collage") {
+				.disabled(!state.canShowPhotos || !actions.hasPastPhotos)
+			Button("Collage", systemImage: "square.grid.2x2") {
 				actions.showsCollage = true
 			}
 				.keyboardShortcut("c", modifiers: [.command, .option])
-				.disabled(!state.canShowPhotos)
+				.disabled(!state.canShowPhotos || !actions.hasPastPhotos)
 		}
 		CommandGroup(after: .toolbar) {
-			Button("Bigger Thumbnails") {
+			Button("Bigger Thumbnails", systemImage: "plus.magnifyingglass") {
 				actions.columnStep = MenuActions.ColumnStep(change: -1)
 			}
 				.keyboardShortcut("+")
-			Button("Smaller Thumbnails") {
+			Button("Smaller Thumbnails", systemImage: "minus.magnifyingglass") {
 				actions.columnStep = MenuActions.ColumnStep(change: 1)
 			}
 				.keyboardShortcut("-")
-			Toggle("Aspect Ratio Grid", isOn: $showsAspectRatio)
+			Toggle("Aspect Ratio Grid", systemImage: "aspectratio", isOn: $showsAspectRatio)
 			Divider()
 		}
 		CommandMenu("Go") {
-			Button("Previous Day") {
+			Button("Previous Day", systemImage: "chevron.left") {
 				state.daysChange -= 1
 			}
 				.keyboardShortcut("[")
-			Button("Next Day") {
+			Button("Next Day", systemImage: "chevron.right") {
 				state.daysChange += 1
 			}
 				.keyboardShortcut("]")
-			Button("Today") {
+			Button("Today", systemImage: "calendar") {
 				state.daysChange = 0
 			}
 				.keyboardShortcut("t")

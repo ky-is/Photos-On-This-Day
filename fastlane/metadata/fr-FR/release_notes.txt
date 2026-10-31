@@ -1,28 +1,19 @@
-Nouveautés de la version 1.1 :
+Nouveautés de la version 2.0 :
 
-• Nouveau visualiseur comme dans Photos : les photos s’ouvrent en zoomant depuis la grille, balayez vers le bas ou pincez pour fermer, et touchez pour tout masquer
-• Parcourez toutes les photos du jour avec la bande de vignettes
+• Nouveau visualiseur : les photos s’ouvrent en zoomant depuis la grille, balayez vers le bas ou pincez pour fermer, et touchez pour tout masquer. Parcourez toutes les photos du jour avec la bande de vignettes.
 • Les vidéos et les Live Photos sont lues
 • Pincez ou touchez deux fois pour zoomer, avec plus de détails
 • Voyez sur une carte où chaque photo a été prise
-• Partagez les photos et vidéos originales, ajoutez-les aux favoris, masquez-les dans On This Day ou supprimez-les
-• Pincez la grille pour des vignettes plus grandes ou plus petites, ou affichez les photos entières avec la grille au format d’origine
-• Sélectionnez plusieurs photos à la fois pour les partager ou les ajouter aux favoris
-• Fonctionne en mode paysage
-• VoiceOver décrit chaque photo
-• Créez un collage d’hier et d’aujourd’hui du jour, une photo par année, à partager
+• Partagez la journée en publication, en story ou en vidéo diaporama, avec les meilleures photos de chaque année choisies pour vous.
 • Regardez les photos du jour en diaporama
-• Masquez des albums entiers dans On This Day
 • Les jours sans photos vous proposent des jours proches qui en ont
-• Tous les quelques mois, si vous n’avez pas regardé depuis un moment, un rappel à l’anniversaire d’un jour riche en photos
-• Choisissez n'importe quelle date avec le bouton calendrier
-• Le widget ouvre la photo qu'il affiche
-• Nouveaux widgets pour l'écran verrouillé avec le nombre de photos du jour
-• Nouveau widget Années : une photo de chaque année passée à cette date
-• Bouton aléatoire dans le widget pour une autre photo du jour
+• Tous les quelques mois, si vous n’avez pas regardé depuis un moment, un rappel d’un jour riche en photos
+• Le widget ouvre la photo qu’il affiche
+• Widgets pour l’écran verrouillé avec le nombre de photos du jour
+• Widget Années : une photo de chaque année passée à cette date
 • Siri et Raccourcis : afficher les photos d’un jour ou d’une année choisie, un souvenir au hasard ou compter les photos du jour
-• Choisissez la fréquence à laquelle les widgets changent de photo, et masquez le bouton aléatoire si vous le souhaitez
-• Nouvelle icône
+• Choisissez la fréquence à laquelle les widgets changent de photo, avec un bouton aléatoire facultatif pour changer de photo tout de suite
 • Disponible dans 8 langues supplémentaires
-• Chargement plus rapide
 • Corrections : photos manquantes quand les captures d'écran sont masquées, en-têtes d'année autour du Nouvel An et réglages qui ne s'actualisaient pas
+• Chargement et défilement plus rapides
+• Accessibilité améliorée

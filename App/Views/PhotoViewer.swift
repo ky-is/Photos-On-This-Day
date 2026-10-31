@@ -444,6 +444,24 @@ private struct PhotoPage: View {
 	}
 }
 
+#if os(macOS)
+/// AppKit's player view, with the usual controls. SwiftUI's VideoPlayer crashes on the Mac.
+private struct MacVideoPlayer: NSViewRepresentable {
+	let player: AVPlayer
+
+	func makeNSView(context: Context) -> AVPlayerView {
+		let view = AVPlayerView()
+		view.controlsStyle = .inline
+		view.player = player
+		return view
+	}
+
+	func updateNSView(_ view: AVPlayerView, context: Context) {
+		view.player = player
+	}
+}
+#endif
+
 private struct VideoPage: View {
 	let asset: PHAsset
 	let isSelected: Bool
@@ -454,7 +472,11 @@ private struct VideoPage: View {
 		ZStack {
 			ProgressView()
 			if let player {
+				#if os(macOS)
+				MacVideoPlayer(player: player)
+				#else
 				VideoPlayer(player: player)
+				#endif
 			}
 		}
 			.task {

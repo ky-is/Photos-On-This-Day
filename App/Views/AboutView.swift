@@ -1,6 +1,6 @@
 import SwiftUI
 
-private let appStoreURL = URL(string: "https://apps.apple.com/app/photos-on-this-day/id1620659723")!
+let appStoreURL = URL(string: "https://apps.apple.com/app/photos-on-this-day/id1620659723")!
 
 struct AboutView: View {
 	@Environment(\.dismiss) private var dismiss

@@ -1,28 +1,19 @@
-Novedades de la versión 1.1:
+Novedades de la versión 2.0:
 
-• Nuevo visor de fotos como en Fotos: las fotos se amplían desde la cuadrícula, desliza hacia abajo o pellizca para cerrar y toca para ocultarlo todo
-• Recorre todas las fotos del día con la tira de miniaturas
+• Nuevo visor de fotos: las fotos se amplían desde la cuadrícula, desliza hacia abajo o pellizca para cerrar y toca para ocultarlo todo. Recorre todas las fotos del día con la tira de miniaturas.
 • Los vídeos y las Live Photos se reproducen
 • Pellizca o toca dos veces para ampliar, con más detalle
 • Consulta en un mapa dónde se hizo cada foto
-• Comparte las fotos y vídeos originales, márcalos como favoritos, ocúltalos en On This Day o elimínalos
-• Pellizca la cuadrícula para ver miniaturas más grandes o más pequeñas, o muestra las fotos completas con la cuadrícula con relación de aspecto
-• Selecciona varias fotos a la vez para compartirlas o marcarlas como favoritas
-• Funciona en horizontal
-• VoiceOver describe cada foto
-• Crea un collage de antes y ahora del día, con una foto de cada año, para compartir
+• Comparte el día como publicación, historia o vídeo de diapositivas, con las mejores fotos de cada año elegidas para ti.
 • Mira las fotos del día como un pase de diapositivas
-• Oculta álbumes enteros en On This Day
 • Los días sin fotos te llevan a días cercanos que sí tienen
-• Cada pocos meses, si hace tiempo que no miras, un recordatorio en el aniversario de un día con muchas fotos
-• Elige cualquier fecha con el botón del calendario
+• Cada pocos meses, si hace tiempo que no miras, un recordatorio de un día con muchas fotos
 • El widget abre la foto que muestra
-• Nuevos widgets para la pantalla bloqueada con el número de fotos de hoy
-• Nuevo widget Años: una foto de cada año pasado en este día
-• Botón de aleatorio en el widget para ver otra foto de hoy
+• Widgets para la pantalla bloqueada con el número de fotos de hoy
+• Widget Años: una foto de cada año pasado en este día
 • Siri y Atajos: muestra las fotos de un día o de un año concreto, un recuerdo al azar o cuenta las fotos de hoy
-• Elige cada cuánto cambian las fotos de los widgets y oculta el botón de aleatorio si quieres
-• Nuevo icono de la app
+• Elige cada cuánto cambian las fotos de los widgets, con un botón de aleatorio opcional para cambiar la foto al momento
 • Disponible en 8 idiomas más
-• Carga más rápida
 • Correcciones: fotos que faltaban al ocultar las capturas de pantalla, encabezados de año en torno a Año Nuevo y ajustes que no se actualizaban
+• Carga y desplazamiento más rápidos
+• Accesibilidad mejorada

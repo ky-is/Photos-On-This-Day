@@ -70,9 +70,7 @@ struct ContentView: View {
 							FilterLibraryMenu {
 								showAbout = true
 							}
-							Button("Select") {
-								selection.start()
-							}
+							MoreMenu(selection: selection)
 						}
 					}
 					ToolbarItemGroup(placement: .bottomActions) {
@@ -213,13 +211,13 @@ struct FilterLibraryMenu: View {
 
 	var body: some View {
 		Menu {
-			Toggle("Show iCloud Shared", isOn: $filters.showShared)
-			Toggle("Show Screenshots", isOn: $filters.showScreenshots)
+			Toggle("Show iCloud Shared", systemImage: "shared.with.you", isOn: $filters.showShared)
+			Toggle("Show Screenshots", systemImage: "camera.viewfinder", isOn: $filters.showScreenshots)
 			Button("Hide Albums", systemImage: "rectangle.stack.badge.minus") {
 				showsHiddenAlbums = true
 			}
 			Divider()
-			Toggle("Aspect Ratio Grid", isOn: $showsAspectRatio)
+			Toggle("Aspect Ratio Grid", systemImage: "aspectratio", isOn: $showsAspectRatio)
 			Divider()
 			Button("About", systemImage: "questionmark.circle", action: showAbout)
 		} label: {
@@ -229,6 +227,33 @@ struct FilterLibraryMenu: View {
 			.sheet(isPresented: $showsHiddenAlbums) {
 				HiddenAlbumsView()
 			}
+	}
+}
+
+/// Select, then the ways to play or share the day's photos. Always a menu, so Select never takes toolbar room of its own.
+private struct MoreMenu: View {
+	let selection: GridSelection
+
+	var body: some View {
+		let actions = MenuActions.shared
+		Menu {
+			Button("Select", systemImage: "checkmark.circle") {
+				selection.start()
+			}
+			Divider()
+			Button("Slideshow", systemImage: "play.rectangle") {
+				actions.showsSlideshow = true
+			}
+				.disabled(!actions.hasPastPhotos)
+			Button("Collage", systemImage: "square.grid.2x2") {
+				actions.showsCollage = true
+			}
+				.disabled(!actions.hasPastPhotos)
+		} label: {
+			Image(systemName: "ellipsis")
+				.modifier(ToolbarButtonContentModifier())
+				.accessibilityLabel("More")
+		}
 	}
 }
 

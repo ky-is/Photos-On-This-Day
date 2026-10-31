@@ -213,17 +213,16 @@ struct PhotosView: View {
 					pinchChanged(pinch)
 				}
 			}
-			.toolbar {
-				ToolbarItemGroup(placement: .trailingBar) {
-					if let years = loaded?.pastYears, !years.isEmpty, selection?.isSelecting != true {
-						Button("Slideshow", systemImage: "play") {
-							menuActions.showsSlideshow = true
-						}
-						Button("Collage", systemImage: "square.grid.2x2") {
-							menuActions.showsCollage = true
-						}
-					}
-				}
+			// Slideshow and Collage live in the toolbar's More menu, which only knows from here whether there's anything to show.
+			.onChange(of: hasPastPhotos, initial: true) { _, hasPastPhotos in
+				menuActions.hasPastPhotos = hasPastPhotos
+			}
+			// Ranks the day's best photos in the background once the day has been on screen a moment, so the collage opens instantly.
+			.task(id: loaded?.pastYears.map { "\($0.dateID) \($0.year) \($0.assets.count)" }) {
+				guard let years = loaded?.pastYears, !years.isEmpty else { return }
+				try? await Task.sleep(for: .seconds(1))
+				guard !Task.isCancelled else { return }
+				_ = CollagePrep.shared.ranking(for: CollagePrep.chosenYears(years))
 			}
 			.sheet(isPresented: Binding { menuActions.showsCollage && hasPastPhotos } set: { menuActions.showsCollage = $0 }) {
 				CollageView(date: date, years: loaded?.pastYears ?? [])

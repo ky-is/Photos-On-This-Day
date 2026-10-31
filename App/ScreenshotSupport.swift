@@ -3,7 +3,8 @@ import SwiftUI
 
 extension View {
 	/// App Store screenshots (bin/app-store-screenshots.zsh): in Debug builds, `-screenshotViewer` opens the full-screen
-	/// viewer on the day's first portrait photo (or first photo) once the grid has loaded. Does nothing otherwise.
+	/// viewer on the day's first portrait photo (or first photo) once the grid has loaded, and `-screenshotCollage` the share
+	/// collage. Does nothing otherwise.
 	func screenshotSupport() -> some View {
 #if DEBUG
 		modifier(ScreenshotSupport())
@@ -18,6 +19,12 @@ private struct ScreenshotSupport: ViewModifier {
 	func body(content: Content) -> some View {
 		content
 			.task {
+				// `-screenshotCollage` opens the share collage instead.
+				if UserDefaults.standard.bool(forKey: "screenshotCollage") {
+					try? await Task.sleep(for: .seconds(1.5))
+					MenuActions.shared.showsCollage = true
+					return
+				}
 				guard UserDefaults.standard.bool(forKey: "screenshotViewer") else { return }
 				// After the grid has drawn, as if the photo were tapped
 				try? await Task.sleep(for: .seconds(1.5))
