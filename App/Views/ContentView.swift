@@ -14,6 +14,17 @@ struct ContentView: View {
 	/// The photo the viewer is on, so the grid can keep it in view for closing back to it.
 	@State private var viewerPhotoID: String?
 	@State private var pinch: GridPinch?
+	@AppStorage(DayMapView.visibleKey) private var showsMap = false
+	/// The home indicator's strip, which the map reaches past to sit an even inset from the screen's bottom edge.
+	@State private var bottomSafeArea: CGFloat = 0
+	@Environment(\.screenSize) private var screenSize
+
+	/// The map's inset from the screen's sides and bottom edge, so its bottom corners follow the display's.
+	private static let mapInset: CGFloat = 8
+
+	private var showsMapPanel: Bool {
+		showsMap && menuActions.hasLocatedPhotos && state.canShowPhotos && !selection.isSelecting
+	}
 
 	var body: some View {
 		NavigationStack {
@@ -76,6 +87,7 @@ struct ContentView: View {
 							}
 								.keyboardShortcut(.cancelAction)
 						} else if state.canShowPhotos {
+							DayMapToggle()
 							FilterLibraryMenu {
 								showAbout = true
 							}
@@ -89,6 +101,28 @@ struct ContentView: View {
 					}
 				}
 				.bottomBarVisibility(selection.isSelecting)
+				// Room under the last photos for the map, which overlaps the home indicator's strip already set aside.
+				.safeAreaInset(edge: .bottom, spacing: 0) {
+					Color.clear
+						.frame(height: showsMapPanel ? max(0, DayMapView.height(for: screenSize) + 2 * Self.mapInset - bottomSafeArea) : 0)
+				}
+				// The map stays put at the bottom while the photos scroll. It's laid out from the screen's own edges, not the safe
+				// area's, an even inset from the sides and bottom, so its bottom corners are concentric with the display's.
+				.overlay(alignment: .bottom) {
+					if showsMapPanel {
+						DayMapView(years: menuActions.mapYears)
+							.id(state.date)
+							.clipShape(ConcentricRectangle(uniformTopCorners: .fixed(28), uniformBottomCorners: .concentric(minimum: .fixed(28))))
+							.shadow(color: .black.opacity(0.2), radius: 12, y: 4)
+							.padding([.horizontal, .bottom], Self.mapInset)
+							.frame(maxHeight: .infinity, alignment: .bottom)
+							// The full width of the screen, under the side safe areas too (iPad, iPhone on its side), so both
+							// bottom corners follow the display's.
+							.ignoresSafeArea(.container, edges: [.horizontal, .bottom])
+							.transition(.move(edge: .bottom).combined(with: .opacity))
+					}
+				}
+				.animation(.smooth, value: showsMap)
 				.onChange(of: state.date) {
 					selection.end()
 				}
@@ -104,6 +138,11 @@ struct ContentView: View {
 						.id(selection.id)
 				}
 		}
+			.onGeometryChange(for: CGFloat.self) { proxy in
+				proxy.safeAreaInsets.bottom
+			} action: { inset in
+				bottomSafeArea = inset
+			}
 			.environment(\.photoTransition, photoTransition)
 			.environment(selection)
 			.environment(\.viewerShowsPhoto, { viewerPhotoID = $0 })
@@ -210,6 +249,22 @@ private struct DatePickerSheet: View {
 				}
 		}
 			.presentationDetents([.medium, .large])
+	}
+}
+
+/// Shows or hides the map of the day's photos pinned at the bottom of the screen.
+private struct DayMapToggle: View {
+	@AppStorage(DayMapView.visibleKey) private var showsMap = false
+
+	var body: some View {
+		Button {
+			showsMap.toggle()
+		} label: {
+			Image(systemName: showsMap ? "map.fill" : "map")
+				.modifier(ToolbarButtonContentModifier())
+				.accessibilityLabel(showsMap ? "Hide Map" : "Show Map")
+		}
+			.disabled(!MenuActions.shared.hasLocatedPhotos)
 	}
 }
 

@@ -16,12 +16,16 @@ import SwiftUI
 	var showsDatePicker = false
 	/// Whether the day has photos from past years, so Slideshow and Collage have something to show.
 	var hasPastPhotos = false
+	/// The day's years when any of their photos has a location, for the map pinned at the bottom of the main screen.
+	var mapYears: [PhotoYear] = []
+	var hasLocatedPhotos: Bool { !mapYears.isEmpty }
 }
 
 /// The menu bar on a Mac, and the keyboard shortcut menu on iPad.
 struct AppCommands: Commands {
 	// Menu commands are outside the views, which get the shared store from the app's .defaultAppStorage.
 	@AppStorage(GridSelection.aspectRatioGridKey, store: .shared) private var showsAspectRatio = false
+	@AppStorage(DayMapView.visibleKey, store: .shared) private var showsMap = false
 
 	private var state = StateManager.shared
 	private var actions = MenuActions.shared
@@ -49,6 +53,9 @@ struct AppCommands: Commands {
 			}
 				.keyboardShortcut("-")
 			Toggle("Aspect Ratio Grid", systemImage: "aspectratio", isOn: $showsAspectRatio)
+			Toggle("Show Map", systemImage: "map", isOn: $showsMap)
+				.keyboardShortcut("m", modifiers: [.command, .option])
+				.disabled(!state.canShowPhotos || !actions.hasLocatedPhotos)
 			Divider()
 		}
 		CommandMenu("Go") {

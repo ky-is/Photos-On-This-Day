@@ -156,6 +156,21 @@ struct PhotosView: View {
 	}
 
 	var body: some View {
+		grid
+			// The map pinned at the bottom of the screen, and its toolbar button, show the day's photos from here.
+			.onChange(of: locatedYears.flatMap { $0.assets.map(\.localIdentifier) }, initial: true) {
+				menuActions.mapYears = locatedYears
+			}
+	}
+
+	/// The years showing, when any of their photos has a location to put on the map.
+	private var locatedYears: [PhotoYear] {
+		guard let loaded, loaded.date == date else { return [] }
+		let years = loaded.pastYears.isEmpty ? (loaded.currentYear.map { [$0] } ?? []) : loaded.pastYears
+		return years.contains { $0.assets.contains { $0.location != nil } } ? years : []
+	}
+
+	private var grid: some View {
 		VStack {
 			if let loaded, loaded.date == date {
 				if loaded.pastYears.isEmpty {
