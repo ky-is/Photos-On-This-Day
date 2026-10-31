@@ -4,7 +4,8 @@ struct ContentView: View {
 	@Bindable private var state = StateManager.shared
 
 	@State private var showAbout = false
-	@State private var showDatePicker = false
+	/// The date picker opens from the toolbar or from Choose a Date in the menu bar.
+	@Bindable private var menuActions = MenuActions.shared
 
 	@Namespace private var photoTransition
 	@State private var scrollPosition = ScrollPosition()
@@ -53,6 +54,14 @@ struct ContentView: View {
 						.disabled(state.daysChange == 0)
 						.hidden()
 						.accessibilityHidden(true)
+					// Bigger Thumbnails in the menu is ⌘+, which takes Shift on most keyboards; ⌘= works too.
+					Button("Bigger Thumbnails") {
+						menuActions.columnStep = MenuActions.ColumnStep(change: -1)
+					}
+						.keyboardShortcut("=")
+						.disabled(!state.canShowPhotos)
+						.hidden()
+						.accessibilityHidden(true)
 				}
 				.toolbar {
 					ToolbarItemGroup(placement: .leadingBar) {
@@ -86,7 +95,7 @@ struct ContentView: View {
 				.sheet(isPresented: $showAbout) {
 					AboutView()
 				}
-				.sheet(isPresented: $showDatePicker) {
+				.sheet(isPresented: $menuActions.showsDatePicker) {
 					DatePickerSheet()
 				}
 				.navigationDestination(item: $state.openedPhoto) { selection in
@@ -112,8 +121,9 @@ struct ContentView: View {
 					.modifier(ToolbarButtonContentModifier())
 			}
 				.keyboardShortcut(.leftArrow)
+				.accessibilityLabel("Previous Day")
 			ToolbarButtonView("Choose a Date", imageName: state.daysChange == 0 ? "calendar" : "calendar.badge.clock") {
-				showDatePicker = true
+				menuActions.showsDatePicker = true
 			}
 			Button {
 				state.daysChange += 1
@@ -123,6 +133,7 @@ struct ContentView: View {
 					.modifier(ToolbarButtonContentModifier())
 			}
 				.keyboardShortcut(.rightArrow)
+				.accessibilityLabel("Next Day")
 		}
 			.disabled(!state.canShowPhotos || state.isScanning)
 	}
@@ -157,7 +168,7 @@ private struct SelectionActions: View {
 			.font(.subheadline.weight(.semibold))
 			.fixedSize()
 		Spacer()
-		Button("Favorite", systemImage: allFavorites ? "heart.fill" : "heart") {
+		Button(allFavorites ? LocalizedStringKey("Unfavorite") : "Favorite", systemImage: allFavorites ? "heart.fill" : "heart") {
 			// Like Photos: favorite them all, or unfavorite them all when they all already are.
 			let makeFavorite = !allFavorites
 			Task {
@@ -194,6 +205,7 @@ private struct DatePickerSheet: View {
 						Button("Done") {
 							dismiss()
 						}
+							.keyboardShortcut(.defaultAction)
 					}
 				}
 		}
@@ -217,12 +229,20 @@ struct FilterLibraryMenu: View {
 				showsHiddenAlbums = true
 			}
 			Divider()
+			// The way to resize the grid without pinching.
+			Button("Bigger Thumbnails", systemImage: "plus.magnifyingglass") {
+				MenuActions.shared.columnStep = MenuActions.ColumnStep(change: -1)
+			}
+			Button("Smaller Thumbnails", systemImage: "minus.magnifyingglass") {
+				MenuActions.shared.columnStep = MenuActions.ColumnStep(change: 1)
+			}
 			Toggle("Aspect Ratio Grid", systemImage: "aspectratio", isOn: $showsAspectRatio)
 			Divider()
 			Button("About", systemImage: "questionmark.circle", action: showAbout)
 		} label: {
 			Image(systemName: "line.3.horizontal.decrease.circle")
 				.modifier(ToolbarButtonContentModifier())
+				.accessibilityLabel("Filters")
 		}
 			.sheet(isPresented: $showsHiddenAlbums) {
 				HiddenAlbumsView()

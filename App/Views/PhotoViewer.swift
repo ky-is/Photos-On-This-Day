@@ -34,6 +34,8 @@ struct PhotoViewer: View {
 	@Environment(\.viewerShowsPhoto) private var viewerShowsPhoto
 	@Environment(\.screenSize) private var screenSize
 	@Environment(\.displayScale) private var displayScale
+	@Environment(\.accessibilityReduceMotion) private var reduceMotion
+	@Environment(\.accessibilityVoiceOverEnabled) private var voiceOverEnabled
 
 	init(selection: PhotoSelection, placeholder: PlatformImage? = nil) {
 		_assets = State(initialValue: selection.assets)
@@ -69,17 +71,37 @@ struct PhotoViewer: View {
 				}
 		}
 			.background {
-				// Arrow keys page through the photos and Escape closes, from a hardware keyboard.
+				// Arrow keys page through the photos and Escape closes, from a hardware keyboard. ⌘L hides and ⌘⌫ deletes, like the More menu.
 				Group {
 					KeyboardShortcutButton(.leftArrow) { step(by: -1) }
 					KeyboardShortcutButton(.rightArrow) { step(by: 1) }
 					KeyboardShortcutButton(.escape) { dismiss() }
+					if let selectedAsset {
+						KeyboardShortcutButton("l", modifiers: .command) { hide(selectedAsset) }
+						if selectedAsset.sourceType == .typeUserLibrary {
+							KeyboardShortcutButton(.delete, modifiers: .command) {
+								Task {
+									await delete(selectedAsset)
+								}
+							}
+						}
+					}
 				}
 					.hidden()
 					.accessibilityHidden(true)
 			}
 			.onDisappear {
 				imageCache.stopCachingImagesForAllAssets()
+			}
+			// The two-finger scrub closes, like Back.
+			.accessibilityAction(.escape) {
+				dismiss()
+			}
+			// VoiceOver keeps the bars showing, so Back, Share, Favorite and Info stay reachable.
+			.onChange(of: voiceOverEnabled, initial: true) { _, isOn in
+				if isOn {
+					showsChrome = true
+				}
 			}
 			.background(showsChrome ? AnyShapeStyle(.background) : AnyShapeStyle(.black))
 			.safeAreaInset(edge: .bottom) {
@@ -113,8 +135,7 @@ struct PhotoViewer: View {
 					if let selectedAsset {
 						Menu {
 							Button("Hide from On This Day", systemImage: "eye.slash") {
-								Filters.shared.setHidden(true, asset: selectedAsset, on: StateManager.shared.date.dateID)
-								remove(selectedAsset)
+								hide(selectedAsset)
 							}
 							if selectedAsset.sourceType == .typeUserLibrary {
 								Button("Delete", systemImage: "trash", role: .destructive) {
@@ -134,9 +155,11 @@ struct PhotoViewer: View {
 						ShareLink(item: SharedAsset(asset: selectedAsset), preview: SharedAsset.preview(for: selectedAsset))
 						Spacer()
 						PhotoFavoriteButton(asset: selectedAsset)
+							.keyboardShortcut(".", modifiers: [])
 						Button("Info", systemImage: "info.circle") {
 							showsInfo = true
 						}
+							.keyboardShortcut("i", modifiers: .command)
 					}
 				}
 			}
@@ -149,11 +172,17 @@ struct PhotoViewer: View {
 			.navigationSubtitle(subtitle)
 			.navigationBarBackButtonHidden(true)
 			.inlineNavigationTitle()
-			.modifier(ZoomTransition(sourceID: selectedID, namespace: photoTransition))
+			// Reduce Motion opens with a plain push instead of the zoom.
+			.modifier(ZoomTransition(sourceID: selectedID, namespace: reduceMotion ? nil : photoTransition))
 			.task(id: selectedID) {
 				locationDescription = nil
 				locationDescription = await Self.describeLocation(of: selectedAsset)
 			}
+	}
+
+	private func hide(_ asset: PHAsset) {
+		Filters.shared.setHidden(true, asset: asset, on: StateManager.shared.date.dateID)
+		remove(asset)
 	}
 
 	/// Moves to the next photo, or the one before at the end, and takes this one out; closes when none are left.
@@ -165,7 +194,7 @@ struct PhotoViewer: View {
 			return
 		}
 		selectedID = assets[neighbor].localIdentifier
-		withAnimation {
+		withAnimation(reduceMotion ? nil : .default) {
 			_ = assets.remove(at: index)
 		}
 	}
@@ -187,7 +216,7 @@ struct PhotoViewer: View {
 
 	private func step(by change: Int) {
 		guard let index = assets.firstIndex(where: { $0.localIdentifier == selectedID }), assets.indices.contains(index + change) else { return }
-		withAnimation {
+		withAnimation(reduceMotion ? nil : .default) {
 			selectedID = assets[index + change].localIdentifier
 		}
 	}
@@ -234,6 +263,13 @@ private struct PhotoInfo: View {
 	let asset: PHAsset
 	let place: String?
 
+	@Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+	/// A short sheet for just the date and place, taller when the text is large enough to need it.
+	private var detents: Set<PresentationDetent> {
+		asset.location != nil || dynamicTypeSize.isAccessibilitySize ? [.medium, .large] : [.height(120)]
+	}
+
 	var body: some View {
 		VStack(alignment: .leading, spacing: 8) {
 			if let date = asset.creationDate {
@@ -246,7 +282,7 @@ private struct PhotoInfo: View {
 			}
 			if let coordinate = asset.location?.coordinate {
 				Map(initialPosition: .region(MKCoordinateRegion(center: coordinate, latitudinalMeters: 1500, longitudinalMeters: 1500))) {
-					Marker(place ?? "", coordinate: coordinate)
+					Marker(place ?? asset.creationDate?.formatted(date: .abbreviated, time: .omitted) ?? "", coordinate: coordinate)
 				}
 					.clipShape(.rect(cornerRadius: 16))
 					.padding(.top, 8)
@@ -255,7 +291,7 @@ private struct PhotoInfo: View {
 			.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
 			.padding()
 			.padding(.top, 8)
-			.presentationDetents(asset.location == nil ? [.height(120)] : [.medium, .large])
+			.presentationDetents(detents)
 	}
 }
 
@@ -269,6 +305,7 @@ private struct PhotoScrubber: View {
 	@State private var isScrubbing = false
 
 	@Environment(\.screenSize) private var screenSize
+	@Environment(\.accessibilityReduceMotion) private var reduceMotion
 
 	private static let itemWidth: CGFloat = 32
 
@@ -285,7 +322,8 @@ private struct PhotoScrubber: View {
 							.clipShape(.rect(cornerRadius: 3))
 					}
 						.buttonStyle(.plain)
-						.accessibilityLabel(Text(asset.creationDate ?? .now, format: .dateTime))
+						.accessibilityLabel(PhotosYearThumbnail.accessibilityDescription(of: asset, isFavorite: Favorites.shared.isFavorite(asset)))
+						.accessibilityAddTraits(isSelected ? .isSelected : [])
 				}
 			}
 				.frame(height: 48)
@@ -306,7 +344,7 @@ private struct PhotoScrubber: View {
 			}
 			.onChange(of: selectedID, initial: true) { _, id in
 				if !isScrubbing {
-					withAnimation(.snappy) {
+					withAnimation(reduceMotion ? nil : .snappy) {
 						scrubbedID = id
 					}
 				}
@@ -342,10 +380,12 @@ private struct ScrubberThumbnail: View {
 /// A button with no look, there only for its keyboard shortcut.
 private struct KeyboardShortcutButton: View {
 	let key: KeyEquivalent
+	let modifiers: EventModifiers
 	let action: () -> Void
 
-	init(_ key: KeyEquivalent, action: @escaping () -> Void) {
+	init(_ key: KeyEquivalent, modifiers: EventModifiers = [], action: @escaping () -> Void) {
 		self.key = key
+		self.modifiers = modifiers
 		self.action = action
 	}
 
@@ -353,7 +393,7 @@ private struct KeyboardShortcutButton: View {
 		Button(action: action) {
 			EmptyView()
 		}
-			.keyboardShortcut(key, modifiers: [])
+			.keyboardShortcut(key, modifiers: modifiers)
 	}
 }
 
@@ -389,23 +429,40 @@ private struct PhotoPage: View {
 
 	@State private var image: PlatformImage?
 	@State private var isZoomed = false
+	/// VoiceOver's zoom steps, passed on to the scroll view.
+	@State private var zoomStep: ZoomStep?
+	/// Counts VoiceOver's requests to play the Live Photo.
+	@State private var livePlayCount = 0
 
 	@Environment(\.screenSize) private var screenSize
 	@Environment(\.displayScale) private var displayScale
 	@Environment(\.dismiss) private var dismiss
+	@Environment(\.accessibilityVoiceOverEnabled) private var voiceOverEnabled
+
+	private var isLive: Bool {
+		asset.mediaSubtypes.contains(.photoLive)
+	}
+
+	private var accessibilityDescription: Text {
+		PhotosYearThumbnail.accessibilityDescription(of: asset, isFavorite: Favorites.shared.isFavorite(asset))
+	}
 
 	var body: some View {
 		Group {
 			if asset.mediaType == .video {
 				VideoPage(asset: asset, isSelected: isSelected)
+					// Keeps the player's controls reachable inside.
+					.accessibilityElement(children: .contain)
+					.accessibilityLabel(accessibilityDescription)
 			} else {
-				ZoomScrollView { zoomed in
+				ZoomScrollView(zoomStep: zoomStep) { zoomed in
 					isZoomed = zoomed
-					// Zooming in clears the screen for the photo, and zooming back out brings the bars back, like in Photos.
+					// Zooming in clears the screen for the photo, and zooming back out brings the bars back, like in Photos. Not with VoiceOver, which needs the bars.
 					withAnimation {
-						showsChrome = !zoomed
+						showsChrome = !zoomed || voiceOverEnabled
 					}
 				} onTap: {
+					guard !voiceOverEnabled else { return }
 					withAnimation {
 						showsChrome.toggle()
 					}
@@ -419,11 +476,24 @@ private struct PhotoPage: View {
 								.aspectRatio(contentMode: .fit)
 						}
 						// Zoomed in, the sharper still shows instead of the screen-sized Live Photo.
-						if asset.mediaSubtypes.contains(.photoLive), !isZoomed {
-							LivePhotoLayer(asset: asset, playsHint: isSelected)
+						if isLive, !isZoomed {
+							LivePhotoLayer(asset: asset, playsHint: isSelected, playCount: livePlayCount)
 						}
 					}
 				}
+					.accessibilityElement(children: .ignore)
+					.accessibilityLabel(accessibilityDescription)
+					.accessibilityAddTraits(.isImage)
+					.accessibilityZoomAction { action in
+						zoomStep = ZoomStep(zoomsIn: action.direction == .zoomIn)
+					}
+					.accessibilityActions {
+						if isLive, !isZoomed {
+							Button("Play Live Photo") {
+								livePlayCount += 1
+							}
+						}
+					}
 			}
 		}
 			.task(id: screenSize) {
@@ -473,13 +543,14 @@ private struct VideoPage: View {
 
 	var body: some View {
 		ZStack {
-			ProgressView()
 			if let player {
 				#if os(macOS)
 				MacVideoPlayer(player: player)
 				#else
 				VideoPlayer(player: player)
 				#endif
+			} else {
+				ProgressView()
 			}
 		}
 			.task {
@@ -506,6 +577,8 @@ private struct VideoPage: View {
 private struct LivePhotoLayer: View {
 	let asset: PHAsset
 	let playsHint: Bool
+	/// Plays the whole Live Photo each time this goes up.
+	let playCount: Int
 
 	@State private var livePhoto: PHLivePhoto?
 
@@ -515,7 +588,7 @@ private struct LivePhotoLayer: View {
 	var body: some View {
 		Group {
 			if let livePhoto {
-				LivePhotoView(livePhoto: livePhoto, playsHint: playsHint)
+				LivePhotoView(livePhoto: livePhoto, playsHint: playsHint, playCount: playCount)
 			}
 		}
 			.task {
@@ -535,13 +608,21 @@ private struct LivePhotoView: PlatformViewRepresentable {
 	let livePhoto: PHLivePhoto
 	/// Plays the short preview once each time the photo becomes the current one.
 	let playsHint: Bool
+	/// Plays the whole Live Photo each time this goes up, for VoiceOver's action.
+	let playCount: Int
 
 	final class Coordinator {
 		var hasPlayedHint = false
+		var playedCount: Int
+
+		init(playedCount: Int) {
+			self.playedCount = playedCount
+		}
 	}
 
 	func makeCoordinator() -> Coordinator {
-		Coordinator()
+		// Counts from now, so a view made again doesn't replay an earlier request.
+		Coordinator(playedCount: playCount)
 	}
 
 	#if os(iOS)
@@ -575,6 +656,10 @@ private struct LivePhotoView: PlatformViewRepresentable {
 			view.startPlayback(with: .hint)
 		} else if !playsHint {
 			context.coordinator.hasPlayedHint = false
+		}
+		if playCount != context.coordinator.playedCount {
+			context.coordinator.playedCount = playCount
+			view.startPlayback(with: .full)
 		}
 	}
 }

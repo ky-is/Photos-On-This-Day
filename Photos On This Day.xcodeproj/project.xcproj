@@ -24,12 +24,14 @@
     { "kind": "folder", "path": "Shared", "target-membership": [ "Photos On This Day", "WidgetExtension" ] },
     { "kind": "folder", "path": "Widget", "target-membership": [ "WidgetExtension" ] },
     { "kind": "folder", "path": "Tests", "target-membership": [ "Photos On This Day Tests" ] },
+    { "kind": "folder", "path": "UITests", "target-membership": [ "Photos On This Day UI Tests" ] },
     {
       "kind": "group",
       "name": "Products",
       "children": [
         { "path": "<PRODUCTS>/Photos On This Day.app", "id": "24721DC12811BE7C006EB593", "type": "wrapper.application", "index": false },
         { "path": "<PRODUCTS>/Photos On This Day Tests.xctest", "id": "24A1C0DE2E00000000000002", "type": "wrapper.cfbundle", "index": false },
+        { "path": "<PRODUCTS>/Photos On This Day UI Tests.xctest", "id": "24A1C0DE2E00000000000004", "type": "wrapper.cfbundle", "index": false },
         { "path": "<PRODUCTS>/WidgetExtension.appex", "id": "24721DDC2811DCBF006EB593", "type": "wrapper.app-extension", "index": false, "target-membership": [ { "build-phase": "Photos On This Day/copy/Embed Foundation Extensions", "header-preservation": "remove-on-copy" } ] },
       ],
     },
@@ -107,6 +109,27 @@
         "SUPPORTED_PLATFORMS": "iphoneos iphonesimulator",
         "TARGETED_DEVICE_FAMILY": "1,2",
         "TEST_HOST": "$(BUILT_PRODUCTS_DIR)/Photos On This Day.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Photos On This Day",
+      },
+    },
+    {
+      "name": "Photos On This Day UI Tests",
+      "id": "24A1C0DE2E00000000000003",
+      "product": "Products/Photos On This Day UI Tests.xctest",
+      "product-type": "bundle.ui-testing",
+      "dependencies": [
+        "Photos On This Day",
+      ],
+      "build-phases": [
+        "compile-sources",
+        "frameworks",
+        "resources",
+      ],
+      "build-settings": {
+        "GENERATE_INFOPLIST_FILE": "YES",
+        "PRODUCT_BUNDLE_IDENTIFIER": "is.ky.Photos-On-This-Day.UITests",
+        "SUPPORTED_PLATFORMS": "iphoneos iphonesimulator",
+        "TARGETED_DEVICE_FAMILY": "1,2",
+        "TEST_TARGET_NAME": "Photos On This Day",
       },
     },
     {

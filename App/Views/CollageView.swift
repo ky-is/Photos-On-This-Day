@@ -34,12 +34,15 @@ struct CollageView: View {
 	@State private var videoProgress = VideoProgress()
 	@State private var player: AVQueuePlayer?
 	@State private var looper: AVPlayerLooper?
+	@State private var videoPlaying = false
 	/// Full quality photos, by photo and size.
 	@State private var loadedImages: [String: CGImage] = [:]
 	/// Found once per photo, whatever size it's shown at.
 	@State private var focuses: [String: UnitPoint] = [:]
 
 	@Environment(\.dismiss) private var dismiss
+	@Environment(\.dynamicTypeSize) private var dynamicTypeSize
+	@Environment(\.accessibilityReduceMotion) private var reduceMotion
 
 	private struct RenderedCard {
 		var card: CollageCard
@@ -84,9 +87,12 @@ struct CollageView: View {
 					.frame(maxWidth: 320)
 				Text("Tap a photo to swap it")
 					.font(.footnote)
-					.foregroundStyle(.secondary)
+					.secondaryTextStyle()
 					.opacity(format == .video ? 0 : 1)
-				HStack(spacing: 12) {
+					.accessibilityHidden(format == .video)
+				// Side by side, or stacked when large text wouldn't fit them.
+				let buttons = dynamicTypeSize.isAccessibilitySize ? AnyLayout(VStackLayout(spacing: 12)) : AnyLayout(HStackLayout(spacing: 12))
+				buttons {
 					shareButton
 						.buttonStyle(.borderedProminent)
 					// The image already names the app; the link is only sent if they want to.
@@ -96,6 +102,21 @@ struct CollageView: View {
 						.buttonStyle(.bordered)
 				}
 			}
+				.background {
+					// ⌘1–3 pick the format from a keyboard. Hidden: the picker already shows the choice.
+					Group {
+						Button("Post") { format = .post }
+							.keyboardShortcut("1")
+						Button("Story") { format = .story }
+							.keyboardShortcut("2")
+						Button("Video") { format = .video }
+							.keyboardShortcut("3")
+					}
+						.opacity(0)
+						.frame(width: 0, height: 0)
+						.allowsHitTesting(false)
+						.accessibilityHidden(true)
+				}
 				.padding()
 				#if os(macOS)
 				// A Mac sheet takes the size its content asks for, and the scaled card asks for almost none.
@@ -106,20 +127,17 @@ struct CollageView: View {
 						Button("Done") {
 							dismiss()
 						}
+							.keyboardShortcut(.cancelAction)
 					}
 				}
 				.task(id: Job(revision: revision, waitsForVideo: Self.savesPower && format == .video)) {
 					await prepareAll()
 				}
 				.onChange(of: format) { _, format in
-					if format == .video {
-						player?.play()
-					} else {
-						player?.pause()
-					}
+					setVideoPlaying(format == .video && autoplaysVideo)
 				}
 				.onDisappear {
-					player?.pause()
+					setVideoPlaying(false)
 				}
 		}
 	}
@@ -141,7 +159,26 @@ struct CollageView: View {
 				label
 			}
 				.disabled(true)
+				.accessibilityHint(Text("Preparing…"))
 		}
+	}
+
+	/// The preview loops on its own unless Reduce Motion is on or the system's Auto-Play Video setting is off; the button plays it either way.
+	private var autoplaysVideo: Bool {
+		#if os(iOS)
+		!reduceMotion && UIAccessibility.isVideoAutoplayEnabled
+		#else
+		!reduceMotion
+		#endif
+	}
+
+	private func setVideoPlaying(_ playing: Bool) {
+		if playing {
+			player?.play()
+		} else {
+			player?.pause()
+		}
+		videoPlaying = playing && player != nil
 	}
 
 
@@ -152,6 +189,15 @@ struct CollageView: View {
 					.accessibilityLabel(Text("Video"))
 					.aspectRatio(CollageCard.width / CollageCard.storyHeight, contentMode: .fit)
 					.clipShape(.rect(cornerRadius: 16))
+					.overlay(alignment: .bottomTrailing) {
+						Button(videoPlaying ? "Pause" : "Play", systemImage: videoPlaying ? "pause.fill" : "play.fill") {
+							setVideoPlaying(!videoPlaying)
+						}
+							.labelStyle(.iconOnly)
+							.buttonStyle(.borderedProminent)
+							.buttonBorderShape(.circle)
+							.padding(12)
+					}
 			} else {
 				ProgressView(value: videoProgress.value) {
 					Text("Making video…")
@@ -176,8 +222,12 @@ struct CollageView: View {
 					.frame(width: geometry.size.width, height: geometry.size.height)
 			}
 				.opacity(rendered.revision == revision ? 1 : 0.7)
+				// The audit leaves the card's own text alone: it's the share image, drawn at a fixed size on purpose.
+				.accessibilityElement(children: .contain)
+				.accessibilityIdentifier("CollageCard")
 		} else {
 			ProgressView()
+				.accessibilityLabel(Text("Loading Photos"))
 		}
 	}
 
@@ -360,9 +410,7 @@ struct CollageView: View {
 		looper = AVPlayerLooper(player: player, templateItem: AVPlayerItem(url: url))
 		self.player = player
 		video = RenderedVideo(url: url, poster: poster, revision: revision)
-		if format == .video {
-			player.play()
-		}
+		setVideoPlaying(format == .video && autoplaysVideo)
 	}
 
 	/// At 3×, the size everything is shared at.
@@ -718,6 +766,7 @@ private struct CollageCard: View {
 					.frame(width: 20, height: 20)
 					.clipShape(.rect(cornerRadius: 5))
 					.overlay(RoundedRectangle(cornerRadius: 5).stroke(.black.opacity(0.08), lineWidth: 0.5))
+					.accessibilityHidden(true)
 				Text(verbatim: "Photos On This Day")
 					.font(.system(size: 13, weight: .semibold, design: .rounded))
 					.foregroundStyle(Self.dusk)
@@ -729,12 +778,16 @@ private struct CollageCard: View {
 			HStack(spacing: 8) {
 				Text("\(yearCount) years of memories")
 				Text(verbatim: "·")
+					.accessibilityHidden(true)
 				Text(verbatim: yearRange)
 			}
 		}
 			.font(.system(size: 15, weight: .medium, design: .rounded))
 			.foregroundStyle(Self.inkSoft)
 			.lineLimit(1)
+			// Read as one heading: app, date, how many years.
+			.accessibilityElement(children: .combine)
+			.accessibilityAddTraits(.isHeader)
 	}
 
 	// Not a lazy grid: ImageRenderer draws everything at once.
@@ -757,6 +810,7 @@ private struct CollageCard: View {
 							}
 							.accessibilityElement()
 							.accessibilityLabel(tile.description)
+							.accessibilityAddTraits(.isButton)
 							.accessibilityHint(Text("Swaps in another photo from the same year"))
 							.accessibilityAction {
 								onTap?(tile)

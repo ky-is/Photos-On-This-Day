@@ -10,36 +10,46 @@ struct AboutView: View {
 	var body: some View {
 		NavigationStack {
 			Form {
-				Section("Help") {
+				Section {
 					NavigationLink("How to add a Widget") {
 						HelpAddWidgetView(inSheet: false)
 					}
+				} header: {
+					SectionTitle("Help")
 				}
 				if !filters.hiddenPhotos.isEmpty {
-					Section("Manage") {
+					Section {
 						NavigationLink("Hidden photos") {
 							HelpHiddenPhotos()
 						}
+					} header: {
+						SectionTitle("Manage")
 					}
 				}
-				Section("Share") {
+				Section {
 					Link(destination: URL(string: "\(appStoreURL.absoluteString)?action=write-review")!) {
 						HStack {
 							Text("Rate _Photos On This Day_")
 							Image(systemName: "arrow.up.forward.square")
+								.accessibilityHidden(true)
 						}
 					}
 					ShareLink(item: appStoreURL) {
-						Text("Share with a friend...")
+						Text("Share with a friend…")
 					}
+				} header: {
+					SectionTitle("Share")
 				}
-				Section("v\(Bundle.main.versionName) build \(Bundle.main.versionNumber)") {
+				Section {
 					Link(destination: URL(string: "https://github.com/ky-is/Photos-On-This-Day")!) {
 						HStack {
 							Text("View Source on GitHub")
 							Image(systemName: "arrow.up.forward.square")
+								.accessibilityHidden(true)
 						}
 					}
+				} header: {
+					SectionTitle("v\(Bundle.main.versionName) build \(Bundle.main.versionNumber)")
 				}
 			}
 				.navigationTitle("About")

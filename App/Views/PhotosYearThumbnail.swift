@@ -16,8 +16,6 @@ struct PhotosYearThumbnail: View {
 	@AppStorage(GridSelection.aspectRatioGridKey) private var showsAspectRatio = false
 	@State private var image: PlatformImage?
 
-	private var favorites = Favorites.shared
-
 	init(asset: PHAsset?, dayAssets: [PHAsset] = [], dateID: String, size: CGSize) {
 		self.asset = asset
 		self.dayAssets = dayAssets
@@ -50,7 +48,6 @@ struct PhotosYearThumbnail: View {
 							}
 					}
 						.buttonStyle(.plain)
-						.accessibilityLabel(Self.accessibilityDescription(of: asset, isFavorite: favorites.isFavorite(asset)))
 						.accessibilityAddTraits(isSelected ? .isSelected : [])
 				} else {
 					NavigationLink {
@@ -62,7 +59,6 @@ struct PhotosYearThumbnail: View {
 						.modifier(ZoomTransitionSource(id: asset.localIdentifier, namespace: photoTransition))
 						// A pinch that starts on a photo shouldn't open it when the fingers lift.
 						.disabled(isPinchingGrid)
-						.accessibilityLabel(Self.accessibilityDescription(of: asset, isFavorite: favorites.isFavorite(asset)))
 				}
 			} else {
 				Image(systemName: "photo")
@@ -73,6 +69,8 @@ struct PhotosYearThumbnail: View {
 			}
 		}
 			.clipped()
+			// On the loading placeholder too, so it reads as the photo rather than a "Photo" symbol.
+			.modifier(ThumbnailAccessibility(asset: asset, dateID: dateID, isSelecting: selection?.isSelecting == true))
 			.task(id: size) {
 				guard let asset, size != .zero else { return }
 				for await result in imageManager.images(for: asset, size: size, scale: displayScale, cropped: false) {
@@ -177,6 +175,50 @@ extension EnvironmentValues {
 	func end() {
 		isSelecting = false
 		assets = []
+	}
+}
+
+/// What VoiceOver reads for a thumbnail, with the context menu's Favorite and Hide as actions, and zooming to resize the grid.
+private struct ThumbnailAccessibility: ViewModifier {
+	let asset: PHAsset?
+	let dateID: String
+	let isSelecting: Bool
+
+	private var favorites = Favorites.shared
+	private var filters = Filters.shared
+
+	init(asset: PHAsset?, dateID: String, isSelecting: Bool) {
+		self.asset = asset
+		self.dateID = dateID
+		self.isSelecting = isSelecting
+	}
+
+	func body(content: Content) -> some View {
+		if let asset {
+			let isFavorite = favorites.isFavorite(asset)
+			content
+				.accessibilityLabel(PhotosYearThumbnail.accessibilityDescription(of: asset, isFavorite: isFavorite))
+				.accessibilityActions {
+					if !isSelecting {
+						if asset.sourceType == .typeUserLibrary {
+							Button(isFavorite ? LocalizedStringKey("Unfavorite") : "Favorite") {
+								Task {
+									await favorites.toggle(asset)
+								}
+							}
+						}
+						Button("Hide from On This Day") {
+							filters.setHidden(true, asset: asset, on: dateID)
+						}
+					}
+				}
+				// The grid's pinch to resize, for VoiceOver; zooming in shows bigger thumbnails.
+				.accessibilityZoomAction { action in
+					MenuActions.shared.columnStep = MenuActions.ColumnStep(change: action.direction == .zoomIn ? -1 : 1)
+				}
+		} else {
+			content
+		}
 	}
 }
 

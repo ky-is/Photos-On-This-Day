@@ -9,13 +9,21 @@ struct SlideshowView: View {
 	@State private var index = 0
 	@State private var image: PlatformImage?
 	@State private var showsControls = false
+	/// Changing this restarts the show from its photo.
+	@State private var playback = Playback()
 
 	@Environment(\.dismiss) private var dismiss
 	@Environment(\.accessibilityReduceMotion) private var reduceMotion
+	@Environment(\.accessibilityVoiceOverEnabled) private var voiceOverEnabled
 	@Environment(\.screenSize) private var screenSize
 	@Environment(\.displayScale) private var displayScale
 
 	private static let secondsPerPhoto = 4.0
+
+	private struct Playback: Equatable {
+		var start = 0
+		var isPaused = false
+	}
 
 	var body: some View {
 		ZStack {
@@ -30,6 +38,22 @@ struct SlideshowView: View {
 					.transition(.opacity)
 			}
 		}
+			.accessibilityElement(children: .ignore)
+			.accessibilityLabel(photos[safe: index].map { PhotosYearThumbnail.accessibilityDescription(of: $0, isFavorite: Favorites.shared.isFavorite($0)) } ?? Text(verbatim: ""))
+			.accessibilityAddTraits(.isImage)
+			.accessibilityActions {
+				if playback.isPaused {
+					Button("Play", action: togglePause)
+				} else {
+					Button("Pause", action: togglePause)
+				}
+				Button("Next Photo") {
+					step(by: 1)
+				}
+				Button("Previous Photo") {
+					step(by: -1)
+				}
+			}
 			.overlay(alignment: .bottomLeading) {
 				if let year = photos[safe: index]?.creationDate?.year {
 					Text(String(year))
@@ -38,25 +62,61 @@ struct SlideshowView: View {
 						.shadow(color: .black.opacity(0.6), radius: 4)
 						.padding(32)
 						.contentTransition(.numericText())
+						// The photo's label already says when.
+						.accessibilityHidden(true)
 				}
 			}
 			.overlay(alignment: .topLeading) {
-				if showsControls {
-					Button("Done") {
-						dismiss()
+				// Always there with VoiceOver, which can't tap to show them.
+				if showsControls || voiceOverEnabled {
+					HStack {
+						Button("Done") {
+							dismiss()
+						}
+						Button(action: togglePause) {
+							if playback.isPaused {
+								Label("Play", systemImage: "play.fill")
+							} else {
+								Label("Pause", systemImage: "pause.fill")
+							}
+						}
+							.labelStyle(.iconOnly)
 					}
 						.buttonStyle(.glass)
 						.padding()
 				}
 			}
 			.background {
-				Button {
-					dismiss()
-				} label: {
-					EmptyView()
+				// Escape closes, Space pauses or plays, and the arrow keys step through the photos.
+				Group {
+					Button {
+						dismiss()
+					} label: {
+						EmptyView()
+					}
+						.keyboardShortcut(.cancelAction)
+					Button(action: togglePause) {
+						EmptyView()
+					}
+						.keyboardShortcut(.space, modifiers: [])
+					Button {
+						step(by: -1)
+					} label: {
+						EmptyView()
+					}
+						.keyboardShortcut(.leftArrow, modifiers: [])
+					Button {
+						step(by: 1)
+					} label: {
+						EmptyView()
+					}
+						.keyboardShortcut(.rightArrow, modifiers: [])
 				}
-					.keyboardShortcut(.cancelAction)
 					.hidden()
+					.accessibilityHidden(true)
+			}
+			.accessibilityAction(.escape) {
+				dismiss()
 			}
 			.ignoresSafeArea()
 			.hidesSystemOverlays()
@@ -67,21 +127,38 @@ struct SlideshowView: View {
 				}
 			}
 			.keepsScreenAwake()
-			.task {
-				await play()
+			.task(id: playback) {
+				await play(playback)
 			}
 	}
 
-	private func play() async {
+	private func togglePause() {
+		playback = Playback(start: index, isPaused: !playback.isPaused)
+	}
+
+	/// Shows the next or previous photo, staying paused if paused.
+	private func step(by change: Int) {
 		guard !photos.isEmpty else { return }
-		var next = await load(photos[0])
-		var nextIndex = 0
+		playback = Playback(start: (index + change + photos.count) % photos.count, isPaused: playback.isPaused)
+	}
+
+	/// Shows the photo it starts at, then moves on every few seconds unless paused.
+	private func play(_ playback: Playback) async {
+		guard photos.indices.contains(playback.start) else { return }
+		var nextIndex = playback.start
+		var next: PlatformImage?
+		if nextIndex == index, image != nil {
+			next = image
+		} else {
+			next = await load(photos[nextIndex])
+		}
 		while !Task.isCancelled {
 			let shownAt = ContinuousClock.now
 			withAnimation(.easeInOut(duration: reduceMotion ? 0.3 : 1)) {
 				image = next
 				index = nextIndex
 			}
+			if playback.isPaused { return }
 			nextIndex = (nextIndex + 1) % photos.count
 			// Load the next photo while this one shows.
 			next = await load(photos[nextIndex])

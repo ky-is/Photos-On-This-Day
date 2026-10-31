@@ -13,6 +13,7 @@ import SwiftUI
 	var columnStep: ColumnStep?
 	var showsSlideshow = false
 	var showsCollage = false
+	var showsDatePicker = false
 	/// Whether the day has photos from past years, so Slideshow and Collage have something to show.
 	var hasPastPhotos = false
 }
@@ -64,6 +65,11 @@ struct AppCommands: Commands {
 			}
 				.keyboardShortcut("t")
 				.disabled(state.daysChange == 0)
+			Button("Choose a Date…", systemImage: "calendar") {
+				actions.showsDatePicker = true
+			}
+				.keyboardShortcut("d")
+				.disabled(!state.canShowPhotos || state.isScanning)
 		}
 	}
 }

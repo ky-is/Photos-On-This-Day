@@ -3,14 +3,16 @@ import SwiftUI
 
 private struct PhotosYearHeader: View {
 	let year: Int
+	let photoCount: Int
 	let isOverPhotos: Bool
-
-	static let height = GridLayout.headerHeight
+	let height: CGFloat
 
 	var body: some View {
 		// A floating label: plain over the white background, with a small backdrop once photos scroll under it.
 		Text(String(year))
 			.font(.headline.monospacedDigit())
+			.accessibilityLabel(Text(String(year)) + Text(verbatim: ", ") + Text("^[\(photoCount) photo](inflect: true)"))
+			.accessibilityAddTraits(.isHeader)
 			.padding(.horizontal, 10)
 			.padding(.vertical, 4)
 			.background {
@@ -20,7 +22,7 @@ private struct PhotosYearHeader: View {
 			}
 			.animation(.easeOut(duration: 0.15), value: isOverPhotos)
 			.padding(.horizontal, 8)
-			.frame(height: Self.height)
+			.frame(height: height)
 			.frame(maxWidth: .infinity, alignment: .leading)
 	}
 }
@@ -34,6 +36,8 @@ struct PhotosYearView: View {
 
 	@AppStorage(Self.thumbnailWidthKey) private var thumbnailWidth = Self.defaultThumbnailWidth
 	@State private var isScrolledUnderHeader = false
+	/// Matches GridLayout's: the same base, scaled the same way.
+	@ScaledMetric(relativeTo: .headline) private var headerHeight = GridLayout.baseHeaderHeight
 
 	/// The widest a thumbnail may be; pinching the grid changes it, a column at a time.
 	static let thumbnailWidthKey = "gridThumbnailWidth"
@@ -54,12 +58,12 @@ struct PhotosYearView: View {
 				// The header pins at the top of the scroll view; photos are under it once the grid's top passes its bottom.
 				// Only the yes/no is kept, so this updates when it flips, not on every scrolled frame.
 				.onGeometryChange(for: Bool.self) { proxy in
-					proxy.frame(in: .scrollView).minY < PhotosYearHeader.height - 1
+					proxy.frame(in: .scrollView).minY < headerHeight - 1
 				} action: { isUnder in
 					isScrolledUnderHeader = isUnder
 				}
 		} header: {
-			PhotosYearHeader(year: year.year, isOverPhotos: isScrolledUnderHeader)
+			PhotosYearHeader(year: year.year, photoCount: year.assets.count, isOverPhotos: isScrolledUnderHeader, height: headerHeight)
 		}
 	}
 }

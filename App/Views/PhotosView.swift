@@ -135,8 +135,11 @@ struct PhotosView: View {
 	@State private var scaleAnchor = CGPoint.zero
 
 	@Environment(\.screenSize) private var screenSize
+	/// The year headers' height, the same as PhotosYearView's.
+	@ScaledMetric(relativeTo: .headline) private var headerHeight = GridLayout.baseHeaderHeight
 	@Environment(\.displayScale) private var displayScale
 	@Environment(\.accessibilityReduceMotion) private var reduceMotion
+	@Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
 	init(date: Date, scrollPosition: Binding<ScrollPosition>, scrollTracker: ScrollTracker, viewerPhotoID: String? = nil, pinch: GridPinch? = nil) {
 		self.pinch = pinch
@@ -183,6 +186,7 @@ struct PhotosView: View {
 				}
 			} else {
 				ProgressView()
+					.accessibilityLabel("Loading Photos")
 					.padding()
 			}
 		}
@@ -392,7 +396,7 @@ struct PhotosView: View {
 	}
 
 	private func layout(columns: Int? = nil) -> GridLayout {
-		GridLayout(width: scrollTracker.gridFrame.width, columns: columns ?? self.columns, yearCounts: loaded?.pastYears.map(\.assets.count) ?? [])
+		GridLayout(width: scrollTracker.gridFrame.width, columns: columns ?? self.columns, yearCounts: loaded?.pastYears.map(\.assets.count) ?? [], headerHeight: headerHeight)
 	}
 
 	private func canChangeColumns(by change: Int) -> Bool {
@@ -427,7 +431,7 @@ struct PhotosView: View {
 			// Where the photo is now, measured from the top of the visible area.
 			let top = scrollTracker.gridFrame.minY + layout.top(of: GridLayout.Position(year: yearIndex, index: index))
 			// The year's label pins over the top of the visible area, so the photo needs to be below it.
-			if top < GridLayout.headerHeight || top + layout.cellSide > scrollTracker.visibleHeight {
+			if top < headerHeight || top + layout.cellSide > scrollTracker.visibleHeight {
 				scrollPosition.scrollTo(y: max(0, scrollTracker.contentOffsetY + top + layout.cellSide / 2 - scrollTracker.visibleHeight / 2))
 			}
 			return
@@ -449,20 +453,33 @@ struct PhotosView: View {
 					.font(.title3.weight(.medium))
 					.padding(.vertical)
 					.foregroundStyle(.secondary)
+					.accessibilityAddTraits(.isHeader)
 				if !nearbyDays.isEmpty {
 					Text("Photos from nearby days")
 						.foregroundStyle(.secondary)
+						.accessibilityAddTraits(.isHeader)
 					ForEach(nearbyDays) { day in
 						Button {
 							state.go(to: day.date)
 						} label: {
-							HStack {
-								Text(day.date, format: .dateTime.month(.wide).day())
-								Spacer()
-								Text("^[\(day.photoCount) photo](inflect: true)")
-									.foregroundStyle(.secondary)
+							// At the largest text sizes the count goes under the date, so neither gets cut off.
+							if dynamicTypeSize.isAccessibilitySize {
+								VStack(alignment: .leading) {
+									Text(day.date, format: .dateTime.month(.wide).day())
+									Text("^[\(day.photoCount) photo](inflect: true)")
+										.foregroundStyle(.secondary)
+								}
+									.multilineTextAlignment(.leading)
+									.frame(maxWidth: 320, alignment: .leading)
+							} else {
+								HStack {
+									Text(day.date, format: .dateTime.month(.wide).day())
+									Spacer()
+									Text("^[\(day.photoCount) photo](inflect: true)")
+										.foregroundStyle(.secondary)
+								}
+									.frame(maxWidth: 320)
 							}
-								.frame(maxWidth: 320)
 						}
 							.buttonStyle(.bordered)
 					}
@@ -472,6 +489,8 @@ struct PhotosView: View {
 				} else {
 					Text("You can browse other days\nusing the ◀︎ and ▶︎ buttons")
 						.foregroundStyle(.secondary)
+						// VoiceOver would read the arrows out as symbols.
+						.accessibilityLabel("You can browse other days using the previous and next day buttons")
 					Button {
 						Task {
 							await state.scanForDayWithPhotos()
@@ -479,6 +498,7 @@ struct PhotosView: View {
 					} label: {
 						if state.isScanning {
 							ProgressView()
+								.accessibilityLabel("Searching")
 						} else {
 							Text("Find recent day with photos")
 						}

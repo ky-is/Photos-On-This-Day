@@ -14,7 +14,8 @@ struct GridLayout {
 		}
 	}
 
-	static let headerHeight: CGFloat = 40
+	/// The year header's height at the default text size; it grows with larger text, see `headerHeight`.
+	static let baseHeaderHeight: CGFloat = 40
 	static let spacing: CGFloat = 1
 	static let columnRange = 1...10
 
@@ -22,6 +23,8 @@ struct GridLayout {
 	let columns: Int
 	/// How many photos each year has, newest year first.
 	let yearCounts: [Int]
+	/// Scaled with the text size by the views, so the year fits at any size.
+	var headerHeight = Self.baseHeaderHeight
 
 	/// The column count for the widest thumbnail allowed; pinching changes that width a column at a time.
 	static func columns(width: CGFloat, thumbnailWidth: Double) -> Int {
@@ -42,7 +45,7 @@ struct GridLayout {
 	}
 
 	func sectionHeight(ofYear year: Int) -> CGFloat {
-		Self.headerHeight + 2 * Self.spacing + CGFloat(rows(inYear: year)) * (cellSide + Self.spacing) - Self.spacing
+		headerHeight + 2 * Self.spacing + CGFloat(rows(inYear: year)) * (cellSide + Self.spacing) - Self.spacing
 	}
 
 	func sectionTop(ofYear year: Int) -> CGFloat {
@@ -50,7 +53,7 @@ struct GridLayout {
 	}
 
 	func top(of position: Position) -> CGFloat {
-		sectionTop(ofYear: position.year) + Self.headerHeight + Self.spacing + CGFloat(position.index / columns) * (cellSide + Self.spacing)
+		sectionTop(ofYear: position.year) + headerHeight + Self.spacing + CGFloat(position.index / columns) * (cellSide + Self.spacing)
 	}
 
 	/// The photo at a point in the grid, or the nearest one when the point is on a header, a gap or past the end.
@@ -59,7 +62,7 @@ struct GridLayout {
 		for year in yearCounts.indices where yearCounts[year] > 0 {
 			let height = sectionHeight(ofYear: year)
 			if point.y < sectionTop + height || year == yearCounts.indices.last {
-				let photosTop = sectionTop + Self.headerHeight + Self.spacing
+				let photosTop = sectionTop + headerHeight + Self.spacing
 				let row = min(max(0, Int((point.y - photosTop) / (cellSide + Self.spacing))), rows(inYear: year) - 1)
 				let column = min(max(0, Int(point.x / (cellSide + Self.spacing))), columns - 1)
 				return Position(year: year, index: min(row * columns + column, yearCounts[year] - 1))

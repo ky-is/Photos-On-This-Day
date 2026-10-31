@@ -33,7 +33,11 @@ struct HelpHiddenPhotos: View {
 							.foregroundStyle(.primary)
 						Spacer()
 						Image(systemName: "trash")
+							.accessibilityHidden(true)
 					}
+						// The trash icon is for taking the day off this list; what it does to the photos is show them again.
+						.accessibilityElement(children: .ignore)
+						.accessibilityLabel(Text("Unhide ^[\(day.count) photo](inflect: true) from \(day.date?.formatted(.monthDay) ?? day.id)"))
 				}
 			}
 				.onDelete { indices in

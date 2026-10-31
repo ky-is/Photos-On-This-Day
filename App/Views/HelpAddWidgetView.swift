@@ -4,6 +4,7 @@ struct HelpAddWidgetView: View {
 	let inSheet: Bool
 
 	@Environment(\.dismiss) private var dismiss
+	@ScaledMetric(relativeTo: .largeTitle) private var iconSize = 72.0
 
 	#if os(macOS)
 	private static let iconName = "widget.small.badge.plus"
@@ -15,10 +16,11 @@ struct HelpAddWidgetView: View {
 		ScrollView {
 			VStack(alignment: .leading, spacing: 16) {
 				Image(systemName: Self.iconName)
-					.font(.system(size: 72))
+					.font(.system(size: iconSize))
 					.foregroundStyle(.tint)
 					.frame(maxWidth: .infinity)
 					.padding(.vertical)
+					.accessibilityHidden(true)
 				#if os(macOS)
 				Text("**1.** Control-click an empty spot on your desktop and choose **Edit Widgets**.")
 				Text("**2.** Search for \"On This Day\" (it's been copied to your clipboard), or find it in the list.")
@@ -36,7 +38,7 @@ struct HelpAddWidgetView: View {
 					Text("Drag a Photos widget of the same size on top of this widget to create a Smart Stack. _On This Day_ then shows on days with photos, and the Photos widget shows otherwise.")
 				}
 					.font(.callout)
-					.foregroundStyle(.secondary)
+					.secondaryTextStyle()
 				#endif
 			}
 				.padding()

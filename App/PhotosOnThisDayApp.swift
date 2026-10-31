@@ -78,12 +78,13 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
 
 extension UIFont {
 	static func rounded(style: TextStyle, bold: Bool) -> UIFont {
-		let font = UIFont.preferredFont(forTextStyle: style)
+		// Made at the default text size, then scaled, so it follows the user's text size like the system font.
+		let font = UIFont.preferredFont(forTextStyle: style, compatibleWith: UITraitCollection(preferredContentSizeCategory: .large))
 		var descriptor = font.fontDescriptor.withDesign(.rounded)!
 		if bold {
 			descriptor = descriptor.withSymbolicTraits(.traitBold)!
 		}
-		return UIFont(descriptor: descriptor, size: font.pointSize)
+		return UIFontMetrics(forTextStyle: style).scaledFont(for: UIFont(descriptor: descriptor, size: font.pointSize))
 	}
 }
 

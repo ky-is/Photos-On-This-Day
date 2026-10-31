@@ -18,10 +18,13 @@ struct PermissionsView: View {
 				RoundedRectangle(cornerRadius: 48, style: .continuous)
 					.fill(.fill.secondary)
 					.onTapGesture(perform: openSettings)
+					// The Settings button does the same for VoiceOver.
+					.accessibilityHidden(true)
 				VStack {
 					Label(state.permission == .limited ? "Photos Limited" : "Photos Unavailable", systemImage: "photo")
 						.font(.headline)
 						.padding(.bottom, 1)
+						.accessibilityAddTraits(.isHeader)
 					VStack(alignment: .leading, spacing: 8) {
 						if state.permission == .limited {
 							Text("You're currently limiting access to photos from your library. This isn't recommended since new photos will not be automatically included.")

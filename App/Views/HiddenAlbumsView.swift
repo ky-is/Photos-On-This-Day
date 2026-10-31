@@ -4,7 +4,7 @@ import SwiftUI
 /// Turn albums off so their photos never show, in the app or its widgets: receipts, work, screenshots of things.
 struct HiddenAlbumsView: View {
 	@Bindable private var filters = Filters.shared
-	@State private var albums: [Album] = []
+	@State private var albums: [Album]?
 
 	@Environment(\.dismiss) private var dismiss
 
@@ -18,7 +18,7 @@ struct HiddenAlbumsView: View {
 		NavigationStack {
 			List {
 				Section {
-					ForEach(albums) { album in
+					ForEach(albums ?? []) { album in
 						Toggle(isOn: Binding {
 							!filters.hiddenAlbums.contains(album.id)
 						} set: { isShown in
@@ -30,11 +30,18 @@ struct HiddenAlbumsView: View {
 							Text(album.title)
 							Text("^[\(album.photoCount) photo](inflect: true)")
 						}
+							.accessibilityHint(Text("When on, its photos show"))
 					}
 				} footer: {
 					Text("Photos in albums that are turned off don't show up in On This Day or its widgets.")
 				}
 			}
+				.overlay {
+					if albums == nil {
+						ProgressView()
+							.accessibilityLabel(Text("Loading Albums"))
+					}
+				}
 				.navigationTitle("Hide Albums")
 				.inlineNavigationTitle()
 				.toolbar {
@@ -42,6 +49,7 @@ struct HiddenAlbumsView: View {
 						Button("Done") {
 							dismiss()
 						}
+							.keyboardShortcut(.defaultAction)
 					}
 				}
 				.task {

@@ -1,17 +1,25 @@
 import SwiftUI
 
+/// One step in or out, as VoiceOver's zoom action asks. Each is new, so the same step can repeat.
+struct ZoomStep: Equatable {
+	let id = UUID()
+	let zoomsIn: Bool
+}
+
 #if os(iOS)
 import UIKit
 
 struct ZoomScrollView<Content: View>: UIViewRepresentable {
 	private let content: Content
+	private let zoomStep: ZoomStep?
 	/// Whether the content is zoomed in, each time that changes.
 	private let onZoom: (Bool) -> Void
 	private let onTap: () -> Void
 	private let onPinchClose: (() -> Void)?
 
-	/// Pinch or double-tap to zoom, like in Photos. Pinching in below full size calls `onPinchClose`.
-	init(onZoom: @escaping (Bool) -> Void = { _ in }, onTap: @escaping () -> Void = {}, onPinchClose: (() -> Void)? = nil, @ViewBuilder content: () -> Content) {
+	/// Pinch or double-tap to zoom, like in Photos. Pinching in below full size calls `onPinchClose`. A new `zoomStep` zooms one step.
+	init(zoomStep: ZoomStep? = nil, onZoom: @escaping (Bool) -> Void = { _ in }, onTap: @escaping () -> Void = {}, onPinchClose: (() -> Void)? = nil, @ViewBuilder content: () -> Content) {
+		self.zoomStep = zoomStep
 		self.onPinchClose = onPinchClose
 		self.onZoom = onZoom
 		self.onTap = onTap
@@ -56,6 +64,16 @@ struct ZoomScrollView<Content: View>: UIViewRepresentable {
 		context.coordinator.onZoom = onZoom
 		context.coordinator.onTap = onTap
 		context.coordinator.onPinchClose = onPinchClose
+		if zoomStep != context.coordinator.handledStep {
+			context.coordinator.handledStep = zoomStep
+			if let zoomStep {
+				// After the update, since zooming reports back into SwiftUI state.
+				Task {
+					let scale = zoomStep.zoomsIn ? uiView.zoomScale * 2 : uiView.zoomScale / 2
+					uiView.setZoomScale(min(max(scale, uiView.minimumZoomScale), uiView.maximumZoomScale), animated: true)
+				}
+			}
+		}
 	}
 
 	final class Coordinator: NSObject, UIScrollViewDelegate, UIGestureRecognizerDelegate {
@@ -63,6 +81,7 @@ struct ZoomScrollView<Content: View>: UIViewRepresentable {
 		var onZoom: (Bool) -> Void
 		var onTap: () -> Void
 		var onPinchClose: (() -> Void)?
+		var handledStep: ZoomStep?
 		private var isZoomedIn = false
 		private var isClosing = false
 
@@ -125,11 +144,13 @@ import AppKit
 /// Pinch on the trackpad or double-click to zoom, click to show or hide the bars. The Mac's version of the iPhone one above.
 struct ZoomScrollView<Content: View>: NSViewRepresentable {
 	private let content: Content
+	private let zoomStep: ZoomStep?
 	private let onZoom: (Bool) -> Void
 	private let onTap: () -> Void
 
 	/// `onPinchClose` is for iPhone; on the Mac, the back button and Escape close the viewer.
-	init(onZoom: @escaping (Bool) -> Void = { _ in }, onTap: @escaping () -> Void = {}, onPinchClose: (() -> Void)? = nil, @ViewBuilder content: () -> Content) {
+	init(zoomStep: ZoomStep? = nil, onZoom: @escaping (Bool) -> Void = { _ in }, onTap: @escaping () -> Void = {}, onPinchClose: (() -> Void)? = nil, @ViewBuilder content: () -> Content) {
+		self.zoomStep = zoomStep
 		self.onZoom = onZoom
 		self.onTap = onTap
 		self.content = content()
@@ -172,6 +193,16 @@ struct ZoomScrollView<Content: View>: NSViewRepresentable {
 		context.coordinator.hostingView.rootView = content
 		context.coordinator.onZoom = onZoom
 		context.coordinator.onTap = onTap
+		if zoomStep != context.coordinator.handledStep {
+			context.coordinator.handledStep = zoomStep
+			if let zoomStep {
+				// After the update, since zooming reports back into SwiftUI state.
+				let coordinator = context.coordinator
+				Task {
+					coordinator.zoom(scrollView, in: zoomStep.zoomsIn)
+				}
+			}
+		}
 	}
 
 	final class Coordinator: NSObject, NSGestureRecognizerDelegate {
@@ -179,6 +210,7 @@ struct ZoomScrollView<Content: View>: NSViewRepresentable {
 		var onZoom: (Bool) -> Void
 		var onTap: () -> Void
 		weak var doubleClick: NSClickGestureRecognizer?
+		var handledStep: ZoomStep?
 		private var isZoomedIn = false
 
 		init(hostingView: NSHostingView<Content>, onZoom: @escaping (Bool) -> Void, onTap: @escaping () -> Void) {
@@ -203,6 +235,17 @@ struct ZoomScrollView<Content: View>: NSViewRepresentable {
 			let magnification: CGFloat = scrollView.magnification > scrollView.minMagnification ? scrollView.minMagnification : 3
 			NSAnimationContext.runAnimationGroup { _ in
 				scrollView.animator().setMagnification(magnification, centeredAt: point)
+			} completionHandler: {
+				self.report(scrollView)
+			}
+		}
+
+		/// Zooms one step in or out around the middle of what shows.
+		func zoom(_ scrollView: NSScrollView, in zoomsIn: Bool) {
+			let magnification = min(max(zoomsIn ? scrollView.magnification * 2 : scrollView.magnification / 2, scrollView.minMagnification), scrollView.maxMagnification)
+			let bounds = scrollView.contentView.bounds
+			NSAnimationContext.runAnimationGroup { _ in
+				scrollView.animator().setMagnification(magnification, centeredAt: NSPoint(x: bounds.midX, y: bounds.midY))
 			} completionHandler: {
 				self.report(scrollView)
 			}

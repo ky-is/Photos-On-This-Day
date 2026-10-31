@@ -38,6 +38,16 @@
                ReferencedContainer = "container:Photos On This Day.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "24A1C0DE2E00000000000003"
+               BuildableName = "Photos On This Day UI Tests.xctest"
+               BlueprintName = "Photos On This Day UI Tests"
+               ReferencedContainer = "container:Photos On This Day.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

@@ -12,9 +12,16 @@ struct PhotoFavoriteButton: View {
 
 	var body: some View {
 		if asset.sourceType == .typeUserLibrary {
-			Button("Favorite", systemImage: favorites.isFavorite(asset) ? "heart.fill" : "heart") {
+			// Named for what it does, so VoiceOver and Voice Control say so; the heart shows the state.
+			Button {
 				Task {
 					await favorites.toggle(asset)
+				}
+			} label: {
+				if favorites.isFavorite(asset) {
+					Label("Unfavorite", systemImage: "heart.fill")
+				} else {
+					Label("Favorite", systemImage: "heart")
 				}
 			}
 		}
