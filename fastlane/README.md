@@ -53,7 +53,7 @@ Upload the screenshots that changed to the editable version on App Store Connect
 [bundle exec] fastlane ios submit
 ```
 
-Upload fastlane/metadata and the screenshots, attach the latest build of this version, and submit it for review (uploads:false skips the uploads)
+Upload fastlane/metadata and the screenshots, attach the latest build of this version, and submit it for review (uploads:false skips the uploads, review:false stops after them; mac:true does the Mac version, with fastlane/metadata-mac)
 
 ### ios beta
 
@@ -70,6 +70,14 @@ Build and upload to TestFlight (internal testers only; not submitted for externa
 ```
 
 Build and upload to App Store Connect (does not submit for review)
+
+### ios release_mac
+
+```sh
+[bundle exec] fastlane ios release_mac
+```
+
+Build the Mac app and upload it to the Mac version on App Store Connect, with the build number of the last `release` (does not submit for review)
 
 ----
 
