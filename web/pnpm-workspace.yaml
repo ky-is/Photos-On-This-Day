@@ -1,0 +1,35 @@
+# The checkout is in iCloud Drive, which skips folders ending in .nosync.
+virtualStoreDir: node_modules/.pnpm.nosync
+
+# Vite+ bundles Vite (as vite-plus-core), Vitest, Oxlint and Oxfmt.
+catalog:
+  vite: npm:@voidzero-dev/vite-plus-core@1.4.0
+  vite-plus: 1.4.0
+
+overrides:
+  # Every package's Vite is Vite+'s, and Oxfmt is the local oxfmt-sanity checkout.
+  vite@*: 'catalog:'
+  oxfmt: link:../../oxfmt-sanity/npm/oxfmt
+
+# Plugins ask for Vite's own version numbers, which Vite+'s build doesn't carry.
+peerDependencyRules:
+  allowedVersions:
+    vite: '*'
+
+minimumReleaseAgeExclude:
+  - '@vue/compiler-core@3.6.0-rc.14'
+  - '@vue/compiler-dom@3.6.0-rc.14'
+  - '@vue/compiler-sfc@3.6.0-rc.14'
+  - '@vue/compiler-ssr@3.6.0-rc.14'
+  - '@vue/compiler-vapor@3.6.0-rc.14'
+  - '@vue/reactivity@3.6.0-rc.14'
+  - '@vue/runtime-core@3.6.0-rc.14'
+  - '@vue/runtime-dom@3.6.0-rc.14'
+  - '@vue/runtime-vapor@3.6.0-rc.14'
+  - '@vue/server-renderer@3.6.0-rc.14'
+  - '@vue/shared@3.6.0-rc.14'
+  - vue@3.6.0-rc.14
+
+# workerd is the Workers runtime that the Cloudflare Vite plugin runs locally; its install script fetches the binary.
+allowBuilds:
+  workerd: true

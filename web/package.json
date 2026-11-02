@@ -1,0 +1,33 @@
+{
+	"name": "photos-on-this-day-web",
+	"private": true,
+	"type": "module",
+	"description": "Website for Photos On This Day, at onthisday.ky.is",
+	"scripts": {
+		"dev": "vp dev",
+		"build": "vp build",
+		"preview": "vp preview",
+		"typecheck": "vue-tsc --noEmit",
+		"fmt": "vp fmt",
+		"lint": "vp lint && vp fmt --check",
+		"deploy": "pnpm run typecheck && vp build && cf deploy --prebuilt"
+	},
+	"devDependencies": {
+		"@cloudflare/vite-plugin": "2.0.0-beta.v.8",
+		"@fontsource-variable/fraunces": "^5.3.0",
+		"@types/node": "^26.6.6",
+		"@vitejs/plugin-vue": "^6.0.10",
+		"@vue/tsconfig": "^0.9.1",
+		"cf": "1.0.0-beta.26",
+		"oxfmt": "link:../../oxfmt-sanity/npm/oxfmt",
+		"typescript": "^6.0.3",
+		"vite": "catalog:",
+		"vite-plus": "catalog:",
+		"vue": "3.6.0-rc.14",
+		"vue-tsc": "^3.3.14"
+	},
+	"engines": {
+		"node": "^26"
+	},
+	"packageManager": "pnpm@12.15.0"
+}
