@@ -5,10 +5,10 @@ import SwiftUI
 /// Where the day's photos were taken, across every year it shows: a pin per place with the newest photo's thumbnail and
 /// how many photos were taken there. Tapping a pin opens that photo in the viewer, among all of the day's photos.
 struct DayMapView: View {
-	/// The map's toggle in the toolbar and the menu bar, remembered between launches.
+	/// The map's toggle in the toolbar and the menu bar: on until someone turns it off, then remembered between launches.
 	static let visibleKey = "showsDayMap"
 
-	/// Tall enough to read, short enough to leave plenty of the photos in view above it.
+	/// Tall enough to read, short enough to leave plenty of the photos in view above it: its height pinned at the bottom.
 	static func height(for screenSize: CGSize) -> CGFloat {
 		min(300, max(200, screenSize.height * 0.28))
 	}
@@ -16,8 +16,6 @@ struct DayMapView: View {
 	let years: [PhotoYear]
 
 	private var state = StateManager.shared
-
-	@Environment(\.screenSize) private var screenSize
 
 	init(years: [PhotoYear]) {
 		self.years = years
@@ -48,8 +46,76 @@ struct DayMapView: View {
 			}
 		}
 			.mapStyle(.standard(pointsOfInterest: .excludingAll))
-			.frame(height: Self.height(for: screenSize))
 			.accessibilityLabel("Map of the day’s photos")
+	}
+}
+
+/// The map pinned at the bottom of the day, an even inset from the screen's sides and bottom, with a handle to drag it up
+/// to fill the screen below the toolbar and back down again (or tap it).
+struct DayMapPanel: View {
+	let date: Date
+	let years: [PhotoYear]
+	/// Its gap from the screen's sides and bottom, and from the toolbar when it fills the screen.
+	let inset: CGFloat
+
+	@Environment(\.screenSize) private var screenSize
+	@State private var expanded = false
+	/// How far the handle has been dragged down (up is negative), springing back when let go.
+	@GestureState(resetTransaction: Transaction(animation: .smooth)) private var drag: CGFloat = 0
+
+	var body: some View {
+		GeometryReader { geometry in
+			let collapsed = DayMapView.height(for: screenSize)
+			let full = max(collapsed, geometry.size.height - 2 * inset)
+			DayMapView(years: years)
+				.id(date)
+				.frame(height: min(full, max(collapsed * 0.6, (expanded ? full : collapsed) - drag)))
+				.overlay(alignment: .top) {
+					handle
+				}
+				.clipShape(ConcentricRectangle(uniformTopCorners: .fixed(28), uniformBottomCorners: .concentric(minimum: .fixed(28))))
+				.shadow(color: .black.opacity(0.2), radius: 12, y: 4)
+				.padding([.horizontal, .bottom], inset)
+				.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+		}
+	}
+
+	/// A grabber like a sheet's, on a strip wide enough to catch a thumb, leaving the rest of the map to pan.
+	private var handle: some View {
+		Capsule()
+			.fill(.white.opacity(0.9))
+			.frame(width: 36, height: 5)
+			.shadow(color: .black.opacity(0.35), radius: 2)
+			.frame(width: 120, height: 28)
+			.contentShape(.rect)
+			.gesture(DragGesture(coordinateSpace: .global)
+				.updating($drag) { value, drag, _ in
+					drag = value.translation.height
+				}
+				.onEnded { value in
+					let moved = value.translation.height
+					let flung = value.predictedEndTranslation.height
+					withAnimation(.smooth) {
+						if expanded, moved > 60 || flung > 240 {
+							expanded = false
+						} else if !expanded, moved < -60 || flung < -240 {
+							expanded = true
+						}
+					}
+				})
+			.onTapGesture {
+				withAnimation(.smooth) {
+					expanded.toggle()
+				}
+			}
+			.accessibilityElement()
+			.accessibilityLabel(expanded ? Text("Collapse Map") : Text("Expand Map"))
+			.accessibilityAddTraits(.isButton)
+			.accessibilityAction {
+				withAnimation(.smooth) {
+					expanded.toggle()
+				}
+			}
 	}
 }
 

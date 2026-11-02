@@ -739,6 +739,58 @@
         }
       }
     },
+    "Apple doesn’t let apps open the Photos app to a particular photo, so there’s no way to jump from here to the same photo there. You can still favorite, share, hide or delete it right here in the viewer." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple erlaubt Apps nicht, die Fotos-App bei einem bestimmten Foto zu öffnen, daher gibt es keinen Weg, von hier zum selben Foto dort zu springen. Du kannst es aber direkt hier in der Ansicht favorisieren, teilen, ausblenden oder löschen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple no permite que las apps abran la app Fotos en una foto concreta, así que no hay forma de saltar desde aquí a la misma foto allí. Aun así, puedes marcarla como favorita, compartirla, ocultarla o eliminarla aquí mismo en el visor."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple ne permet pas aux apps d’ouvrir l’app Photos sur une photo précise : il est donc impossible de passer d’ici à la même photo là-bas. Vous pouvez quand même l’ajouter aux favoris, la partager, la masquer ou la supprimer directement ici dans la visionneuse."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple non permette alle app di aprire l’app Foto su una foto specifica, quindi non c’è modo di passare da qui alla stessa foto lì. Puoi comunque aggiungerla ai preferiti, condividerla, nasconderla o eliminarla direttamente qui nel visore."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appleは、アプリから「写真」アプリの特定の写真を開くことを許可していません。そのため、ここから「写真」アプリの同じ写真に移動することはできません。ただし、このビューアでお気に入り、共有、非表示、削除ができます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple은 앱이 사진 앱의 특정 사진을 열도록 허용하지 않으므로, 여기에서 사진 앱의 같은 사진으로 이동할 수 없습니다. 대신 이 뷰어에서 바로 즐겨찾기, 공유, 가리기, 삭제를 할 수 있습니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A Apple não permite que apps abram o app Fotos em uma foto específica, então não há como ir daqui para a mesma foto lá. Você ainda pode favoritar, compartilhar, ocultar ou apagar a foto aqui mesmo no visualizador."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple 不允许 App 在“照片”App 中打开某一张特定的照片，所以无法从这里跳转到那里的同一张照片。不过你仍可以直接在这里的查看器中收藏、分享、隐藏或删除它。"
+          }
+        }
+      }
+    },
     "Aspect Ratio Grid" : {
       "localizations" : {
         "de" : {
@@ -891,6 +943,110 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "更大的缩略图"
+          }
+        }
+      }
+    },
+    "Can I get a reminder every day?" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kann ich jeden Tag eine Erinnerung bekommen?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Puedo recibir un recordatorio cada día?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Puis-je recevoir un rappel chaque jour ?"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Posso ricevere un promemoria ogni giorno?"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "毎日リマインダーを受け取れますか？"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "매일 알림을 받을 수 있나요?"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Posso receber um lembrete todo dia?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "可以每天收到提醒吗？"
+          }
+        }
+      }
+    },
+    "Can I see this year’s photos too, or the oldest first?" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kann ich auch die Fotos von diesem Jahr sehen oder die ältesten zuerst?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Puedo ver también las fotos de este año, o las más antiguas primero?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Puis-je aussi voir les photos de cette année, ou les plus anciennes d’abord ?"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Posso vedere anche le foto di quest’anno, o prima le più vecchie?"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今年の写真も見たり、古い順に並べたりできますか？"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "올해 사진도 보거나 오래된 순으로 볼 수 있나요?"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Posso ver também as fotos deste ano, ou as mais antigas primeiro?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "可以同时看到今年的照片，或按最早的在前排列吗？"
           }
         }
       }
@@ -1155,6 +1311,110 @@
         }
       }
     },
+    "Collapse Map" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Karte verkleinern"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reducir mapa"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Réduire la carte"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Riduci mappa"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "マップを縮小"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "지도 축소"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recolher Mapa"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "收起地图"
+          }
+        }
+      }
+    },
+    "Control-click the widget, choose Edit, and pick how often it changes. You can also add a button to shuffle to another photo." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klicke bei gedrückter Ctrl-Taste auf das Widget, wähle „Bearbeiten“ und lege fest, wie oft es wechselt. Du kannst auch eine Taste hinzufügen, um zu einem anderen Foto zu wechseln."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Haz clic en el widget con la tecla Control pulsada, elige Editar y escoge cada cuánto cambia. También puedes añadir un botón para cambiar a otra foto."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cliquez sur le widget en maintenant la touche Contrôle enfoncée, choisissez Modifier et indiquez à quelle fréquence il change. Vous pouvez aussi ajouter un bouton pour passer à une autre photo."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fai clic sul widget tenendo premuto Ctrl, scegli Modifica e indica ogni quanto cambia. Puoi anche aggiungere un pulsante per passare a un’altra foto."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Controlキーを押しながらウィジェットをクリックして「編集」を選び、切り替わる頻度を選んでください。別の写真にシャッフルするボタンを追加することもできます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Control 키를 누른 채로 위젯을 클릭하고 편집을 선택한 다음 바뀌는 주기를 고르세요. 다른 사진으로 바꾸는 버튼을 추가할 수도 있습니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clique no widget com a tecla Control pressionada, escolha Editar e defina a frequência da troca. Você também pode adicionar um botão para trocar por outra foto."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按住 Control 键点按小组件，选择“编辑”，然后选择更换的频率。你还可以添加一个按钮来随机换一张照片。"
+          }
+        }
+      }
+    },
     "Count Photos" : {
       "localizations" : {
         "de" : {
@@ -1311,6 +1571,58 @@
         }
       }
     },
+    "Daily Reminder" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tägliche Erinnerung"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recordatorio diario"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rappel quotidien"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Promemoria giornaliero"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "毎日のリマインダー"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "매일 알림"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lembrete Diário"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每日提醒"
+          }
+        }
+      }
+    },
     "Date" : {
       "localizations" : {
         "de" : {
@@ -1415,6 +1727,58 @@
         }
       }
     },
+    "Does the app collect my data?" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sammelt die App meine Daten?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿La app recopila mis datos?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’app collecte-t-elle mes données ?"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’app raccoglie i miei dati?"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このアプリはデータを収集しますか？"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "앱이 내 데이터를 수집하나요?"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O app coleta meus dados?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这个 App 会收集我的数据吗？"
+          }
+        }
+      }
+    },
     "Done" : {
       "localizations" : {
         "de" : {
@@ -1515,6 +1879,58 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "将相同尺寸的“照片”小组件拖到此小组件上方，即可创建智能叠放。有照片的日子会显示 _On This Day_，其他日子则显示“照片”小组件。"
+          }
+        }
+      }
+    },
+    "Expand Map" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Karte vergrößern"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ampliar mapa"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Agrandir la carte"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Espandi mappa"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "マップを拡大"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "지도 확장"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Expandir Mapa"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "展开地图"
           }
         }
       }
@@ -2247,6 +2663,110 @@
         }
       }
     },
+    "How do I change how often the widget changes photo?" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wie ändere ich, wie oft das Widget das Foto wechselt?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Cómo cambio cada cuánto cambia la foto del widget?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comment changer la fréquence à laquelle le widget change de photo ?"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Come cambio ogni quanto il widget cambia foto?"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ウィジェットの写真が切り替わる頻度を変えるには？"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "위젯 사진이 바뀌는 주기는 어떻게 바꾸나요?"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Como mudo a frequência com que o widget troca de foto?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "如何更改小组件更换照片的频率？"
+          }
+        }
+      }
+    },
+    "How do I see another day?" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wie sehe ich einen anderen Tag?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Cómo veo otro día?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comment voir un autre jour ?"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Come vedo un altro giorno?"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ほかの日を見るには？"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다른 날을 보려면 어떻게 하나요?"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Como vejo outro dia?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "如何查看其他日子？"
+          }
+        }
+      }
+    },
     "How many photos you took on this day in past years." : {
       "localizations" : {
         "de" : {
@@ -2871,6 +3391,58 @@
         }
       }
     },
+    "More Help" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weitere Hilfe"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Más ayuda"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plus d’aide"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Altro aiuto"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "その他のヘルプ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "추가 도움말"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mais Ajuda"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更多帮助"
+          }
+        }
+      }
+    },
     "Next Day" : {
       "localizations" : {
         "de" : {
@@ -3027,6 +3599,58 @@
         }
       }
     },
+    "No. Your photos never leave your device. There’s no account, no tracking and no ads." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nein. Deine Fotos verlassen nie dein Gerät. Es gibt kein Konto, kein Tracking und keine Werbung."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No. Tus fotos nunca salen de tu dispositivo. No hay cuenta, ni rastreo, ni anuncios."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non. Vos photos ne quittent jamais votre appareil. Pas de compte, pas de pistage et pas de publicité."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No. Le tue foto non lasciano mai il tuo dispositivo. Nessun account, nessun tracciamento e nessuna pubblicità."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "いいえ。写真がデバイスの外に出ることはありません。アカウントもトラッキングも広告もありません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아니요. 사진은 기기 밖으로 나가지 않습니다. 계정도, 추적도, 광고도 없습니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não. Suas fotos nunca saem do seu dispositivo. Não há conta, rastreamento nem anúncios."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不会。你的照片从不离开你的设备。没有账户，没有跟踪，也没有广告。"
+          }
+        }
+      }
+    },
     "Note that photos you mark as **Hidden** from Photos.app are never displayed or even accessed by this app." : {
       "localizations" : {
         "de" : {
@@ -3075,6 +3699,58 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "你在“照片” App 中标记为**已隐藏**的照片永远不会被此 App 显示或访问。"
+          }
+        }
+      }
+    },
+    "Oldest First" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Älteste zuerst"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Más antiguas primero"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plus anciennes d’abord"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prima le più vecchie"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "古い順"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오래된 순"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mais Antigas Primeiro"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最早的在前"
           }
         }
       }
@@ -3549,6 +4225,58 @@
     },
     "Photos On This Day" : {
       "shouldTranslate" : false
+    },
+    "Photos On This Day Help" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Photos On This Day – Hilfe"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ayuda de Photos On This Day"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aide de Photos On This Day"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aiuto di Photos On This Day"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Photos On This Day ヘルプ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Photos On This Day 도움말"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajuda do Photos On This Day"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Photos On This Day 帮助"
+          }
+        }
+      }
     },
     "Photos Unavailable" : {
       "localizations" : {
@@ -4382,6 +5110,110 @@
         }
       }
     },
+    "Screenshots and photos shared with you in iCloud can be turned on in the Filters menu, and Hide Albums leaves out whole albums. Photos you hid from a day can be restored at the bottom of that day. If you gave the app access to only some of your photos, allow full access in Settings." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bildschirmfotos und Fotos, die in iCloud mit dir geteilt wurden, kannst du im Filtermenü einblenden, und „Alben ausblenden“ lässt ganze Alben weg. Fotos, die du an einem Tag ausgeblendet hast, kannst du unten an diesem Tag wiederherstellen. Wenn die App nur auf einige deiner Fotos zugreifen darf, erlaube in den Einstellungen den vollen Zugriff."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Las capturas de pantalla y las fotos compartidas contigo en iCloud se pueden activar en el menú Filtros, y Ocultar álbumes deja fuera álbumes enteros. Las fotos que ocultaste de un día se pueden restaurar al final de ese día. Si diste a la app acceso solo a algunas de tus fotos, permite el acceso completo en Ajustes."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les captures d’écran et les photos partagées avec vous sur iCloud peuvent être activées dans le menu Filtres, et Masquer des albums exclut des albums entiers. Les photos que vous avez masquées d’un jour peuvent être restaurées en bas de ce jour. Si vous n’avez donné accès qu’à certaines de vos photos, autorisez l’accès complet dans Réglages."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gli screenshot e le foto condivise con te su iCloud si possono attivare nel menu Filtri, e Nascondi album esclude interi album. Le foto che hai nascosto da un giorno si possono ripristinare in fondo a quel giorno. Se hai dato all’app accesso solo ad alcune foto, consenti l’accesso completo in Impostazioni."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "スクリーンショットとiCloudで共有された写真は、フィルタメニューで表示できます。「アルバムを非表示」を使うとアルバムごと除外されます。その日に非表示にした写真は、その日の一番下で元に戻せます。一部の写真へのアクセスしか許可していない場合は、「設定」でフルアクセスを許可してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "스크린샷과 iCloud에서 공유받은 사진은 필터 메뉴에서 켤 수 있고, 앨범 가리기를 사용하면 앨범 전체가 제외됩니다. 어떤 날에 가린 사진은 그날 화면 맨 아래에서 복원할 수 있습니다. 앱에 일부 사진만 접근하도록 허용했다면 설정에서 전체 접근을 허용하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capturas de tela e fotos compartilhadas com você no iCloud podem ser ativadas no menu Filtros, e Ocultar Álbuns deixa álbuns inteiros de fora. Fotos que você ocultou de um dia podem ser restauradas no fim desse dia. Se você deu ao app acesso a apenas algumas fotos, permita o acesso total em Ajustes."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "截屏和通过 iCloud 与你共享的照片可以在“过滤器”菜单中打开，“隐藏相簿”会排除整个相簿。在某一天隐藏的照片可以在那一天的底部恢复。如果你只允许 App 访问部分照片，请在“设置”中允许完全访问。"
+          }
+        }
+      }
+    },
+    "Screenshots and photos shared with you in iCloud can be turned on in the Filters menu, and Hide Albums leaves out whole albums. Photos you hid from a day can be restored at the bottom of that day. If you gave the app access to only some of your photos, allow full access in System Settings." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bildschirmfotos und Fotos, die in iCloud mit dir geteilt wurden, kannst du im Filtermenü einblenden, und „Alben ausblenden“ lässt ganze Alben weg. Fotos, die du an einem Tag ausgeblendet hast, kannst du unten an diesem Tag wiederherstellen. Wenn die App nur auf einige deiner Fotos zugreifen darf, erlaube in den Systemeinstellungen den vollen Zugriff."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Las capturas de pantalla y las fotos compartidas contigo en iCloud se pueden activar en el menú Filtros, y Ocultar álbumes deja fuera álbumes enteros. Las fotos que ocultaste de un día se pueden restaurar al final de ese día. Si diste a la app acceso solo a algunas de tus fotos, permite el acceso completo en Ajustes del Sistema."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les captures d’écran et les photos partagées avec vous sur iCloud peuvent être activées dans le menu Filtres, et Masquer des albums exclut des albums entiers. Les photos que vous avez masquées d’un jour peuvent être restaurées en bas de ce jour. Si vous n’avez donné accès qu’à certaines de vos photos, autorisez l’accès complet dans Réglages Système."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gli screenshot e le foto condivise con te su iCloud si possono attivare nel menu Filtri, e Nascondi album esclude interi album. Le foto che hai nascosto da un giorno si possono ripristinare in fondo a quel giorno. Se hai dato all’app accesso solo ad alcune foto, consenti l’accesso completo in Impostazioni di Sistema."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "スクリーンショットとiCloudで共有された写真は、フィルタメニューで表示できます。「アルバムを非表示」を使うとアルバムごと除外されます。その日に非表示にした写真は、その日の一番下で元に戻せます。一部の写真へのアクセスしか許可していない場合は、「システム設定」でフルアクセスを許可してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "스크린샷과 iCloud에서 공유받은 사진은 필터 메뉴에서 켤 수 있고, 앨범 가리기를 사용하면 앨범 전체가 제외됩니다. 어떤 날에 가린 사진은 그날 화면 맨 아래에서 복원할 수 있습니다. 앱에 일부 사진만 접근하도록 허용했다면 시스템 설정에서 전체 접근을 허용하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capturas de tela e fotos compartilhadas com você no iCloud podem ser ativadas no menu Filtros, e Ocultar Álbuns deixa álbuns inteiros de fora. Fotos que você ocultou de um dia podem ser restauradas no fim desse dia. Se você deu ao app acesso a apenas algumas fotos, permita o acesso total em Ajustes do Sistema."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "截屏和通过 iCloud 与你共享的照片可以在“过滤器”菜单中打开，“隐藏相簿”会排除整个相簿。在某一天隐藏的照片可以在那一天的底部恢复。如果你只允许 App 访问部分照片，请在“系统设置”中允许完全访问。"
+          }
+        }
+      }
+    },
     "Searching" : {
       "localizations" : {
         "de" : {
@@ -4902,6 +5734,58 @@
         }
       }
     },
+    "Show This Year" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dieses Jahr einblenden"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar este año"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afficher cette année"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostra quest’anno"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今年も表示"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "올해도 보기"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar Este Ano"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示今年"
+          }
+        }
+      }
+    },
     "Show a Random Memory" : {
       "localizations" : {
         "de" : {
@@ -5318,6 +6202,58 @@
         }
       }
     },
+    "Swipe left or right, use the arrows, or tap the calendar to pick any date." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wische nach links oder rechts, nutze die Pfeile oder tippe auf den Kalender, um ein beliebiges Datum zu wählen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desliza a la izquierda o a la derecha, usa las flechas o toca el calendario para elegir cualquier fecha."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Balayez vers la gauche ou la droite, utilisez les flèches ou touchez le calendrier pour choisir n’importe quelle date."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scorri a sinistra o a destra, usa le frecce o tocca il calendario per scegliere una data qualsiasi."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "左右にスワイプするか、矢印を使うか、カレンダーをタップして好きな日付を選んでください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "왼쪽이나 오른쪽으로 쓸어넘기거나, 화살표를 사용하거나, 달력을 탭해 원하는 날짜를 고르세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deslize para a esquerda ou para a direita, use as setas ou toque no calendário para escolher qualquer data."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "向左或向右轻扫，使用箭头，或轻点日历选择任意日期。"
+          }
+        }
+      }
+    },
     "Tap a photo to swap it" : {
       "localizations" : {
         "de" : {
@@ -5682,6 +6618,58 @@
         }
       }
     },
+    "Touch and hold the widget, choose Edit Widget, and pick how often it changes. You can also add a button to shuffle to another photo." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lege den Finger auf das Widget, wähle „Widget bearbeiten“ und lege fest, wie oft es wechselt. Du kannst auch eine Taste hinzufügen, um zu einem anderen Foto zu wechseln."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mantén pulsado el widget, elige Editar widget y escoge cada cuánto cambia. También puedes añadir un botón para cambiar a otra foto."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maintenez le doigt sur le widget, choisissez Modifier le widget et indiquez à quelle fréquence il change. Vous pouvez aussi ajouter un bouton pour passer à une autre photo."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tieni premuto il widget, scegli Modifica widget e indica ogni quanto cambia. Puoi anche aggiungere un pulsante per passare a un’altra foto."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ウィジェットを長押しして「ウィジェットを編集」を選び、切り替わる頻度を選んでください。別の写真にシャッフルするボタンを追加することもできます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "위젯을 길게 누르고 위젯 편집을 선택한 다음 바뀌는 주기를 고르세요. 다른 사진으로 바꾸는 버튼을 추가할 수도 있습니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toque e segure o widget, escolha Editar Widget e defina a frequência da troca. Você também pode adicionar um botão para trocar por outra foto."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按住小组件，选择“编辑小组件”，然后选择更换的频率。你还可以添加一个按钮来随机换一张照片。"
+          }
+        }
+      }
+    },
     "Try enabling iCloud Shared photos from the filter button at the top to include photos from friends and family!" : {
       "localizations" : {
         "de" : {
@@ -5730,6 +6718,110 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "试试通过顶部的过滤按钮打开 iCloud 共享照片，即可包含亲友的照片！"
+          }
+        }
+      }
+    },
+    "Turn on Daily Reminder in the Filters menu for a notification each morning on days with photos from past years." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktiviere „Tägliche Erinnerung“ im Filtermenü, um an Tagen mit Fotos aus früheren Jahren jeden Morgen eine Mitteilung zu erhalten."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activa Recordatorio diario en el menú Filtros para recibir una notificación cada mañana los días con fotos de años pasados."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activez Rappel quotidien dans le menu Filtres pour recevoir une notification chaque matin les jours où vous avez des photos des années passées."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Attiva Promemoria giornaliero nel menu Filtri per ricevere una notifica ogni mattina nei giorni con foto degli anni passati."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フィルタメニューで「毎日のリマインダー」をオンにすると、過去の年の写真がある日の朝に通知が届きます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "필터 메뉴에서 매일 알림을 켜면, 지난 해의 사진이 있는 날 아침마다 알림을 받습니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ative Lembrete Diário no menu Filtros para receber uma notificação toda manhã nos dias com fotos de anos passados."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在“过滤器”菜单中打开“每日提醒”，在有往年照片的日子里，每天早上都会收到通知。"
+          }
+        }
+      }
+    },
+    "Turn on Show This Year or Oldest First in the Filters menu." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktiviere „Dieses Jahr einblenden“ oder „Älteste zuerst“ im Filtermenü."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activa Mostrar este año o Más antiguas primero en el menú Filtros."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activez Afficher cette année ou Plus anciennes d’abord dans le menu Filtres."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Attiva Mostra quest’anno o Prima le più vecchie nel menu Filtri."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フィルタメニューで「今年も表示」または「古い順」をオンにしてください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "필터 메뉴에서 올해도 보기 또는 오래된 순을 켜세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ative Mostrar Este Ano ou Mais Antigas Primeiro no menu Filtros."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在“过滤器”菜单中打开“显示今年”或“最早的在前”。"
           }
         }
       }
@@ -5834,6 +6926,58 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "重新显示%2$@的%1$lld张照片"
+          }
+        }
+      }
+    },
+    "Use the arrows or ⌘[ and ⌘], or click the calendar to pick any date." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nutze die Pfeile oder ⌘[ und ⌘] oder klicke auf den Kalender, um ein beliebiges Datum zu wählen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usa las flechas o ⌘[ y ⌘], o haz clic en el calendario para elegir cualquier fecha."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utilisez les flèches ou ⌘[ et ⌘], ou cliquez sur le calendrier pour choisir n’importe quelle date."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usa le frecce o ⌘[ e ⌘], oppure fai clic sul calendario per scegliere una data qualsiasi."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "矢印か⌘[と⌘]を使うか、カレンダーをクリックして好きな日付を選んでください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "화살표나 ⌘[ 및 ⌘]를 사용하거나, 달력을 클릭해 원하는 날짜를 고르세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use as setas ou ⌘[ e ⌘], ou clique no calendário para escolher qualquer data."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用箭头或 ⌘[ 和 ⌘]，或点按日历选择任意日期。"
           }
         }
       }
@@ -5990,6 +7134,110 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "打开后会显示其中的照片"
+          }
+        }
+      }
+    },
+    "Why are some photos missing?" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Warum fehlen manche Fotos?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Por qué faltan algunas fotos?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pourquoi certaines photos manquent-elles ?"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perché mancano alcune foto?"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一部の写真が表示されないのはなぜですか？"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "일부 사진이 보이지 않는 이유는 무엇인가요?"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Por que algumas fotos não aparecem?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "为什么有些照片不见了？"
+          }
+        }
+      }
+    },
+    "Why can’t I open a photo in the Photos app?" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Warum kann ich ein Foto nicht in der Fotos-App öffnen?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Por qué no puedo abrir una foto en la app Fotos?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pourquoi ne puis-je pas ouvrir une photo dans l’app Photos ?"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perché non posso aprire una foto nell’app Foto?"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "写真を「写真」アプリで開けないのはなぜですか？"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사진을 사진 앱에서 열 수 없는 이유는 무엇인가요?"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Por que não consigo abrir uma foto no app Fotos?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "为什么无法在“照片”App 中打开照片？"
           }
         }
       }

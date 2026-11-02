@@ -80,7 +80,7 @@ private struct LoadedPhotos {
 	let date: Date
 	/// Past years with photos, newest first.
 	let pastYears: [PhotoYear]
-	/// This year's photos, shown only when no past years have any.
+	/// This year's photos from the day, shown when Show This Year is on or no past years have any.
 	let currentYear: PhotoYear?
 	/// When no past years have photos: the days within three either side that do, nearest first.
 	var nearbyDays: [NearbyDay] = []
@@ -110,6 +110,8 @@ struct PhotosView: View {
 	private var filters = Filters.shared
 
 	@State private var loaded: LoadedPhotos?
+	@AppStorage(PhotosView.oldestFirstKey) private var oldestFirst = false
+	@AppStorage(PhotosView.showsThisYearKey) private var showsThisYear = false
 	@AppStorage(PhotosYearView.thumbnailWidthKey) private var thumbnailWidth = PhotosYearView.defaultThumbnailWidth
 	/// The pinch scale at the last column change, so each further step needs a fresh stretch.
 	@State private var pinchBase: CGFloat = 1
@@ -149,7 +151,23 @@ struct PhotosView: View {
 		self.viewerPhotoID = viewerPhotoID
 	}
 
+	/// The grid's order, from the menus: newest year first unless this is on.
+	static let oldestFirstKey = "oldestFirst"
+	/// Whether the grid includes this year's photos from the day alongside past years.
+	static let showsThisYearKey = "showsThisYear"
+
 	private var dateID: String { date.dateID }
+
+	/// The years the grid shows, in the chosen order: the past years, and this year too when Show This Year is on or
+	/// it's all there is.
+	private var years: [PhotoYear] {
+		guard let loaded, loaded.date == date else { return [] }
+		var years = loaded.pastYears
+		if let currentYear = loaded.currentYear, showsThisYear || years.isEmpty {
+			years.insert(currentYear, at: 0)
+		}
+		return oldestFirst ? years.reversed() : years
+	}
 
 	private var hiddenPhotosCount: Int {
 		filters.hiddenPhotos[dateID]?.count ?? 0
@@ -165,8 +183,7 @@ struct PhotosView: View {
 
 	/// The years showing, when any of their photos has a location to put on the map.
 	private var locatedYears: [PhotoYear] {
-		guard let loaded, loaded.date == date else { return [] }
-		let years = loaded.pastYears.isEmpty ? (loaded.currentYear.map { [$0] } ?? []) : loaded.pastYears
+		let years = self.years
 		return years.contains { $0.assets.contains { $0.location != nil } } ? years : []
 	}
 
@@ -175,17 +192,12 @@ struct PhotosView: View {
 			if let loaded, loaded.date == date {
 				if loaded.pastYears.isEmpty {
 					noPastPhotos(nearbyDays: loaded.nearbyDays)
-					if let currentYear = loaded.currentYear {
-						LazyVStack(alignment: .leading, spacing: 0, pinnedViews: [.sectionHeaders]) {
-							PhotosYearView(year: currentYear, dayAssets: currentYear.assets)
-						}
-					}
-				} else {
-					LazyVStack(alignment: .leading, spacing: 0, pinnedViews: [.sectionHeaders]) {
-						let dayAssets = loaded.pastYears.flatMap(\.assets)
-						ForEach(loaded.pastYears) { year in
-							PhotosYearView(year: year, dayAssets: dayAssets)
-						}
+				}
+				LazyVStack(alignment: .leading, spacing: 0, pinnedViews: [.sectionHeaders]) {
+					let years = self.years
+					let dayAssets = years.flatMap(\.assets)
+					ForEach(years) { year in
+						PhotosYearView(year: year, dayAssets: dayAssets)
 					}
 				}
 				if hiddenPhotosCount > 0 {
@@ -271,7 +283,7 @@ struct PhotosView: View {
 			.onChange(of: columns) {
 				cacheNearbyThumbnails()
 			}
-			.onChange(of: loaded?.pastYears.count) {
+			.onChange(of: years.map(\.id)) {
 				cacheNearbyThumbnails()
 			}
 			.onDisappear {
@@ -295,7 +307,8 @@ struct PhotosView: View {
 	}
 
 	private func dragChanged(_ value: DragGesture.Value) {
-		guard let selection, let years = loaded?.pastYears, !isDragScrolling else { return }
+		let years = self.years
+		guard let selection, !years.isEmpty, !isDragScrolling else { return }
 		let layout = layout()
 		if dragSelection == nil {
 			// Only a sideways start selects; up and down still scrolls.
@@ -318,7 +331,8 @@ struct PhotosView: View {
 	}
 
 	private func cacheNearbyThumbnails() {
-		guard let years = loaded?.pastYears, scrollTracker.visibleHeight > 0 else { return }
+		let years = self.years
+		guard !years.isEmpty, scrollTracker.visibleHeight > 0 else { return }
 		let layout = layout()
 		let size = CGSize(width: layout.cellSide, height: layout.cellSide)
 		if size != cachedThumbnailSize {
@@ -337,7 +351,8 @@ struct PhotosView: View {
 
 	/// Selects from where the drag began to the photo under the finger.
 	private func selectToFinger() {
-		guard let selection, let years = loaded?.pastYears, let dragSelection else { return }
+		let years = self.years
+		guard let selection, !years.isEmpty, let dragSelection else { return }
 		let layout = layout()
 		let point = CGPoint(x: dragSelection.finger.x, y: dragSelection.finger.y - scrollTracker.gridFrame.minY)
 		guard let end = layout.position(at: point) else { return }
@@ -411,7 +426,7 @@ struct PhotosView: View {
 	}
 
 	private func layout(columns: Int? = nil) -> GridLayout {
-		GridLayout(width: scrollTracker.gridFrame.width, columns: columns ?? self.columns, yearCounts: loaded?.pastYears.map(\.assets.count) ?? [], headerHeight: headerHeight)
+		GridLayout(width: scrollTracker.gridFrame.width, columns: columns ?? self.columns, yearCounts: years.map(\.assets.count), headerHeight: headerHeight)
 	}
 
 	private func canChangeColumns(by change: Int) -> Bool {
@@ -439,7 +454,6 @@ struct PhotosView: View {
 
 	/// Scrolls the grid, out of sight behind the viewer, so the viewer's photo is on screen to close back to, like in Photos.
 	private func reveal(_ id: String) {
-		guard let years = loaded?.pastYears else { return }
 		for (yearIndex, year) in years.enumerated() {
 			guard let index = year.assets.firstIndex(where: { $0.localIdentifier == id }) else { continue }
 			let layout = layout()
@@ -536,7 +550,7 @@ struct PhotosView: View {
 			.filter { $0.key > 0 }
 			.sorted { $0.key < $1.key }
 			.map { PhotoYear(year: date.year - $0.key, dateID: dateID, assets: $0.value) }
-		let currentYear = pastYears.isEmpty ? byYearsBack[0].map { PhotoYear(year: date.year, dateID: dateID, assets: $0) } : nil
+		let currentYear = byYearsBack[0].map { PhotoYear(year: date.year, dateID: dateID, assets: $0) }
 		var loaded = LoadedPhotos(date: date, pastYears: pastYears, currentYear: currentYear)
 		if pastYears.isEmpty {
 			// An empty day points to nearby ones instead of a dead end.

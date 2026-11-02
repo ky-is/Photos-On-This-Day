@@ -14,6 +14,7 @@ import SwiftUI
 	var showsSlideshow = false
 	var showsCollage = false
 	var showsDatePicker = false
+	var showsHelp = false
 	/// Whether the day has photos from past years, so Slideshow and Collage have something to show.
 	var hasPastPhotos = false
 	/// The day's years when any of their photos has a location, for the map pinned at the bottom of the main screen.
@@ -25,7 +26,9 @@ import SwiftUI
 struct AppCommands: Commands {
 	// Menu commands are outside the views, which get the shared store from the app's .defaultAppStorage.
 	@AppStorage(GridSelection.aspectRatioGridKey, store: .shared) private var showsAspectRatio = false
-	@AppStorage(DayMapView.visibleKey, store: .shared) private var showsMap = false
+	@AppStorage(DayMapView.visibleKey, store: .shared) private var showsMap = true
+	@AppStorage(PhotosView.showsThisYearKey, store: .shared) private var showsThisYear = false
+	@AppStorage(PhotosView.oldestFirstKey, store: .shared) private var oldestFirst = false
 
 	private var state = StateManager.shared
 	private var actions = MenuActions.shared
@@ -53,10 +56,18 @@ struct AppCommands: Commands {
 			}
 				.keyboardShortcut("-")
 			Toggle("Aspect Ratio Grid", systemImage: "aspectratio", isOn: $showsAspectRatio)
+			Toggle("Show This Year", systemImage: "calendar.day.timeline.left", isOn: $showsThisYear)
+			Toggle("Oldest First", systemImage: "arrow.up.arrow.down", isOn: $oldestFirst)
 			Toggle("Show Map", systemImage: "map", isOn: $showsMap)
 				.keyboardShortcut("m", modifiers: [.command, .option])
 				.disabled(!state.canShowPhotos || !actions.hasLocatedPhotos)
 			Divider()
+		}
+		CommandGroup(replacing: .help) {
+			Button("Photos On This Day Help") {
+				actions.showsHelp = true
+			}
+				.keyboardShortcut("?")
 		}
 		CommandMenu("Go") {
 			Button("Previous Day", systemImage: "chevron.left") {

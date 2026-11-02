@@ -80,11 +80,30 @@ nonisolated enum Reminder {
 
 	private static let logger = Logger(subsystem: "is.ky.Photos-On-This-Day", category: "Reminder")
 
+	/// Daily Reminder, from the menu: a notification each morning on the days with photos from past years, instead of the
+	/// occasional one.
+	static let dailyKey = "dailyReminder"
+	static let dailyIdentifierPrefix = "daily-"
+	/// How many days ahead the daily reminders are scheduled. Opening the app or a widget refreshing tops them up.
+	static let dailyDays = 14
+	static let dailyHour = 9
+
 	/// `mayAskPermission`: only the app asks; a widget can't show the request.
 	static func reschedule(mayAskPermission: Bool) async {
 		let defaults = UserDefaults.shared
 		let center = UNUserNotificationCenter.current()
 		let now = Date()
+		let daily = await center.pendingNotificationRequests().map(\.identifier).filter { $0.hasPrefix(dailyIdentifierPrefix) }
+		if defaults.bool(forKey: dailyKey) {
+			defaults.reminderDate = nil
+			center.removePendingNotificationRequests(withIdentifiers: [identifier])
+			// Still a week or more ahead: leave them, rather than count photos again on every open and widget refresh.
+			guard daily.count < dailyDays / 2 else { return }
+			center.removePendingNotificationRequests(withIdentifiers: daily)
+			await scheduleDaily(from: now, center: center, mayAsk: mayAskPermission)
+			return
+		}
+		center.removePendingNotificationRequests(withIdentifiers: daily)
 		if let pending = defaults.reminderDate, pending <= now {
 			defaults.lastReminderDate = pending
 		}
@@ -123,6 +142,51 @@ nonisolated enum Reminder {
 			logger.info("Reminder: \(occasion.yearsAgo) years on \(occasion.day.formatted(date: .abbreviated, time: .omitted))")
 		} catch {
 			logger.error("Reminder failed: \(error.localizedDescription)")
+		}
+	}
+
+	/// The coming days' reminders, from today if it's still before the hour, each with that day's photos from past years.
+	/// A day without any gets none.
+	private static func scheduleDaily(from now: Date, center: UNUserNotificationCenter, mayAsk: Bool) async {
+		guard [.authorized, .limited].contains(PHPhotoLibrary.authorizationStatus(for: .readWrite)), await canNotifyDaily(center, mayAsk: mayAsk) else { return }
+		let calendar = Calendar.current
+		let first = calendar.component(.hour, from: now) < dailyHour ? 0 : 1
+		for offset in first..<(first + dailyDays) {
+			let day = calendar.date(byAdding: .day, value: offset, to: calendar.startOfDay(for: now))!
+			let years = await pastYearCounts(on: day)
+			guard let oldest = years.keys.max() else { continue }
+			let photoCount = years.values.reduce(0, +)
+			let content = UNMutableNotificationContent()
+			content.title = String(AttributedString(localized: "^[\(oldest) year](inflect: true) ago today").characters)
+			content.body = String(AttributedString(localized: "^[\(photoCount) photo](inflect: true) from ^[\(years.count) year](inflect: true) on this day.").characters)
+			content.sound = .default
+			var components = calendar.dateComponents([.year, .month, .day], from: day)
+			components.hour = dailyHour
+			let request = UNNotificationRequest(identifier: dailyIdentifierPrefix + day.dateID, content: content, trigger: UNCalendarNotificationTrigger(dateMatching: components, repeats: false))
+			do {
+				try await center.add(request)
+			} catch {
+				logger.error("Daily reminder failed: \(error.localizedDescription)")
+			}
+		}
+	}
+
+	/// How many photos each past year has on `day`, by years back, with the same filters as the grid.
+	@concurrent private static func pastYearCounts(on day: Date) async -> [Int: Int] {
+		PHAsset.assetsByYearsBack(Array(1...maxYearsBack), from: day, filters: .current(for: day.dateID)).mapValues(\.count).filter { $0.value > 0 }
+	}
+
+	/// Daily reminders were asked for, so they ask for alerts outright rather than quiet delivery.
+	private static func canNotifyDaily(_ center: UNUserNotificationCenter, mayAsk: Bool) async -> Bool {
+		switch await center.notificationSettings().authorizationStatus {
+		case .authorized, .ephemeral:
+			return true
+		case .notDetermined where mayAsk, .provisional where mayAsk:
+			return (try? await center.requestAuthorization(options: [.alert, .sound])) ?? false
+		case .provisional:
+			return true
+		default:
+			return false
 		}
 	}
 

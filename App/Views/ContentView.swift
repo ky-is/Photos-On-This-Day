@@ -14,9 +14,11 @@ struct ContentView: View {
 	/// The photo the viewer is on, so the grid can keep it in view for closing back to it.
 	@State private var viewerPhotoID: String?
 	@State private var pinch: GridPinch?
-	@AppStorage(DayMapView.visibleKey) private var showsMap = false
+	@AppStorage(DayMapView.visibleKey) private var showsMap = true
 	/// The home indicator's strip, which the map reaches past to sit an even inset from the screen's bottom edge.
 	@State private var bottomSafeArea: CGFloat = 0
+	/// The scroll view's height between the bars, so a short day still fills it and can be swiped anywhere.
+	@State private var visibleHeight: CGFloat = 0
 	@Environment(\.screenSize) private var screenSize
 
 	/// The map's inset from the screen's sides and bottom edge, so its bottom corners follow the display's.
@@ -37,6 +39,7 @@ struct ContentView: View {
 						PhotosView(date: state.date, scrollPosition: $scrollPosition, scrollTracker: scrollTracker, viewerPhotoID: viewerPhotoID, pinch: pinch)
 					}
 				}
+					.frame(maxWidth: .infinity, minHeight: visibleHeight, alignment: .top)
 					.contentShape(.rect)
 					.coordinateSpace(.named(GridPinch.coordinateSpace))
 					// Catches a pinch anywhere on the screen, not only over photos, and hands it to the grid.
@@ -50,6 +53,20 @@ struct ContentView: View {
 			}
 				.scrollPosition($scrollPosition)
 				.scrollDisabled(selection.isDragSelecting)
+				// Swipe sideways anywhere for the next or previous day, like turning a page: easier to reach than the buttons.
+				.simultaneousGesture(DragGesture(minimumDistance: 30)
+					.onEnded { value in
+						let dx = value.translation.width
+						guard abs(dx) > 80, abs(dx) > 2 * abs(value.translation.height) else { return }
+						withAnimation(.smooth) {
+							state.daysChange += dx < 0 ? 1 : -1
+						}
+					}, isEnabled: state.canShowPhotos && !selection.isSelecting)
+				.onScrollGeometryChange(for: CGFloat.self) { geometry in
+					geometry.containerSize.height - geometry.contentInsets.top - geometry.contentInsets.bottom
+				} action: { _, height in
+					visibleHeight = max(0, height)
+				}
 				.onScrollGeometryChange(for: ScrollTracker.Metrics.self) { geometry in
 					ScrollTracker.Metrics(geometry)
 				} action: { [scrollTracker] _, metrics in
@@ -110,12 +127,7 @@ struct ContentView: View {
 				// area's, an even inset from the sides and bottom, so its bottom corners are concentric with the display's.
 				.overlay(alignment: .bottom) {
 					if showsMapPanel {
-						DayMapView(years: menuActions.mapYears)
-							.id(state.date)
-							.clipShape(ConcentricRectangle(uniformTopCorners: .fixed(28), uniformBottomCorners: .concentric(minimum: .fixed(28))))
-							.shadow(color: .black.opacity(0.2), radius: 12, y: 4)
-							.padding([.horizontal, .bottom], Self.mapInset)
-							.frame(maxHeight: .infinity, alignment: .bottom)
+						DayMapPanel(date: state.date, years: menuActions.mapYears, inset: Self.mapInset)
 							// The full width of the screen, under the side safe areas too (iPad, iPhone on its side), so both
 							// bottom corners follow the display's.
 							.ignoresSafeArea(.container, edges: [.horizontal, .bottom])
@@ -132,6 +144,9 @@ struct ContentView: View {
 				.sheet(isPresented: $menuActions.showsDatePicker) {
 					DatePickerSheet()
 				}
+				.sheet(isPresented: $menuActions.showsHelp) {
+					HelpView()
+				}
 				.navigationDestination(item: $state.openedPhoto) { selection in
 					PhotoViewer(selection: selection)
 						// A new link while the viewer is open starts over at that photo.
@@ -146,6 +161,7 @@ struct ContentView: View {
 			.environment(\.photoTransition, photoTransition)
 			.environment(selection)
 			.environment(\.viewerShowsPhoto, { viewerPhotoID = $0 })
+			.reviewPrompt()
 			// Content fades softly under the bars everywhere, instead of meeting a hard edge.
 			.scrollEdgeEffectStyle(.soft, for: .all)
 	}
@@ -254,7 +270,7 @@ private struct DatePickerSheet: View {
 
 /// Shows or hides the map of the day's photos pinned at the bottom of the screen.
 private struct DayMapToggle: View {
-	@AppStorage(DayMapView.visibleKey) private var showsMap = false
+	@AppStorage(DayMapView.visibleKey) private var showsMap = true
 
 	var body: some View {
 		Button {
@@ -274,6 +290,9 @@ struct FilterLibraryMenu: View {
 
 	@Bindable private var filters = Filters.shared
 	@AppStorage(GridSelection.aspectRatioGridKey) private var showsAspectRatio = false
+	@AppStorage(PhotosView.showsThisYearKey) private var showsThisYear = false
+	@AppStorage(PhotosView.oldestFirstKey) private var oldestFirst = false
+	@AppStorage(Reminder.dailyKey) private var dailyReminder = false
 	@State private var showsHiddenAlbums = false
 
 	var body: some View {
@@ -283,6 +302,8 @@ struct FilterLibraryMenu: View {
 			Button("Hide Albums", systemImage: "rectangle.stack.badge.minus") {
 				showsHiddenAlbums = true
 			}
+			Toggle("Show This Year", systemImage: "calendar.day.timeline.left", isOn: $showsThisYear)
+			Toggle("Oldest First", systemImage: "arrow.up.arrow.down", isOn: $oldestFirst)
 			Divider()
 			// The way to resize the grid without pinching.
 			Button("Bigger Thumbnails", systemImage: "plus.magnifyingglass") {
@@ -293,6 +314,7 @@ struct FilterLibraryMenu: View {
 			}
 			Toggle("Aspect Ratio Grid", systemImage: "aspectratio", isOn: $showsAspectRatio)
 			Divider()
+			Toggle("Daily Reminder", systemImage: "bell", isOn: $dailyReminder)
 			Button("About", systemImage: "questionmark.circle", action: showAbout)
 		} label: {
 			Image(systemName: "line.3.horizontal.decrease.circle")
@@ -301,6 +323,12 @@ struct FilterLibraryMenu: View {
 		}
 			.sheet(isPresented: $showsHiddenAlbums) {
 				HiddenAlbumsView()
+			}
+			// Turning it on asks for notifications, and schedules the coming days' reminders.
+			.onChange(of: dailyReminder) {
+				Task {
+					await Reminder.reschedule(mayAskPermission: true)
+				}
 			}
 	}
 }
@@ -324,6 +352,10 @@ private struct MoreMenu: View {
 				actions.showsCollage = true
 			}
 				.disabled(!actions.hasPastPhotos)
+			Divider()
+			Button("Help", systemImage: "questionmark.circle") {
+				actions.showsHelp = true
+			}
 		} label: {
 			Image(systemName: "ellipsis")
 				.modifier(ToolbarButtonContentModifier())
