@@ -31,7 +31,10 @@ let logger = Logger(subsystem: "is.ky.Photos-On-This-Day", category: "App")
 	}
 
 	var canShowPhotos: Bool {
-		permission == .authorized || permission == .limited
+#if DEBUG && os(macOS)
+		if ScreenshotLibrary.isActive { return true }
+#endif
+		return permission == .authorized || permission == .limited
 	}
 
 	func requestPermission() async {

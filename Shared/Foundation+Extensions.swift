@@ -18,6 +18,9 @@ nonisolated extension Date {
 		let isWidget = Bundle.main.bundleURL.pathExtension == "appex"
 		let date = UserDefaults.standard.string(forKey: "screenshotDate") ?? (isWidget ? UserDefaults.shared.string(forKey: "screenshotDate") : nil) ?? "2022-06-07T18:00:00Z"
 		return (try? Date(date, strategy: .iso8601)) ?? Date()
+#elseif DEBUG && os(macOS)
+		// The Mac screenshots' day (bin/mac-screenshots.zsh), with `-screenshotDate`
+		UserDefaults.standard.string(forKey: "screenshotDate").flatMap { try? Date($0, strategy: .iso8601) } ?? Date()
 #else
 		Date()
 #endif

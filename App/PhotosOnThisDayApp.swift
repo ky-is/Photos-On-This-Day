@@ -10,6 +10,8 @@ struct PhotosOnThisDayApp: App {
 
 	#if os(iOS)
 	@UIApplicationDelegateAdaptor private var appDelegate: AppDelegate
+	#elseif DEBUG
+	@NSApplicationDelegateAdaptor private var screenshotDelegate: ScreenshotAppDelegate
 	#endif
 
 	var body: some Scene {

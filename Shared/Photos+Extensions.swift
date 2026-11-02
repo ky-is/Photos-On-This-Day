@@ -34,6 +34,9 @@ nonisolated extension PHAsset {
 	/// Photos from the same day in each of the given past years, in one query, keyed by years back.
 	static func assetsByYearsBack(_ yearsBack: [Int], from date: Date, filters: PhotoFilters) -> [Int: [PHAsset]] {
 		guard !yearsBack.isEmpty else { return [:] }
+#if DEBUG && os(macOS)
+		if ScreenshotLibrary.isActive { return ScreenshotLibrary.assetsByYearsBack(yearsBack, from: date) }
+#endif
 		let calendar = Calendar.current
 		let dayRanges = yearsBack.map { yearsBack in
 			let (start, end) = calendar.date(byAdding: .year, value: -yearsBack, to: date)!.startAndEndOfDay
@@ -57,6 +60,10 @@ nonisolated extension PHAsset {
 
 	private static func fetchOptions(filters: PhotoFilters, extra predicates: [NSPredicate]) -> PHFetchOptions {
 		var predicates = predicates
+#if DEBUG && os(macOS)
+		// Mac screenshots never show a photo from the Mac's own library
+		if ScreenshotLibrary.isActive { predicates.append(NSPredicate(format: "localIdentifier IN %@", ["none"])) }
+#endif
 		if filters.onlyFavorites {
 			predicates.append(NSPredicate(format: "isFavorite == YES"))
 		}
@@ -97,6 +104,15 @@ nonisolated extension PHImageManager {
 	/// Streams a fast degraded image first, then the full quality one. Pass `.aspectFit` to get no more pixels than fit in `size`.
 	func images(for asset: PHAsset, size: CGSize, scale: CGFloat, cropped: Bool, contentMode: PHImageContentMode = .aspectFill) -> AsyncStream<(image: PlatformImage, isDegraded: Bool)> {
 		AsyncStream { continuation in
+#if DEBUG && os(macOS)
+			if let asset = asset as? ScreenshotAsset {
+				if let image = asset.image(size: CGSize(width: size.width * scale, height: size.height * scale), cropped: cropped) {
+					continuation.yield((image, false))
+				}
+				continuation.finish()
+				return
+			}
+#endif
 			let options = Self.options(for: asset, size: size, cropped: cropped, deliveryMode: .opportunistic)
 			let targetSize = CGSize(width: size.width * scale, height: size.height * scale)
 			let requestID = requestImage(for: asset, targetSize: targetSize, contentMode: contentMode, options: options) { image, info in
@@ -116,6 +132,11 @@ nonisolated extension PHImageManager {
 
 	/// The full quality image only.
 	func image(for asset: PHAsset, size: CGSize, scale: CGFloat, cropped: Bool) async -> PlatformImage? {
+#if DEBUG && os(macOS)
+		if let asset = asset as? ScreenshotAsset {
+			return asset.image(size: CGSize(width: size.width * scale, height: size.height * scale), cropped: cropped)
+		}
+#endif
 		let options = Self.options(for: asset, size: size, cropped: cropped, deliveryMode: .highQualityFormat)
 		let targetSize = CGSize(width: size.width * scale, height: size.height * scale)
 		return await withCheckedContinuation { continuation in
@@ -129,6 +150,10 @@ nonisolated extension PHImageManager {
 nonisolated extension PHCachingImageManager {
 	/// Starts or stops preparing uncropped images, matching what `images(for:size:scale:cropped:contentMode:)` later asks for.
 	func setCaching(_ isCaching: Bool, _ assets: [PHAsset], size: CGSize, scale: CGFloat, contentMode: PHImageContentMode) {
+#if DEBUG && os(macOS)
+		// Photos can't prepare a screenshot photo
+		let assets = assets.filter { !($0 is ScreenshotAsset) }
+#endif
 		guard !assets.isEmpty else { return }
 		let options = Self.options(for: nil, size: size, cropped: false, deliveryMode: .opportunistic)
 		let targetSize = CGSize(width: size.width * scale, height: size.height * scale)

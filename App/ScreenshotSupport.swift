@@ -49,3 +49,25 @@ private struct ScreenshotSupport: ViewModifier {
 	}
 }
 #endif
+
+#if DEBUG && os(macOS)
+/// Mac screenshots (bin/mac-screenshots.zsh) open the app in the background, where it opens no window by itself: this opens
+/// one with File > New Window, the WindowGroup's own command, still without coming to the front.
+final class ScreenshotAppDelegate: NSObject, NSApplicationDelegate {
+	func applicationDidFinishLaunching(_ notification: Notification) {
+		guard ScreenshotLibrary.isActive else { return }
+		// Light, like the iOS screenshots, whatever the Mac's appearance
+		NSApp.appearance = NSAppearance(named: .aqua)
+		Task { @MainActor in
+			try? await Task.sleep(for: .milliseconds(500))
+			if !NSApp.windows.contains(where: { $0.isVisible && $0.canBecomeMain }), let item = NSApp.mainMenu?.items.compactMap(\.submenu).flatMap(\.items).first(where: { $0.keyEquivalent == "n" && $0.keyEquivalentModifierMask == .command }), let menu = item.menu {
+				menu.performActionForItem(at: menu.index(of: item))
+			}
+			// 1440 x 900 points, 2880 x 1800 pixels captured, an App Store size, set before the grid lays out its columns
+			for window in NSApp.windows where window.canBecomeMain {
+				window.setFrame(NSRect(x: 60, y: 40, width: 1440, height: 900), display: true)
+			}
+		}
+	}
+}
+#endif
