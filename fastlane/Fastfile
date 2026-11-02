@@ -76,13 +76,24 @@ def sync_screenshots(key, dry_run: false)
 	require 'digest'
 	require 'deliver'
 	Spaceship::ConnectAPI.token = Spaceship::ConnectAPI::Token.from(hash: key)
-	locale = 'en-US'
-	local = Dir[File.join(SCREENSHOTS, locale, '*.jpg')].sort.group_by { |path| Deliver::AppScreenshot.calculate_display_type(path) }
-	UI.user_error!("No screenshots in #{File.join(SCREENSHOTS, locale)}; run `fastlane screenshots`") if local.empty?
-	UI.user_error!("Screenshots of no App Store size: #{local[nil].map { |path| File.basename(path) }.join(', ')}") if local[nil]
+	locales = Dir[File.join(SCREENSHOTS, '*', '*.jpg')].map { |path| File.basename(File.dirname(path)) }.uniq.sort - ['raw']
+	UI.user_error!("No screenshots in #{SCREENSHOTS}; run `fastlane screenshots`") if locales.empty?
 	app = Spaceship::ConnectAPI::App.find(CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier))
 	version = app.get_edit_app_store_version(platform: Spaceship::ConnectAPI::Platform::IOS) || UI.user_error!('No editable iOS version on App Store Connect')
-	localization = version.get_app_store_version_localizations.find { |l| l.locale == locale } || UI.user_error!("No #{locale} text on the version")
+	localizations = version.get_app_store_version_localizations.to_h { |l| [l.locale, l] }
+	locales.each do |locale|
+		UI.header(locale)
+		localization = localizations[locale] || UI.user_error!("No #{locale} text on the version; upload the metadata first")
+		sync_screenshot_sets(localization, File.join(SCREENSHOTS, locale), dry_run: dry_run)
+	end
+	# App Store Connect processes the uploads on its own; a submit only needs them uploaded, so this doesn't wait for it
+	UI.success('Screenshots in sync') unless dry_run
+end
+
+# One language's sets, from the screenshots in folder
+def sync_screenshot_sets(localization, folder, dry_run:)
+	local = Dir[File.join(folder, '*.jpg')].sort.group_by { |path| Deliver::AppScreenshot.calculate_display_type(path) }
+	UI.user_error!("Screenshots of no App Store size: #{local[nil].map { |path| File.basename(path) }.join(', ')}") if local[nil]
 	sets = localization.get_app_screenshot_sets.to_h { |set| [set.screenshot_display_type, set] }
 	(sets.keys - local.keys).each do |type|
 		UI.message("#{type}: #{dry_run ? 'would remove' : 'removed'}")
@@ -111,8 +122,6 @@ def sync_screenshots(key, dry_run: false)
 		remote.values.flatten.each(&:delete!)
 		set.reorder_screenshots(app_screenshot_ids: ids)
 	end
-	# App Store Connect processes the uploads on its own; a submit only needs them uploaded, so this doesn't wait for it
-	UI.success('Screenshots in sync') unless dry_run
 end
 
 platform :ios do

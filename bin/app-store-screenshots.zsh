@@ -5,8 +5,10 @@
 #   iPhone Duo, inner 2007 x 2853 then cover 2034 x 1398 (required from April 2027): the day from duo-screenshots
 #   (bin/duo-screenshots.zsh), open then closed. Its widgets shot, Duo-1-widgets.jpg, is taken by hand and kept as it is:
 #   XCTest's touches don't reach the Duo's screens, so nothing here can swipe to its Today View (see the end of this file).
-# --only "iPhone iPad Duo" picks some of them (all by default).
-# Run with `fastlane screenshots`, or directly. Writes fastlane/screenshots/en-US/, where deliver finds them.
+# --only "iPhone iPad Duo" picks some of them (all by default); --only captions just redraws the captions.
+# Run with `fastlane screenshots`, or directly. The screens as captured go in fastlane/screenshots/raw/, and the captioned
+# ones App Store Connect gets (bin/caption-screenshots.swift), one set per language of fastlane/metadata, in
+# fastlane/screenshots/<locale>/, where the upload finds them. The screens are the same English ones in every language.
 # Each device is the shared simulator for its type (shared-sim, see ~/.claude/CLAUDE.md), waited for while something else
 # uses it, then given back still booted and as it was found.
 # Every shot is of June 22, 2026, with the photos in bin/screenshot-support.zsh; Debug simulator build, for -screenshotDate
@@ -20,7 +22,8 @@ cd $root
 source $root/bin/screenshot-support.zsh
 project=$project_file
 scheme='Photos On This Day'
-out=$root/fastlane/screenshots/en-US
+out=$root/fastlane/screenshots/raw
+screenshots=$root/fastlane/screenshots
 # The products folder of Xcode's own DerivedData, the same one a normal build uses
 products_dir() { xcodebuild -project $project -scheme $1 -configuration $2 -destination $3 -showBuildSettings 2>/dev/null | awk '$1 == "BUILD_DIR" { print substr($0, index($0, "=") + 2); exit }' }
 work=$(mktemp -d)
@@ -80,16 +83,20 @@ devices=(
 # The Today View's widgets for the widgets shot (WIDGET:SIZE, top to bottom)
 today_view=(photo:small years:medium photo:large)
 # NAME:LAUNCH ARGUMENTS, in App Store order after the widgets shot. The day without the Add a Widget button, as if it had
-# been dismissed, and with the map of where its photos were taken pinned at the bottom.
+# been dismissed, and with the map of where its photos were taken pinned at the bottom. Then sharing the day as a
+# slideshow video, paused on its third photo (the mountain reflected in a lake).
 shots=(
 	"day:-screenshotDate $screenshot_day -dismissedAddWidget YES -showsDayMap YES"
+	"share-video:-screenshotDate $screenshot_day -dismissedAddWidget YES -screenshotCollage YES -screenshotCollageFormat video -screenshotCollageSlide 2"
 )
 
-check_screenshot_photos
-echo 'Building…'
-# The app and the UI tests, for the Today View
-xcodebuild -project $project -scheme $scheme -configuration Debug -destination 'generic/platform=iOS Simulator' -quiet build-for-testing
-app=$(products_dir "$scheme" Debug 'generic/platform=iOS Simulator')/Debug-iphonesimulator/Photos\ On\ This\ Day.app
+if wants iPhone || wants iPad; then
+	check_screenshot_photos
+	echo 'Building…'
+	# The app and the UI tests, for the Today View
+	xcodebuild -project $project -scheme $scheme -configuration Debug -destination 'generic/platform=iOS Simulator' -quiet build-for-testing
+	app=$(products_dir "$scheme" Debug 'generic/platform=iOS Simulator')/Debug-iphonesimulator/Photos\ On\ This\ Day.app
+fi
 
 # Saves the screen once it keeps still (three frames the same, a while after launch, so the photos have loaded). A blank
 # screen (the launch screen) or a spinner is mostly one flat color, a small PNG, so it doesn't count.
@@ -175,6 +182,8 @@ for entry in $devices; do
 		# After each launch, once the app has settled: an override set right after boot is recorded but not always drawn,
 		# and one set while the app is still launching can leave the status bar hidden
 		sleep 4
+		# The video takes a while to make, and its progress bar can hold still long enough to pass for the finished screen
+		[[ $shot == *screenshotCollageFormat* ]] && sleep 20
 		status_bar
 		sleep 3
 		status_bar_weekday
@@ -201,11 +210,28 @@ if wants Duo; then
 	done
 	replace_set Duo $work/Duo Duo-1-widgets.jpg
 fi
-echo "Saved in $out"
+# The captioned screenshots, drawn from the raw ones, in every language. One that comes out looking the same as before keeps
+# the old file, as in replace_set, so `fastlane upload_screenshots` leaves it alone.
+echo 'Captioning…'
+for locale in $root/fastlane/metadata/*/name.txt(N:h:t); do
+	captioned=$work/captioned/$locale
+	final=$screenshots/$locale
+	mkdir -p $captioned $final
+	xcrun swift $root/bin/caption-screenshots.swift $out $captioned $locale
+	for file in $captioned/*.jpg; do
+		old=$final/${file:t}
+		if [[ -f $old ]] && [[ $(magick compare -metric AE -fuzz 3% $old $file null: 2>&1 | awk '{print $1}') == 0 ]]; then
+			cp -p $old $file
+		fi
+	done
+	rm -f $final/*.jpg(N)
+	mv $captioned/*.jpg $final/
+done
+echo "Saved in $screenshots"
 
 # The Duo widgets shot, by hand: on the shared iPhone Duo (shared-sim acquire), with the app installed, given photos access
 # and the photos added, run hand_widgets_the_day and then set_today_view with photo:small years:medium (the Duo's Today View
 # doesn't scroll, and a large widget below those runs off the bottom). Bend it open-tall (sim-hinge from duo-screenshots,
 # -position=open -deviceOrientation=landscapeLeft), set the status bar to 9:41, swipe right twice on the inner screen in
 # the Simulator app to reach the Today View, save the inner screen (simctl io screenshot --display=<the 2007 x 2853 one>)
-# as JPEG to fastlane/screenshots/en-US/Duo-1-widgets.jpg, then restore_today_view and shared-sim release.
+# as JPEG to fastlane/screenshots/raw/Duo-1-widgets.jpg, then restore_today_view and shared-sim release.

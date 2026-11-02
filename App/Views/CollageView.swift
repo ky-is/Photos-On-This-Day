@@ -410,6 +410,19 @@ struct CollageView: View {
 		looper = AVPlayerLooper(player: player, templateItem: AVPlayerItem(url: url))
 		self.player = player
 		video = RenderedVideo(url: url, poster: poster, revision: revision)
+		#if DEBUG
+		// App Store screenshots: paused halfway through a photo (`-screenshotCollageSlide`, counting from 0, the first by
+		// default), with its Play button, so the screen keeps still.
+		if UserDefaults.standard.string(forKey: "screenshotCollageFormat") == "video" {
+			for _ in 0..<50 where player.currentItem?.status != .readyToPlay {
+				try? await Task.sleep(for: .milliseconds(100))
+			}
+			let slide = min(UserDefaults.standard.integer(forKey: "screenshotCollageSlide"), slides.count - 1)
+			await player.seek(to: CMTime(seconds: (Double(slide) + 0.5) * CollageVideo.slideSeconds, preferredTimescale: 600), toleranceBefore: .zero, toleranceAfter: .zero)
+			setVideoPlaying(false)
+			return
+		}
+		#endif
 		setVideoPlaying(format == .video && autoplaysVideo)
 	}
 
