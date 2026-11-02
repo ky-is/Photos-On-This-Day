@@ -32,6 +32,24 @@ struct HelpView: View {
 	var body: some View {
 		NavigationStack {
 			Form {
+				// The widget is what most people come for, so it goes first.
+				Section {
+					NavigationLink {
+						HelpAddWidgetView(inSheet: false)
+					} label: {
+						HStack(spacing: 14) {
+							Image(systemName: "widget.small.badge.plus")
+								.font(.title2)
+								.foregroundStyle(.white)
+								.frame(width: 44, height: 44)
+								.background(.tint, in: .rect(cornerRadius: 10))
+								.accessibilityHidden(true)
+							Text("How to add a Widget")
+								.font(.headline)
+						}
+							.padding(.vertical, 4)
+					}
+				}
 				Section {
 					ForEach(questions.indices, id: \.self) { index in
 						let item = questions[index]
@@ -44,9 +62,6 @@ struct HelpView: View {
 					}
 				}
 				Section {
-					NavigationLink("How to add a Widget") {
-						HelpAddWidgetView(inSheet: false)
-					}
 					Link(destination: URL(string: "https://onthisday.ky.is/support/")!) {
 						HStack {
 							Text("More Help")
