@@ -1,15 +1,10 @@
 <script setup vapor lang="ts">
-import { computed } from 'vue'
-
 import AppStoreBadge from '../components/AppStoreBadge.vue'
 import CtaBand from '../components/CtaBand.vue'
 import DuskScene from '../components/DuskScene.vue'
 import FeatureGrid from '../components/FeatureGrid.vue'
 import PrivacyBand from '../components/PrivacyBand.vue'
-import { monthName, selected } from '../days'
 import HeroWidgets from '../widgets/HeroWidgets.vue'
-
-const day = computed(() => `${monthName(selected.value)} ${selected.value.getDate()}`)
 </script>
 
 <template>
@@ -17,7 +12,7 @@ const day = computed(() => `${monthName(selected.value)} ${selected.value.getDat
 		<div class="hero wrap">
 			<div class="copy">
 				<h1>Where were you a year ago today?</h1>
-				<p class="lede">Rediscover the photos you took on {{ day }} in every year past, from last year all the way back. Right on your Home Screen. <strong>No ads, ever.</strong></p>
+				<p class="lede">Rediscover the photos you took on this day in every year past, from last year all the way back. Right on your Home Screen. <strong>No ads. No tracking. Your photos stay private.</strong></p>
 				<div class="actions">
 					<AppStoreBadge />
 				</div>

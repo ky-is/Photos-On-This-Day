@@ -134,15 +134,13 @@ button {
 	white-space: nowrap;
 }
 
-/* Fades and lifts sections in as they scroll into view, where the browser can tie animations to scrolling. */
-@supports (animation-timeline: view()) {
-	@media (prefers-reduced-motion: no-preference) {
-		.reveal {
-			animation: reveal linear both;
-			animation-timeline: view();
-			animation-range: entry 0% cover 30%;
-		}
-	}
+/* Sections rise in the first time they scroll into view (src/reveal.ts), and then stay put. */
+.reveals .reveal:not(.revealed) {
+	opacity: 0;
+}
+
+.reveals .reveal.revealed {
+	animation: reveal 1s var(--ease-out) var(--reveal-delay, 0s) both;
 }
 
 @keyframes reveal {
@@ -172,6 +170,8 @@ button {
 	inset: 0;
 	z-index: 2;
 	border-radius: inherit;
+	/* The glass rim follows the widget's own squircle corners, not plain round ones. */
+	corner-shape: inherit;
 	pointer-events: none;
 }
 

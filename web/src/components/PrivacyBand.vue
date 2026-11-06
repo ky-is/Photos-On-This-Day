@@ -8,7 +8,7 @@ import { GITHUB_URL } from '../pages'
 		<div class="wrap reveal">
 			<p class="eyebrow">Private by design</p>
 			<h2 id="privacy-title">Your memories stay yours.</h2>
-			<p class="lede"><strong>No ads, ever.</strong> Photos On This Day reads your library right on your device: nothing is uploaded, nothing is tracked, and there’s no account to sign in to. It’s open source, so you can <a :href="GITHUB_URL">read every line</a> on GitHub.</p>
+			<p class="lede"><strong>No ads, ever.</strong> Photos On This Day reads your library right on your device: nothing uploaded, nothing tracked, no accounts. It’s open source, so you can <a :href="GITHUB_URL">read every line</a> on GitHub.</p>
 		</div>
 	</section>
 </template>

@@ -1,8 +1,8 @@
 <script setup vapor lang="ts">
 import { computed, nextTick, ref } from 'vue'
 
-import { fromISO, longDate, monthDay, relativeAgo, today } from '../days'
-import type { Photo } from '../photos'
+import { longDate, monthDay, relativeAgo, today, yearsAgo } from '../days'
+import { photoYear, type Photo } from '../photos'
 
 // The app's photo widget: one photo filling the widget, with its date and how long ago in the corner. Given more than
 // one photo, it shows the shuffle button, which works here just like on the Home Screen.
@@ -10,7 +10,8 @@ const { photos, size } = defineProps<{ photos: Photo[]; size: 'small' | 'medium'
 
 const index = ref(0)
 const photo = computed(() => photos[index.value % photos.length]!)
-const date = computed(() => fromISO(photo.value.date))
+// Always today's date in the photo's year, as if it were taken on this day.
+const date = computed(() => yearsAgo(today.value, today.value.getFullYear() - photoYear(photo.value)))
 const heading = computed(() => (size === 'large' ? longDate(date.value) : monthDay(date.value)))
 const ago = computed(() => relativeAgo(date.value, today.value))
 

@@ -9,6 +9,7 @@ import AppStoreBadge from './AppStoreBadge.vue'
 			<AppIcon :size="112" />
 			<h2 id="cta-title">See what today remembers.</h2>
 			<AppStoreBadge :height="58" />
+			<p class="promise">No ads. No tracking. Your photos stay private.</p>
 		</div>
 	</section>
 </template>
@@ -29,5 +30,11 @@ import AppStoreBadge from './AppStoreBadge.vue'
 h2 {
 	margin-top: 0.75rem;
 	font-size: clamp(2.5rem, 6vw, 4.5rem);
+}
+
+.promise {
+	font-size: 1.0625rem;
+	font-weight: 600;
+	opacity: 0.8;
 }
 </style>

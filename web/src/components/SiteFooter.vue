@@ -21,7 +21,7 @@ const year = new Date(__BUILD_DATE__).getUTCFullYear()
 				<a href="/support/">Support</a>
 				<a :href="GITHUB_URL">Source code</a>
 			</nav>
-			<p class="fine">© 2022–{{ year }} Kyle Coburn. iPhone, iPad, Mac and App Store are trademarks of Apple Inc.</p>
+			<p class="fine">© {{ year }} Kyle Coburn. iPhone, iPad, Mac and App Store are trademarks of Apple Inc.</p>
 		</div>
 	</footer>
 </template>

@@ -25,7 +25,6 @@ const FEATURES = [
 	<section id="features" class="features" aria-labelledby="features-title">
 		<div class="wrap">
 			<header class="reveal">
-				<p class="eyebrow">What’s inside</p>
 				<h2 id="features-title">Small moments, beautifully resurfaced.</h2>
 			</header>
 			<div class="grid">
@@ -116,7 +115,8 @@ h2 {
 	background: linear-gradient(to bottom, var(--paper-raised), light-dark(oklch(0.93 0.03 120), oklch(0.25 0.03 130)));
 	.shot {
 		width: min(78%, 16rem);
-		margin: auto auto 0;
+		/* Runs a little past the tile's clipped bottom edge, so it still bleeds off the edge when hover lifts it. */
+		margin: auto auto -0.75rem;
 		border-radius: 2rem 2rem 0 0;
 		border: 6px solid oklch(0.18 0.01 300);
 		border-bottom: 0;
@@ -183,11 +183,13 @@ h2 {
 	.widgets {
 		grid-column: 1 / -1;
 	}
+	/* The tall phone tile takes the left column, with the three small tiles stacked beside it. */
 	.viewer {
-		grid-column: span 1;
+		grid-column: 1;
+		grid-row: span 3;
 	}
 	.small {
-		grid-column: span 1;
+		grid-column: 2;
 	}
 }
 
