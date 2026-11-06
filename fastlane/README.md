@@ -71,6 +71,14 @@ Build and upload to TestFlight (internal testers only; not submitted for externa
 
 Build and upload to App Store Connect (does not submit for review)
 
+### ios next_version
+
+```sh
+[bundle exec] fastlane ios next_version
+```
+
+Start the next version once the current one is live on the App Store: bumps the version (minor if there are ✨ commits since the last 🔖 one, else patch; or bump: patch, minor or major) and the build number, builds and uploads it like `release`, and commits the bump as 🔖 (upload:false only bumps)
+
 ### ios release_mac
 
 ```sh

@@ -181,6 +181,38 @@ platform :ios do
 		upload_to_app_store(api_key: key, ipa: build_package(key), app_version: versions[:version], skip_metadata: true, skip_screenshots: true, submit_for_review: false, precheck_include_in_app_purchases: false, force: true)
 	end
 
+	desc 'Start the next version once the current one is live on the App Store: bumps the version (minor if there are ✨ commits since the last 🔖 one, else patch; or bump: patch, minor or major) and the build number, builds and uploads it like `release`, and commits the bump as 🔖 (upload:false only bumps)'
+	lane :next_version do |options|
+		key = api_key
+		Spaceship::ConnectAPI.token = Spaceship::ConnectAPI::Token.from(hash: key)
+		app = Spaceship::ConnectAPI::App.find(CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier))
+		live = app.get_live_app_store_version(platform: Spaceship::ConnectAPI::Platform::IOS)&.version_string
+		current = versions
+		# Guards against bumping twice: the project's version must be the one on sale
+		UI.user_error!("#{current[:version]} isn't live yet (the App Store has #{live || 'nothing'}); run `fastlane release` to upload a new build of it") unless live == current[:version]
+		major, minor, patch = (current[:version].split('.').map(&:to_i) + [0, 0, 0]).first(3)
+		# New features (a ✨ commit since the last 🔖 release commit) make it minor, otherwise patch
+		released = sh('git', 'log', '-1', '--format=%H', '--grep=^🔖', log: false).strip
+		features = sh('git', 'log', '--format=%s', *(released.empty? ? [] : ["#{released}..HEAD"]), log: false).lines.grep(/^✨/)
+		bump = options[:bump] || (features.empty? ? 'patch' : 'minor')
+		UI.message("#{features.size} new feature#{features.size == 1 ? '' : 's'} since the last release, so a #{bump} version") unless options[:bump]
+		version = case bump.to_s
+			when 'major' then "#{major + 1}.0"
+			when 'minor' then "#{major}.#{minor + 1}"
+			when 'patch' then "#{major}.#{minor}.#{patch + 1}"
+			else UI.user_error!("bump: is patch, minor or major, not #{options[:bump]}")
+		end
+		# A new build number too, above every build uploaded so far
+		uploaded = Spaceship::ConnectAPI::Build.all(app_id: app.id, sort: '-uploadedDate', limit: 10).first(10).map { |b| b.version.to_i }.max || 0
+		build = [current[:build], uploaded].max + 1
+		File.write(PROJECT_FILE, File.read(PROJECT_FILE).gsub(/"MARKETING_VERSION": "[\d.]+"/, %("MARKETING_VERSION": "#{version}")).gsub(/"CURRENT_PROJECT_VERSION": "\d+"/, %("CURRENT_PROJECT_VERSION": "#{build}")))
+		UI.success("#{current[:version]} → #{version} (#{build})")
+		next if options[:upload].to_s == 'false'
+		release
+		# The 🔖 commit marks the release, so the next run counts features from here
+		git_commit(path: PROJECT_FILE, message: "🔖 #{version} build #{versions[:build]}")
+	end
+
 	desc 'Build the Mac app and upload it to the Mac version on App Store Connect, with the build number of the last `release` (does not submit for review)'
 	lane :release_mac do
 		key = api_key
