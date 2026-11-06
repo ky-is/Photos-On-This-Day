@@ -39,6 +39,22 @@ Build Release and install on the iPhone (DEVICE in .env, or the first paired iPh
 
 Screenshots for the required App Store sizes (iPhone 6.3", iPad 13") into fastlane/screenshots
 
+### ios creative_assets
+
+```sh
+[bundle exec] fastlane ios creative_assets
+```
+
+The App Store creative assets into fastlane/creative: the product page header, and the search results image in every language (bin/creative-assets.swift, from the screenshots and their photos)
+
+### ios upload_creative_assets
+
+```sh
+[bundle exec] fastlane ios upload_creative_assets
+```
+
+Draw the creative assets (`creative_assets`), upload them to the app's asset library and place them on the editable iOS version: the header for every language, and each language's search results image. Doesn't submit
+
 ### ios upload_screenshots
 
 ```sh
