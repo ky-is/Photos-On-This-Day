@@ -129,6 +129,22 @@ def sync_screenshot_sets(localization, folder, dry_run:, mac: false)
 	end
 end
 
+# Each language's version text (description, keywords, what's new, promotional text, URLs) straight to the editable version,
+# for when deliver can't run: it won't upload anything while the app info is locked
+def upload_version_text(app, metadata, mac: false)
+	fields = { 'description' => :description, 'keywords' => :keywords, 'release_notes' => :whatsNew, 'promotional_text' => :promotionalText, 'support_url' => :supportUrl, 'marketing_url' => :marketingUrl }
+	version = app.get_edit_app_store_version(platform: mac ? Spaceship::ConnectAPI::Platform::MAC_OS : Spaceship::ConnectAPI::Platform::IOS) || UI.user_error!("No editable #{mac ? 'Mac' : 'iOS'} version on App Store Connect")
+	version.get_app_store_version_localizations.each do |localization|
+		folder = File.join(metadata, localization.locale)
+		next UI.message("#{localization.locale}: no text here") unless File.directory?(folder)
+		attributes = fields.filter_map { |file, key| path = File.join(folder, "#{file}.txt"); [key, File.read(path).strip] if File.exist?(path) }.to_h
+		# A first version has no what's new
+		attributes.delete(:whatsNew) if localization.whats_new.nil? && version.version_string == '1.0'
+		localization.update(attributes: attributes)
+		UI.message("#{localization.locale}: #{attributes.keys.join(', ')}")
+	end
+end
+
 def release_notes_files
 	Dir[File.join(METADATA, '*', 'release_notes.txt')].sort
 end
@@ -236,7 +252,18 @@ platform :ios do
 		key = api_key
 		if uploads
 			# The text first, since a new language's screenshots need its text on the version
-			upload_to_app_store(api_key: key, platform: platform, app_version: versions[:version], skip_binary_upload: true, skip_screenshots: true, metadata_path: mac ? METADATA_MAC : METADATA, submit_for_review: false, force: true, run_precheck_before_submit: false)
+			metadata = mac ? METADATA_MAC : METADATA
+			# The name, subtitle, categories and privacy URL belong to the whole app, and can't change while any platform's
+			# version is in review, and deliver then waits for them forever; so this sends only the version's own text, and
+			# says what waits
+			Spaceship::ConnectAPI.token = Spaceship::ConnectAPI::Token.from(hash: key)
+			app = Spaceship::ConnectAPI::App.find(CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier))
+			if app.fetch_edit_app_info
+				upload_to_app_store(api_key: key, platform: platform, app_version: versions[:version], skip_binary_upload: true, skip_screenshots: true, metadata_path: metadata, submit_for_review: false, force: true, run_precheck_before_submit: false)
+			else
+				UI.important('The app info (name, subtitle, categories, privacy URL) is locked while a version is in review, so only the version text goes up now; send the rest with `fastlane submit review:false` once the review ends')
+				upload_version_text(app, metadata, mac: mac)
+			end
 			sync_screenshots(key, mac: mac)
 		end
 		next if options[:review].to_s == 'false'
