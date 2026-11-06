@@ -10,6 +10,7 @@ struct PhotosYearThumbnail: View {
 	@Environment(\.displayScale) private var displayScale
 	@Environment(\.photoTransition) private var photoTransition
 	@Environment(\.isPinchingGrid) private var isPinchingGrid
+	@Environment(\.isSwipingDay) private var isSwipingDay
 	@Environment(\.thumbnailImageManager) private var imageManager
 	@Environment(GridSelection.self) private var selection: GridSelection?
 
@@ -57,8 +58,8 @@ struct PhotosYearThumbnail: View {
 					}
 						.pointerHighlight()
 						.modifier(ZoomTransitionSource(id: asset.localIdentifier, namespace: photoTransition))
-						// A pinch that starts on a photo shouldn't open it when the fingers lift.
-						.disabled(isPinchingGrid)
+						// A pinch or a swipe to another day that starts on a photo shouldn't open it when the fingers lift.
+						.disabled(isPinchingGrid || isSwipingDay)
 				}
 			} else {
 				Image(systemName: "photo")

@@ -17,6 +17,15 @@ struct ContentView: View {
 	@AppStorage(DayMapView.visibleKey) private var showsMap = true
 	/// The scroll view's height between the bars, so a short day still fills it and can be swiped anywhere.
 	@State private var visibleHeight: CGFloat = 0
+	/// The day whose page shows. It follows the date once that day's photos are ready, so its page slides in with them.
+	@State private var pageDate = StateManager.shared.date
+	/// 1 when the page coming in is a later day, sliding in from the trailing edge like turning a page; -1 for an earlier one.
+	@State private var pageStep = 1
+	@State private var pageChange: Task<Void, Never>?
+	/// Loads the days either side of the one showing in the background, so swiping to one slides it in right away.
+	@State private var neighborPreload: Task<Void, Never>?
+	@State private var isSwipingDay = false
+	@Environment(\.accessibilityReduceMotion) private var reduceMotion
 
 	private var showsMapPanel: Bool {
 		showsMap && menuActions.hasLocatedPhotos && state.canShowPhotos && !selection.isSelecting
@@ -30,12 +39,18 @@ struct ContentView: View {
 						.padding()
 					if state.canShowPhotos {
 						ShowHelpView()
-						PhotosView(date: state.date, scrollPosition: $scrollPosition, scrollTracker: scrollTracker, viewerPhotoID: viewerPhotoID, pinch: pinch)
+						// The day going out and the one coming in side by side as they slide, one page per day.
+						ZStack(alignment: .top) {
+							PhotosView(date: pageDate, scrollPosition: $scrollPosition, scrollTracker: scrollTracker, viewerPhotoID: viewerPhotoID, pinch: pinch)
+								.id(pageDate)
+								.transition(reduceMotion ? .opacity : .push(from: pageStep > 0 ? .trailing : .leading))
+						}
 					}
 				}
 					.frame(maxWidth: .infinity, minHeight: visibleHeight, alignment: .top)
 					.contentShape(.rect)
 					.coordinateSpace(.named(GridPinch.coordinateSpace))
+					.environment(\.isSwipingDay, isSwipingDay)
 					// Catches a pinch anywhere on the screen, not only over photos, and hands it to the grid.
 					.simultaneousGesture(MagnifyGesture()
 						.onChanged { value in
@@ -46,16 +61,30 @@ struct ContentView: View {
 						}, isEnabled: state.canShowPhotos)
 			}
 				.scrollPosition($scrollPosition)
-				.scrollDisabled(selection.isDragSelecting)
+				// Two fingers would scroll along with a pinch, fighting the grid's own scrolling to keep the pinched photo under
+				// them as the columns change, so it jitters at each step.
+				.scrollDisabled(selection.isDragSelecting || pinch.map { !$0.hasEnded } == true)
 				// Swipe sideways anywhere for the next or previous day, like turning a page: easier to reach than the buttons.
 				.simultaneousGesture(DragGesture(minimumDistance: 30)
+					.onChanged { value in
+						if !isSwipingDay, abs(value.translation.width) > 2 * abs(value.translation.height) {
+							isSwipingDay = true
+						}
+					}
 					.onEnded { value in
+						Task {
+							// The photo's tap lands as the finger lifts, just after this.
+							try? await Task.sleep(for: .milliseconds(300))
+							isSwipingDay = false
+						}
 						let dx = value.translation.width
 						guard abs(dx) > 80, abs(dx) > 2 * abs(value.translation.height) else { return }
-						withAnimation(.smooth) {
-							state.daysChange += dx < 0 ? 1 : -1
-						}
+						turnDay(by: dx < 0 ? 1 : -1)
 					}, isEnabled: state.canShowPhotos && !selection.isSelecting)
+				// Two fingers sideways on a Mac trackpad does the same.
+				.onTrackpadSwipe(isEnabled: state.canShowPhotos && !selection.isSelecting) { step in
+					turnDay(by: step)
+				}
 				.onScrollGeometryChange(for: CGFloat.self) { geometry in
 					geometry.containerSize.height - geometry.contentInsets.top - geometry.contentInsets.bottom
 				} action: { _, height in
@@ -114,8 +143,42 @@ struct ContentView: View {
 				.bottomBarVisibility(selection.isSelecting)
 				.dayMap(date: state.date, years: menuActions.mapYears, isShown: showsMapPanel)
 				.animation(.smooth, value: showsMap)
-				.onChange(of: state.date) {
+				.onChange(of: state.date) { _, date in
 					selection.end()
+					// The direction first, so the page going out leaves the right way, then the new day once its photos are in.
+					pageStep = date > pageDate ? 1 : -1
+					pageChange?.cancel()
+					neighborPreload?.cancel()
+					pageChange = Task {
+						// Most days are loaded already, from either side of the last one. One that isn't, such as one
+						// without photos that looks for nearby days, slides in soon anyway and shows its spinner.
+						let preparing = Task {
+							await PhotosView.prepare(date: date)
+						}
+						for _ in 0..<20 where !PhotosView.isPrepared(date) {
+							try? await Task.sleep(for: .milliseconds(10))
+						}
+						guard !Task.isCancelled else { return }
+						// Each day starts at its top, with its newest year. The scroll view jumps there first, then the new page
+						// joins a frame later: rows that scroll into view while a page is being added aren't drawn until the
+						// next scroll, and one added far down the old day's scroll shows nothing at all.
+						var transaction = Transaction(animation: nil)
+						transaction.disablesAnimations = true
+						withTransaction(transaction) {
+							scrollPosition.scrollTo(edge: .top)
+						}
+						try? await Task.sleep(for: .milliseconds(20))
+						// Quicker than a sheet, like turning a page.
+						withAnimation(.smooth(duration: 0.3)) {
+							pageDate = date
+						}
+						await preparing.value
+						guard !Task.isCancelled else { return }
+						preloadNeighbors(of: date)
+					}
+				}
+				.onAppear {
+					preloadNeighbors(of: pageDate)
 				}
 				.sheet(isPresented: $showAbout) {
 					AboutView()
@@ -138,6 +201,23 @@ struct ContentView: View {
 			.reviewPrompt()
 			// Content fades softly under the bars everywhere, instead of meeting a hard edge.
 			.scrollEdgeEffectStyle(.soft, for: .all)
+	}
+
+	/// The next day (1) or the one before (-1), from a swipe.
+	private func turnDay(by step: Int) {
+		withAnimation(.smooth) {
+			state.daysChange += step
+		}
+	}
+
+	private func preloadNeighbors(of date: Date) {
+		neighborPreload?.cancel()
+		neighborPreload = Task(priority: .utility) {
+			for step in [1, -1] {
+				guard !Task.isCancelled else { return }
+				await PhotosView.prepare(date: Calendar.current.date(byAdding: .day, value: step, to: date)!)
+			}
+		}
 	}
 
 	private var dateButtons: some View {

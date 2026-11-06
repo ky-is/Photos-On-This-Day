@@ -12,6 +12,8 @@ struct PhotoYear: Identifiable, Sendable {
 extension EnvironmentValues {
 	/// True while the grid is being pinched, and a moment after, so lifting the fingers doesn't open a photo.
 	@Entry var isPinchingGrid = false
+	/// True while a sideways swipe turns to another day, and a moment after, so the photo it started on doesn't open.
+	@Entry var isSwipingDay = false
 }
 
 /// Where the grid sits in the main scroll view. A plain class, not state, so scrolling doesn't redraw anything.
@@ -144,6 +146,8 @@ struct PhotosView: View {
 	@Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
 	init(date: Date, scrollPosition: Binding<ScrollPosition>, scrollTracker: ScrollTracker, viewerPhotoID: String? = nil, pinch: GridPinch? = nil) {
+		let key = Self.fetchKey(for: date)
+		_loaded = State(initialValue: Self.prepared.first { $0.key == key }?.photos)
 		self.pinch = pinch
 		self.date = date
 		_scrollPosition = scrollPosition
@@ -541,6 +545,31 @@ struct PhotosView: View {
 			.multilineTextAlignment(.center)
 			.frame(maxWidth: 512)
 			.padding()
+	}
+
+	/// The last few days loaded by prepare(date:), the one showing and the ones either side, for their pages to show right
+	/// away instead of a spinner.
+	private static var prepared: [(key: FetchKey, photos: LoadedPhotos)] = []
+
+	private static func fetchKey(for date: Date) -> FetchKey {
+		FetchKey(date: date, filters: Filters.shared.photoFilters(for: date.dateID), libraryRevision: StateManager.shared.libraryRevision)
+	}
+
+	static func isPrepared(_ date: Date) -> Bool {
+		let key = fetchKey(for: date)
+		return prepared.contains { $0.key == key }
+	}
+
+	/// Loads a day's photos ahead of its page, so the page slides in with them.
+	static func prepare(date: Date) async {
+		let key = fetchKey(for: date)
+		guard !prepared.contains(where: { $0.key == key }) else { return }
+		let photos = await load(date: date, filters: key.filters)
+		prepared.removeAll { $0.key == key }
+		prepared.append((key, photos))
+		if prepared.count > 3 {
+			prepared.removeFirst(prepared.count - 3)
+		}
 	}
 
 	@concurrent private static func load(date: Date, filters: PhotoFilters) async -> LoadedPhotos {
