@@ -1,1 +1,1 @@
-fotos,lembranças,hoje,aniversário,diário,imagens,galeria,passado,álbum,nostalgia,família,viagem,mapa
+fotos,lembranças,hoje,aniversário,imagens,galeria,passado,álbum,nostalgia,mapa,tela,bloqueio,antigas

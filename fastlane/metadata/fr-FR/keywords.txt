@@ -1,1 +1,1 @@
-rétro,ans,anniversaire,journal,images,galerie,passé,mémoire,album,nostalgie,famille,voyage,carte
+jour,ans,anniversaire,rétro,images,galerie,passé,album,nostalgie,diaporama,écran,verrouillage,carte
