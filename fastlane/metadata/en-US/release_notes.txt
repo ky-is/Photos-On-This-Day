@@ -1,4 +1,11 @@
-What's new in 2.0:
+What's new in 2.1:
+
+• Swipe the map down to hide it
+• Swiping between photos follows your finger smoothly
+• Swiping between days slides the next day in from the correct side, already loaded
+• Fixes for the title briefly showing the date before the place, zoomed photos panning past their edges, swipes opening a photo by accident, and the grid jittering when you pinch it
+
+New in 2.0:
 
 • A new photo viewer: photos zoom open from the grid, swipe down or pinch to close, and tap to hide everything. Skim all of the day's photos with the thumbnail strip.
 • Videos and Live Photos play
@@ -14,6 +21,5 @@ What's new in 2.0:
 • Siri and Shortcuts: show a day's photos, photos from a chosen year, a random memory, or count today's photos
 • Choose how often widgets change photos, and an optional shuffle button to rotate the photo now
 • Available in 8 more languages
-• Fixes for photos missing when screenshots are hidden, year headers around New Year, and settings changes not refreshing
 • Faster loading and scrolling
-• Improve accessibility
+• Improved accessibility

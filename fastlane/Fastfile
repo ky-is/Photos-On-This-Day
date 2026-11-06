@@ -129,6 +129,59 @@ def sync_screenshot_sets(localization, folder, dry_run:, mac: false)
 	end
 end
 
+def release_notes_files
+	Dir[File.join(METADATA, '*', 'release_notes.txt')].sort
+end
+
+def git(*args)
+	require 'open3'
+	out, status = Open3.capture2('git', *args)
+	status.success? ? out : nil
+end
+
+# This version's release notes in every language, written by Claude Code from the commit messages since the last release
+# (the newest 🔖 commit of an earlier version), in the style of that release's notes. A release under a month old keeps
+# its main points, since many people won't have seen them yet.
+def write_release_notes
+	require 'json'
+	require 'open3'
+	version = versions[:version]
+	sha, time, subject = git('log', '--format=%H %ct %s', '--grep=^🔖').lines.map { |line| line.chomp.split(' ', 3) }.find { |_, _, s| !s.start_with?("🔖 #{version} ") } || UI.user_error!('No 🔖 commit of an earlier version')
+	previous = subject[/🔖 ([\d.]+)/, 1]
+	days = ((Time.now.to_i - time.to_i) / 86_400.0).round
+	commits = git('log', '--format=%s', '--invert-grep', '--grep=^🔖', "#{sha}..HEAD")
+	locales = release_notes_files.map { |path| File.basename(File.dirname(path)) }
+	old = locales.to_h { |locale| [locale, git('show', "#{sha}:fastlane/metadata/#{locale}/release_notes.txt") || ''] }
+	prompt = <<~PROMPT
+		Write the App Store release notes ("What's New") for version #{version} of Photos On This Day, an iPhone and iPad app that shows your photos taken on this day in past years, with widgets.
+
+		These are the commit messages since #{previous} came out (gitmoji first: ✨ feature, 🐛 fix, 💄 look, ⚡️ speed, ♿️ accessibility, 🌐 languages):
+
+		#{commits}
+		Only include changes someone using the app would notice. Leave out the website, build scripts, fastlane and App Store work, screenshot tooling, refactors, and anything only on the Mac. Write each change plainly and briefly, the way the #{previous} notes below do, not the way the commits are worded.
+
+		#{previous} came out #{days} days ago. #{days < 31 ? "Since that's recent, many people haven't seen it yet: after this version's changes, keep the important points of the #{previous} notes (its features and notable improvements; drop its minor fixes), shortened if needed, under a short heading like \"New in #{previous}:\"." : "Only describe what's new in #{version}."}
+
+		Match the #{previous} notes' format: a first line like their "What's new in" line but for #{version}, then one "• " bullet per change. Keep each language under 4000 characters.
+
+		The #{previous} notes, in each language (reuse their wording and terms where it fits):
+
+		#{JSON.pretty_generate(old)}
+
+		Reply with only a JSON object mapping each of these locales to its notes, nothing else: #{locales.join(', ')}
+	PROMPT
+	UI.message("Writing the #{version} release notes in #{locales.size} languages with Claude Code, from #{commits.lines.size} commits since #{previous}")
+	out, error, status = Open3.capture3('claude', '-p', '--tools', '', '--no-session-persistence', stdin_data: prompt)
+	UI.user_error!("claude -p failed: #{[out, error].join.strip}") unless status.success?
+	notes = JSON.parse(out[/\{.*\}/m] || UI.user_error!("No JSON in Claude's reply:\n#{out}"))
+	locales.each do |locale|
+		text = notes[locale]&.strip || UI.user_error!("No #{locale} notes in Claude's reply")
+		UI.user_error!("The #{locale} notes are over 4000 characters") if text.length > 4000
+		File.write(File.join(METADATA, locale, 'release_notes.txt'), "#{text}\n")
+	end
+	UI.success("Release notes for #{version}:\n\n#{notes['en-US']}")
+end
+
 platform :ios do
 	desc 'Run the unit tests on the simulator'
 	lane :test do
@@ -181,7 +234,7 @@ platform :ios do
 		upload_to_app_store(api_key: key, ipa: build_package(key), app_version: versions[:version], skip_metadata: true, skip_screenshots: true, submit_for_review: false, precheck_include_in_app_purchases: false, force: true)
 	end
 
-	desc 'Start the next version once the current one is live on the App Store: bumps the version (minor if there are ✨ commits since the last 🔖 one, else patch; or bump: patch, minor or major) and the build number, builds and uploads it like `release`, and commits the bump as 🔖 (upload:false only bumps)'
+	desc 'Start the next version once the current one is live on the App Store: bumps the version (minor if there are ✨ commits since the last 🔖 one, else patch; or bump: patch, minor or major) and the build number, builds and uploads it like `release`, writes the release notes (`release_notes`), and commits them with the bump as 🔖 (upload:false only bumps and writes the notes)'
 	lane :next_version do |options|
 		key = api_key
 		Spaceship::ConnectAPI.token = Spaceship::ConnectAPI::Token.from(hash: key)
@@ -207,10 +260,16 @@ platform :ios do
 		build = [current[:build], uploaded].max + 1
 		File.write(PROJECT_FILE, File.read(PROJECT_FILE).gsub(/"MARKETING_VERSION": "[\d.]+"/, %("MARKETING_VERSION": "#{version}")).gsub(/"CURRENT_PROJECT_VERSION": "\d+"/, %("CURRENT_PROJECT_VERSION": "#{build}")))
 		UI.success("#{current[:version]} → #{version} (#{build})")
+		write_release_notes
 		next if options[:upload].to_s == 'false'
 		release
 		# The 🔖 commit marks the release, so the next run counts features from here
-		git_commit(path: PROJECT_FILE, message: "🔖 #{version} build #{versions[:build]}")
+		git_commit(path: [PROJECT_FILE, *release_notes_files], message: "🔖 #{version} build #{versions[:build]}")
+	end
+
+	desc "Write this version's fastlane/metadata release notes in every language with Claude Code, from the app's commits since the last release (keeping that release's main points when it's under a month old)"
+	lane :release_notes do
+		write_release_notes
 	end
 
 	desc 'Build the Mac app and upload it to the Mac version on App Store Connect, with the build number of the last `release` (does not submit for review)'

@@ -1,4 +1,11 @@
-Novità della versione 2.0:
+Novità della versione 2.1:
+
+• Scorri la mappa verso il basso per nasconderla
+• Scorrendo tra le foto, la foto segue il dito in modo fluido
+• Scorrendo tra i giorni, il giorno successivo entra dal lato giusto, già caricato
+• Correzioni per il titolo che mostrava per un attimo la data prima del luogo, foto ingrandite che si spostavano oltre i bordi, scorrimenti che aprivano una foto per sbaglio e la griglia che tremolava quando la pizzichi
+
+Novità della 2.0:
 
 • Nuovo visore: le foto si aprono con uno zoom dalla griglia, scorri verso il basso o pizzica per chiudere e tocca per nascondere tutto. Scorri tutte le foto del giorno con la striscia di miniature.
 • Video e Live Photo vengono riprodotti
@@ -14,6 +21,5 @@ Novità della versione 2.0:
 • Siri e Comandi Rapidi: mostra le foto di un giorno o di un anno a scelta, un ricordo a caso o conta le foto di oggi
 • Scegli ogni quanto i widget cambiano foto, con un pulsante casuale facoltativo per cambiare subito la foto
 • Disponibile in altre 8 lingue
-• Correzioni per foto mancanti quando gli screenshot sono nascosti, intestazioni degli anni intorno a Capodanno e impostazioni che non si aggiornavano
 • Caricamento e scorrimento più veloci
 • Accessibilità migliorata

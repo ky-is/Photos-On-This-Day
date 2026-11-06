@@ -77,7 +77,15 @@ Build and upload to App Store Connect (does not submit for review)
 [bundle exec] fastlane ios next_version
 ```
 
-Start the next version once the current one is live on the App Store: bumps the version (minor if there are ✨ commits since the last 🔖 one, else patch; or bump: patch, minor or major) and the build number, builds and uploads it like `release`, and commits the bump as 🔖 (upload:false only bumps)
+Start the next version once the current one is live on the App Store: bumps the version (minor if there are ✨ commits since the last 🔖 one, else patch; or bump: patch, minor or major) and the build number, builds and uploads it like `release`, writes the release notes (`release_notes`), and commits them with the bump as 🔖 (upload:false only bumps and writes the notes)
+
+### ios release_notes
+
+```sh
+[bundle exec] fastlane ios release_notes
+```
+
+Write this version's fastlane/metadata release notes in every language with Claude Code, from the app's commits since the last release (keeping that release's main points when it's under a month old)
 
 ### ios release_mac
 

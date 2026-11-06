@@ -1,4 +1,11 @@
-Nouveautés de la version 2.0 :
+Nouveautés de la version 2.1 :
+
+• Balayez la carte vers le bas pour la masquer
+• Le balayage entre les photos suit votre doigt avec fluidité
+• En balayant entre les jours, le jour suivant arrive du bon côté, déjà chargé
+• Corrections : titre affichant brièvement la date avant le lieu, photos zoomées qui se déplaçaient au-delà de leurs bords, balayages qui ouvraient une photo par erreur et grille qui tremblait quand on la pinçait
+
+Nouveautés de la 2.0 :
 
 • Nouveau visualiseur : les photos s’ouvrent en zoomant depuis la grille, balayez vers le bas ou pincez pour fermer, et touchez pour tout masquer. Parcourez toutes les photos du jour avec la bande de vignettes.
 • Les vidéos et les Live Photos sont lues
@@ -14,6 +21,5 @@ Nouveautés de la version 2.0 :
 • Siri et Raccourcis : afficher les photos d’un jour ou d’une année choisie, un souvenir au hasard ou compter les photos du jour
 • Choisissez la fréquence à laquelle les widgets changent de photo, avec un bouton aléatoire facultatif pour changer de photo tout de suite
 • Disponible dans 8 langues supplémentaires
-• Corrections : photos manquantes quand les captures d'écran sont masquées, en-têtes d'année autour du Nouvel An et réglages qui ne s'actualisaient pas
 • Chargement et défilement plus rapides
 • Accessibilité améliorée

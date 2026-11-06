@@ -1,3 +1,10 @@
+Neu in 2.1:
+
+• Karte nach unten wischen, um sie auszublenden
+• Beim Wischen zwischen Fotos folgt das Foto flüssig dem Finger
+• Beim Wischen zwischen Tagen gleitet der nächste Tag in der richtigen Richtung herein, schon vorab geladen
+• Fehlerbehebungen: Titel, der kurz das Datum vor dem Ort zeigte, gezoomte Fotos, die sich über ihre Ränder hinaus verschieben ließen, Wischgesten, die versehentlich ein Foto öffneten, und ruckelndes Raster beim Zusammenziehen
+
 Neu in 2.0:
 
 • Neue Fotoansicht: Fotos zoomen aus dem Raster auf, nach unten wischen oder zusammenziehen zum Schließen, tippen blendet alles aus. Mit der Miniaturleiste durch alle Fotos des Tages blättern.
@@ -14,6 +21,5 @@ Neu in 2.0:
 • Siri und Kurzbefehle: Fotos eines Tages oder eines gewählten Jahres zeigen, eine zufällige Erinnerung oder die heutigen Fotos zählen
 • Lege fest, wie oft Widgets die Fotos wechseln, mit einer optionalen Zufallstaste, um sofort ein anderes Foto zu zeigen
 • In 8 weiteren Sprachen verfügbar
-• Fehlerbehebungen: fehlende Fotos bei ausgeblendeten Bildschirmfotos, Jahresüberschriften rund um Neujahr und Einstellungen, die nicht aktualisiert wurden
 • Schnelleres Laden und Scrollen
 • Verbesserte Bedienungshilfen
