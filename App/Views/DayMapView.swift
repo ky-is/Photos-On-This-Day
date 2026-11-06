@@ -8,11 +8,6 @@ struct DayMapView: View {
 	/// The map's toggle in the toolbar and the menu bar: on until someone turns it off, then remembered between launches.
 	static let visibleKey = "showsDayMap"
 
-	/// Tall enough to read, short enough to leave plenty of the photos in view above it: its height pinned at the bottom.
-	static func height(for screenSize: CGSize) -> CGFloat {
-		min(300, max(200, screenSize.height * 0.28))
-	}
-
 	let years: [PhotoYear]
 
 	private var state = StateManager.shared
@@ -50,32 +45,96 @@ struct DayMapView: View {
 	}
 }
 
-/// The map pinned at the bottom of the day, an even inset from the screen's sides and bottom, with a handle to drag it up
-/// to fill the screen below the toolbar and back down again (or tap it).
-struct DayMapPanel: View {
+extension View {
+	/// The day's map pinned at the bottom while the photos scroll, with room under the last photos to scroll them clear
+	/// of it.
+	func dayMap(date: Date, years: [PhotoYear], isShown: Bool) -> some View {
+		modifier(DayMapOverlay(date: date, years: years, isShown: isShown))
+	}
+}
+
+private struct DayMapOverlay: ViewModifier {
 	let date: Date
 	let years: [PhotoYear]
-	/// Its gap from the screen's sides and bottom, and from the toolbar when it fills the screen.
-	let inset: CGFloat
+	let isShown: Bool
 
 	@Environment(\.screenSize) private var screenSize
+	/// The home indicator's strip, which the map reaches past to sit an even inset from the screen's bottom edge.
+	@State private var bottomSafeArea: CGFloat = 0
+
+	func body(content: Content) -> some View {
+		content
+			// Room under the last photos for the map, which overlaps the home indicator's strip already set aside.
+			.safeAreaInset(edge: .bottom, spacing: 0) {
+				Color.clear
+					.frame(height: isShown ? max(0, DayMapPanel.height(for: screenSize) + 2 * DayMapPanel.inset - bottomSafeArea) : 0)
+			}
+			// It's laid out from the screen's own edges, not the safe area's, so its bottom corners are concentric with the
+			// display's: the full width of the screen, under the side safe areas too (iPad, iPhone on its side).
+			.overlay(alignment: .bottom) {
+				if isShown {
+					DayMapPanel(date: date, years: years)
+						.ignoresSafeArea(.container, edges: [.horizontal, .bottom])
+						.transition(.move(edge: .bottom).combined(with: .opacity))
+				}
+			}
+			.onGeometryChange(for: CGFloat.self) { proxy in
+				proxy.safeAreaInsets.bottom
+			} action: { inset in
+				bottomSafeArea = inset
+			}
+	}
+}
+
+/// The map pinned at the bottom of the day, an even inset from the screen's sides and bottom, with a handle to drag it up
+/// to fill the screen below the toolbar and back down again (or tap it). Swiping it down from there hides it, like the
+/// toolbar's map button: it squashes a little first, then slides off the bottom.
+private struct DayMapPanel: View {
+	/// Its gap from the screen's sides and bottom, and from the toolbar when it fills the screen.
+	static let inset: CGFloat = 8
+	/// How much of its usual height dragging it down takes off before it starts sliding away.
+	private static let squashFraction = 0.4
+	/// How far the handle has to be dragged, or flung, to expand or collapse it.
+	private static let dragDistance: CGFloat = 60
+	private static let flingDistance: CGFloat = 240
+
+	/// Tall enough to read, short enough to leave plenty of the photos in view above it: its usual height.
+	static func height(for screenSize: CGSize) -> CGFloat {
+		min(300, max(200, screenSize.height * 0.28))
+	}
+
+	let date: Date
+	let years: [PhotoYear]
+
+	@Environment(\.screenSize) private var screenSize
+	@AppStorage(DayMapView.visibleKey) private var showsMap = true
 	@State private var expanded = false
 	/// How far the handle has been dragged down (up is negative), springing back when let go.
 	@GestureState(resetTransaction: Transaction(animation: .smooth)) private var drag: CGFloat = 0
 
+	private var collapsed: CGFloat {
+		Self.height(for: screenSize)
+	}
+
+	private var squash: CGFloat {
+		collapsed * Self.squashFraction
+	}
+
 	var body: some View {
 		GeometryReader { geometry in
-			let collapsed = DayMapView.height(for: screenSize)
-			let full = max(collapsed, geometry.size.height - 2 * inset)
+			let full = max(collapsed, geometry.size.height - 2 * Self.inset)
+			let height = (expanded ? full : collapsed) - drag
 			DayMapView(years: years)
 				.id(date)
-				.frame(height: min(full, max(collapsed * 0.6, (expanded ? full : collapsed) - drag)))
+				.frame(height: min(full, max(collapsed - squash, height)))
 				.overlay(alignment: .top) {
 					handle
 				}
 				.clipShape(ConcentricRectangle(uniformTopCorners: .fixed(28), uniformBottomCorners: .concentric(minimum: .fixed(28))))
 				.shadow(color: .black.opacity(0.2), radius: 12, y: 4)
-				.padding([.horizontal, .bottom], inset)
+				.padding([.horizontal, .bottom], Self.inset)
+				// Squashed as far as it goes, it follows the finger off the bottom of the screen.
+				.offset(y: max(0, collapsed - squash - height))
 				.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
 		}
 	}
@@ -96,9 +155,11 @@ struct DayMapPanel: View {
 					let moved = value.translation.height
 					let flung = value.predictedEndTranslation.height
 					withAnimation(.smooth) {
-						if expanded, moved > 60 || flung > 240 {
+						if expanded, moved > Self.dragDistance || flung > Self.flingDistance {
 							expanded = false
-						} else if !expanded, moved < -60 || flung < -240 {
+						} else if !expanded, moved > squash || flung > squash + Self.flingDistance {
+							showsMap = false
+						} else if !expanded, moved < -Self.dragDistance || flung < -Self.flingDistance {
 							expanded = true
 						}
 					}
@@ -115,6 +176,9 @@ struct DayMapPanel: View {
 				withAnimation(.smooth) {
 					expanded.toggle()
 				}
+			}
+			.accessibilityAction(named: "Hide Map") {
+				showsMap = false
 			}
 	}
 }

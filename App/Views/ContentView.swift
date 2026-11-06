@@ -15,14 +15,8 @@ struct ContentView: View {
 	@State private var viewerPhotoID: String?
 	@State private var pinch: GridPinch?
 	@AppStorage(DayMapView.visibleKey) private var showsMap = true
-	/// The home indicator's strip, which the map reaches past to sit an even inset from the screen's bottom edge.
-	@State private var bottomSafeArea: CGFloat = 0
 	/// The scroll view's height between the bars, so a short day still fills it and can be swiped anywhere.
 	@State private var visibleHeight: CGFloat = 0
-	@Environment(\.screenSize) private var screenSize
-
-	/// The map's inset from the screen's sides and bottom edge, so its bottom corners follow the display's.
-	private static let mapInset: CGFloat = 8
 
 	private var showsMapPanel: Bool {
 		showsMap && menuActions.hasLocatedPhotos && state.canShowPhotos && !selection.isSelecting
@@ -118,22 +112,7 @@ struct ContentView: View {
 					}
 				}
 				.bottomBarVisibility(selection.isSelecting)
-				// Room under the last photos for the map, which overlaps the home indicator's strip already set aside.
-				.safeAreaInset(edge: .bottom, spacing: 0) {
-					Color.clear
-						.frame(height: showsMapPanel ? max(0, DayMapView.height(for: screenSize) + 2 * Self.mapInset - bottomSafeArea) : 0)
-				}
-				// The map stays put at the bottom while the photos scroll. It's laid out from the screen's own edges, not the safe
-				// area's, an even inset from the sides and bottom, so its bottom corners are concentric with the display's.
-				.overlay(alignment: .bottom) {
-					if showsMapPanel {
-						DayMapPanel(date: state.date, years: menuActions.mapYears, inset: Self.mapInset)
-							// The full width of the screen, under the side safe areas too (iPad, iPhone on its side), so both
-							// bottom corners follow the display's.
-							.ignoresSafeArea(.container, edges: [.horizontal, .bottom])
-							.transition(.move(edge: .bottom).combined(with: .opacity))
-					}
-				}
+				.dayMap(date: state.date, years: menuActions.mapYears, isShown: showsMapPanel)
 				.animation(.smooth, value: showsMap)
 				.onChange(of: state.date) {
 					selection.end()
@@ -153,11 +132,6 @@ struct ContentView: View {
 						.id(selection.id)
 				}
 		}
-			.onGeometryChange(for: CGFloat.self) { proxy in
-				proxy.safeAreaInsets.bottom
-			} action: { inset in
-				bottomSafeArea = inset
-			}
 			.environment(\.photoTransition, photoTransition)
 			.environment(selection)
 			.environment(\.viewerShowsPhoto, { viewerPhotoID = $0 })
