@@ -11,6 +11,7 @@ import UIKit
 
 struct ZoomScrollView<Content: View>: UIViewRepresentable {
 	private let content: Content
+	private let aspectRatio: CGFloat?
 	private let zoomStep: ZoomStep?
 	/// Whether the content is zoomed in, each time that changes.
 	private let onZoom: (Bool) -> Void
@@ -18,7 +19,10 @@ struct ZoomScrollView<Content: View>: UIViewRepresentable {
 	private let onPinchClose: (() -> Void)?
 
 	/// Pinch or double-tap to zoom, like in Photos. Pinching in below full size calls `onPinchClose`. A new `zoomStep` zooms one step.
-	init(zoomStep: ZoomStep? = nil, onZoom: @escaping (Bool) -> Void = { _ in }, onTap: @escaping () -> Void = {}, onPinchClose: (() -> Void)? = nil, @ViewBuilder content: () -> Content) {
+	/// With the content's `aspectRatio` (width over height), only the content zooms and pans, centered, not the empty
+	/// bands beside it.
+	init(aspectRatio: CGFloat? = nil, zoomStep: ZoomStep? = nil, onZoom: @escaping (Bool) -> Void = { _ in }, onTap: @escaping () -> Void = {}, onPinchClose: (() -> Void)? = nil, @ViewBuilder content: () -> Content) {
+		self.aspectRatio = aspectRatio
 		self.zoomStep = zoomStep
 		self.onPinchClose = onPinchClose
 		self.onZoom = onZoom
@@ -26,9 +30,12 @@ struct ZoomScrollView<Content: View>: UIViewRepresentable {
 		self.content = content()
 	}
 
-	func makeUIView(context: Context) -> UIScrollView {
-		let scrollView = UIScrollView()
+	func makeUIView(context: Context) -> FittingScrollView {
+		let scrollView = FittingScrollView()
+		scrollView.aspectRatio = aspectRatio
 		scrollView.delegate = context.coordinator
+		// The viewer fills the screen; insets only center the content.
+		scrollView.contentInsetAdjustmentBehavior = .never
 		scrollView.maximumZoomScale = 8
 		scrollView.minimumZoomScale = 1
 		scrollView.bouncesZoom = true
@@ -36,13 +43,17 @@ struct ZoomScrollView<Content: View>: UIViewRepresentable {
 		scrollView.showsHorizontalScrollIndicator = false
 		// Panning only while zoomed in, so swipes at full size page between photos or close the viewer.
 		scrollView.panGestureRecognizer.isEnabled = false
+		// Zoomed in on a photo still shorter or narrower than the screen, a drag that way stretches and springs back,
+		// like in Photos, rather than closing the viewer.
+		scrollView.alwaysBounceVertical = true
+		scrollView.alwaysBounceHorizontal = true
 
 		let hostedView = context.coordinator.hostingController.view!
 		hostedView.translatesAutoresizingMaskIntoConstraints = true
-		hostedView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
 		hostedView.backgroundColor = .clear
 
 		scrollView.addSubview(hostedView)
+		scrollView.zoomView = hostedView
 
 		let doubleTap = UITapGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.doubleTapped))
 		doubleTap.numberOfTapsRequired = 2
@@ -59,8 +70,9 @@ struct ZoomScrollView<Content: View>: UIViewRepresentable {
 		Coordinator(hostingController: UIHostingController(rootView: content), onZoom: onZoom, onTap: onTap, onPinchClose: onPinchClose)
 	}
 
-	func updateUIView(_ uiView: UIScrollView, context: Context) {
+	func updateUIView(_ uiView: FittingScrollView, context: Context) {
 		context.coordinator.hostingController.rootView = content
+		uiView.aspectRatio = aspectRatio
 		context.coordinator.onZoom = onZoom
 		context.coordinator.onTap = onTap
 		context.coordinator.onPinchClose = onPinchClose
@@ -92,9 +104,10 @@ struct ZoomScrollView<Content: View>: UIViewRepresentable {
 			self.onPinchClose = onPinchClose
 		}
 
-		/// Leaves taps on the toolbars floating over the photo to their buttons.
+		/// Leaves taps on the toolbars floating over the photo to their buttons. Taps on the photo, or the bands beside it,
+		/// are the viewer's.
 		func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
-			touch.view?.isDescendant(of: hostingController.view) ?? false
+			touch.view === gestureRecognizer.view || touch.view?.isDescendant(of: hostingController.view) == true
 		}
 
 		@objc func tapped() {
@@ -118,6 +131,7 @@ struct ZoomScrollView<Content: View>: UIViewRepresentable {
 		}
 
 		func scrollViewDidZoom(_ scrollView: UIScrollView) {
+			(scrollView as? FittingScrollView)?.centerContent()
 			// Pinching in below full size closes the photo, like in Photos.
 			if scrollView.isZooming, scrollView.zoomScale < scrollView.minimumZoomScale * 0.8, let onPinchClose, !isClosing {
 				isClosing = true
@@ -138,18 +152,65 @@ struct ZoomScrollView<Content: View>: UIViewRepresentable {
 		}
 	}
 }
+
+/// A scroll view whose zooming view is the content's own fitted size, kept in the middle by insets while it's smaller
+/// than the screen, so panning a zoomed photo stops at its edges.
+final class FittingScrollView: UIScrollView {
+	var aspectRatio: CGFloat? {
+		didSet {
+			if aspectRatio != oldValue {
+				fittedFor = nil
+				setNeedsLayout()
+			}
+		}
+	}
+	weak var zoomView: UIView?
+	/// The bounds size and ratio the view was last fitted to.
+	private var fittedFor: (size: CGSize, ratio: CGFloat?)?
+
+	override func layoutSubviews() {
+		super.layoutSubviews()
+		guard let zoomView, bounds.size != .zero else { return }
+		if fittedFor?.size != bounds.size || fittedFor?.ratio != aspectRatio {
+			fittedFor = (bounds.size, aspectRatio)
+			// Refitting starts over at full size, as on rotating.
+			zoomScale = minimumZoomScale
+			var fitted = bounds.size
+			if let aspectRatio, aspectRatio > 0 {
+				fitted = bounds.width / bounds.height > aspectRatio ? CGSize(width: bounds.height * aspectRatio, height: bounds.height) : CGSize(width: bounds.width, height: bounds.width / aspectRatio)
+			}
+			zoomView.frame = CGRect(origin: .zero, size: fitted)
+			contentSize = fitted
+			centerContent()
+			contentOffset = CGPoint(x: -contentInset.left, y: -contentInset.top)
+		}
+		centerContent()
+	}
+
+	func centerContent() {
+		guard let zoomView else { return }
+		let horizontal = max(0, (bounds.width - zoomView.frame.width) / 2)
+		let vertical = max(0, (bounds.height - zoomView.frame.height) / 2)
+		let insets = UIEdgeInsets(top: vertical, left: horizontal, bottom: vertical, right: horizontal)
+		if contentInset != insets {
+			contentInset = insets
+		}
+	}
+}
 #else
 import AppKit
 
 /// Pinch on the trackpad or double-click to zoom, click to show or hide the bars. The Mac's version of the iPhone one above.
 struct ZoomScrollView<Content: View>: NSViewRepresentable {
 	private let content: Content
+	private let aspectRatio: CGFloat?
 	private let zoomStep: ZoomStep?
 	private let onZoom: (Bool) -> Void
 	private let onTap: () -> Void
 
 	/// `onPinchClose` is for iPhone; on the Mac, the back button and Escape close the viewer.
-	init(zoomStep: ZoomStep? = nil, onZoom: @escaping (Bool) -> Void = { _ in }, onTap: @escaping () -> Void = {}, onPinchClose: (() -> Void)? = nil, @ViewBuilder content: () -> Content) {
+	init(aspectRatio: CGFloat? = nil, zoomStep: ZoomStep? = nil, onZoom: @escaping (Bool) -> Void = { _ in }, onTap: @escaping () -> Void = {}, onPinchClose: (() -> Void)? = nil, @ViewBuilder content: () -> Content) {
+		self.aspectRatio = aspectRatio
 		self.zoomStep = zoomStep
 		self.onZoom = onZoom
 		self.onTap = onTap
@@ -158,6 +219,7 @@ struct ZoomScrollView<Content: View>: NSViewRepresentable {
 
 	func makeNSView(context: Context) -> NSScrollView {
 		let scrollView = NSScrollView()
+		scrollView.contentView = CenteringClipView()
 		scrollView.allowsMagnification = true
 		scrollView.minMagnification = 1
 		scrollView.maxMagnification = 8
@@ -169,10 +231,18 @@ struct ZoomScrollView<Content: View>: NSViewRepresentable {
 		hostingView.translatesAutoresizingMaskIntoConstraints = false
 		scrollView.documentView = hostingView
 		let clipView = scrollView.contentView
+		// As big as fits in the window at the content's shape, so only the content zooms and pans, not the bands beside it.
+		let fillsWidth = hostingView.widthAnchor.constraint(equalTo: clipView.widthAnchor)
+		let fillsHeight = hostingView.heightAnchor.constraint(equalTo: clipView.heightAnchor)
+		fillsWidth.priority = .defaultHigh
+		fillsHeight.priority = .defaultHigh
 		NSLayoutConstraint.activate([
-			hostingView.widthAnchor.constraint(equalTo: clipView.widthAnchor),
-			hostingView.heightAnchor.constraint(equalTo: clipView.heightAnchor),
+			hostingView.widthAnchor.constraint(lessThanOrEqualTo: clipView.widthAnchor),
+			hostingView.heightAnchor.constraint(lessThanOrEqualTo: clipView.heightAnchor),
+			fillsWidth,
+			fillsHeight,
 		])
+		context.coordinator.setAspectRatio(aspectRatio)
 
 		NotificationCenter.default.addObserver(context.coordinator, selector: #selector(Coordinator.magnificationChanged), name: NSScrollView.didEndLiveMagnifyNotification, object: scrollView)
 		let doubleClick = NSClickGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.doubleClicked))
@@ -191,6 +261,7 @@ struct ZoomScrollView<Content: View>: NSViewRepresentable {
 
 	func updateNSView(_ scrollView: NSScrollView, context: Context) {
 		context.coordinator.hostingView.rootView = content
+		context.coordinator.setAspectRatio(aspectRatio)
 		context.coordinator.onZoom = onZoom
 		context.coordinator.onTap = onTap
 		if zoomStep != context.coordinator.handledStep {
@@ -212,11 +283,24 @@ struct ZoomScrollView<Content: View>: NSViewRepresentable {
 		weak var doubleClick: NSClickGestureRecognizer?
 		var handledStep: ZoomStep?
 		private var isZoomedIn = false
+		private var aspectRatio: CGFloat?
+		private var aspectConstraint: NSLayoutConstraint?
 
 		init(hostingView: NSHostingView<Content>, onZoom: @escaping (Bool) -> Void, onTap: @escaping () -> Void) {
 			self.hostingView = hostingView
 			self.onZoom = onZoom
 			self.onTap = onTap
+		}
+
+		func setAspectRatio(_ ratio: CGFloat?) {
+			guard ratio != aspectRatio || aspectConstraint == nil && ratio != nil else { return }
+			aspectRatio = ratio
+			aspectConstraint?.isActive = false
+			aspectConstraint = nil
+			if let ratio, ratio > 0 {
+				aspectConstraint = hostingView.widthAnchor.constraint(equalTo: hostingView.heightAnchor, multiplier: ratio)
+				aspectConstraint?.isActive = true
+			}
 		}
 
 		/// A single click waits to be sure it isn't the first of a double-click.
@@ -263,6 +347,22 @@ struct ZoomScrollView<Content: View>: NSViewRepresentable {
 				onZoom(isZoomedIn)
 			}
 		}
+	}
+}
+
+/// Keeps content smaller than the window in its middle, rather than at the bottom left corner.
+private final class CenteringClipView: NSClipView {
+	override func constrainBoundsRect(_ proposedBounds: NSRect) -> NSRect {
+		var bounds = super.constrainBoundsRect(proposedBounds)
+		guard let documentView else { return bounds }
+		let frame = documentView.frame
+		if frame.width < bounds.width {
+			bounds.origin.x = (frame.width - bounds.width) / 2
+		}
+		if frame.height < bounds.height {
+			bounds.origin.y = (frame.height - bounds.height) / 2
+		}
+		return bounds
 	}
 }
 #endif

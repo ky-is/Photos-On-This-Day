@@ -22,12 +22,15 @@ struct PhotoViewer: View {
 	let placeholder: PlatformImage?
 
 	@State private var selectedID: String?
+	/// True from the start of a swipe until its page settles, while the scroll view sets the selection itself.
+	@State private var isPaging = false
 	@State private var showsChrome = true
 	@State private var showsInfo = false
 	/// Prepares the photos on either side of the current one, so swiping to them shows them sharp right away.
 	@State private var imageCache = PHCachingImageManager()
 	@State private var cachedAssets: [PHAsset] = []
-	@State private var locationDescription: String?
+	/// The selected photo's place, once looked up. A photo with a location and no lookup yet is waiting for one.
+	@State private var place: (id: String, name: String?)?
 
 	@Environment(\.dismiss) private var dismiss
 	@Environment(\.photoTransition) private var photoTransition
@@ -62,11 +65,20 @@ struct PhotoViewer: View {
 				.scrollPosition(id: $selectedID)
 				.scrollIndicators(.hidden)
 				.ignoresSafeArea()
+				.onScrollPhaseChange { _, phase in
+					isPaging = phase != .idle
+					// The grid behind keeps the photo in view once the swipe settles: scrolling it mid-swipe snaps the page.
+					if !isPaging, let selectedID {
+						viewerShowsPhoto(selectedID)
+					}
+				}
 				.onChange(of: selectedID, initial: true) { _, id in
 					guard let id else { return }
+					cacheNeighbors()
+					// A swipe changes the selection halfway through and pages there itself.
+					guard !isPaging else { return }
 					// Jumps from the scrubber can land on pages the lazy stack hasn't made yet, which only scrollTo reaches.
 					proxy.scrollTo(id)
-					cacheNeighbors()
 					viewerShowsPhoto(id)
 				}
 		}
@@ -165,7 +177,7 @@ struct PhotoViewer: View {
 			}
 			.sheet(isPresented: $showsInfo) {
 				if let selectedAsset {
-					PhotoInfo(asset: selectedAsset, place: locationDescription)
+					PhotoInfo(asset: selectedAsset, place: placeName)
 				}
 			}
 			.navigationTitle(title)
@@ -175,8 +187,9 @@ struct PhotoViewer: View {
 			// Reduce Motion opens with a plain push instead of the zoom.
 			.modifier(ZoomTransition(sourceID: selectedID, namespace: reduceMotion ? nil : photoTransition))
 			.task(id: selectedID) {
-				locationDescription = nil
-				locationDescription = await Self.describeLocation(of: selectedAsset)
+				guard let selectedAsset else { return }
+				let name = await PlaceNames.name(of: selectedAsset)
+				place = (selectedAsset.localIdentifier, name)
 			}
 	}
 
@@ -228,13 +241,31 @@ struct PhotoViewer: View {
 		imageCache.setCaching(false, cachedAssets.filter { !neighbors.contains($0) }, size: screenSize, scale: displayScale, contentMode: PhotoPage.contentMode)
 		imageCache.setCaching(true, neighbors.filter { !cachedAssets.contains($0) }, size: screenSize, scale: displayScale, contentMode: PhotoPage.contentMode)
 		cachedAssets = neighbors
+		// Their places too, so swiping to one shows its place right away.
+		let located = Array(assets[max(0, index - 2)...min(assets.count - 1, index + 2)]).filter { $0.location != nil }
+		Task {
+			for asset in located {
+				_ = await PlaceNames.name(of: asset)
+			}
+		}
 	}
 
-	/// The place, or the date when there's no place, like in Photos.
+	private var placeName: String? {
+		place?.id == selectedID ? place?.name : nil
+	}
+
+	/// A photo with a location whose place hasn't been looked up yet.
+	private var isWaitingForPlace: Bool {
+		selectedAsset?.location != nil && place?.id != selectedID
+	}
+
+	/// The place, or the date when there's no place, like in Photos. While the place is looked up, nothing: the date
+	/// shows in the small style it keeps once the place arrives, rather than in bold for a moment. (A blank title such as
+	/// a space shows as a pair of quotes.)
 	private var title: Text {
-		if let locationDescription {
-			Text(locationDescription)
-		} else if let date = selectedAsset?.creationDate {
+		if let placeName {
+			Text(placeName)
+		} else if !isWaitingForPlace, let date = selectedAsset?.creationDate {
 			Text(date, format: .dateTime.year().month().day())
 		} else {
 			Text(verbatim: "")
@@ -243,14 +274,39 @@ struct PhotoViewer: View {
 
 	private var subtitle: Text {
 		guard let date = selectedAsset?.creationDate else { return Text(verbatim: "") }
-		return locationDescription == nil ? Text(date, format: .dateTime.hour().minute()) : Text(date, format: .dateTime)
+		return placeName == nil && !isWaitingForPlace ? Text(date, format: .dateTime.hour().minute()) : Text(date, format: .dateTime)
+	}
+}
+
+/// Where photos were taken, as a town or a short address, looked up once per photo and kept while the app runs.
+private enum PlaceNames {
+	private static var names: [String: String?] = [:]
+	private static var lookups: [String: Task<String?, Never>] = [:]
+
+	static func name(of asset: PHAsset) async -> String? {
+		let id = asset.localIdentifier
+		if let name = names[id] {
+			return name
+		}
+		let lookup = lookups[id] ?? Task {
+			await lookUp(asset.location)
+		}
+		lookups[id] = lookup
+		let name = await lookup.value
+		// A lookup that failed, offline say, is tried again next time.
+		if name != nil || asset.location == nil {
+			names[id] = name
+		}
+		lookups[id] = nil
+		return name
 	}
 
-	private static func describeLocation(of asset: PHAsset?) async -> String? {
-		guard let location = asset?.location, let request = MKReverseGeocodingRequest(location: location) else { return nil }
+	private static func lookUp(_ location: CLLocation?) async -> String? {
+		guard let location, let request = MKReverseGeocodingRequest(location: location) else { return nil }
 		do {
 			let mapItem = try await request.mapItems.first
-			return mapItem?.addressRepresentations?.cityWithContext ?? mapItem?.address?.shortAddress
+			// Out in the wilds there's no town, and the name can come back empty.
+			return [mapItem?.addressRepresentations?.cityWithContext, mapItem?.address?.shortAddress].compactMap { $0 }.first { !$0.isEmpty }
 		} catch {
 			logger.error("Reverse geocode failed: \(error.localizedDescription)")
 			return nil
@@ -459,7 +515,7 @@ private struct PhotoPage: View {
 					.accessibilityElement(children: .contain)
 					.accessibilityLabel(accessibilityDescription)
 			} else {
-				ZoomScrollView(zoomStep: zoomStep) { zoomed in
+				ZoomScrollView(aspectRatio: asset.pixelHeight > 0 ? CGFloat(asset.pixelWidth) / CGFloat(asset.pixelHeight) : nil, zoomStep: zoomStep) { zoomed in
 					isZoomed = zoomed
 					// Zooming in clears the screen for the photo, and zooming back out brings the bars back, like in Photos. Not with VoiceOver, which needs the bars.
 					withAnimation {
