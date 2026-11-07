@@ -1,5 +1,8 @@
 default_platform :ios
 
+# sync_screenshots, the asset library and asc_request, shared by every app
+require File.expand_path('~/Programming/fastlane-shared/app_store.rb')
+
 PROJECT = 'Photos On This Day.xcodeproj'
 SCHEME = 'Photos On This Day'
 OUTPUT = File.expand_path('build', __dir__)
@@ -72,61 +75,6 @@ def build_package(key, mac: false)
 	sh('xcodebuild', '-exportArchive', '-archivePath', archive, '-exportOptionsPlist', options, '-exportPath', export, *signing_args)
 	FileUtils.rm_rf(archive)
 	Dir[File.join(export, mac ? '*.pkg' : '*.ipa')].first || UI.user_error!("No package in #{export}")
-end
-
-# Uploads only the screenshot sets that changed. Each display type's local screenshots, in order, are compared by MD5 with
-# the checksums App Store Connect keeps, and only a set that differs is replaced (a type no longer here is removed). Much
-# faster than deliver's overwrite, which re-uploads every screenshot and waits for all of them to process.
-def sync_screenshots(key, dry_run: false, mac: false)
-	require 'digest'
-	require 'deliver'
-	Spaceship::ConnectAPI.token = Spaceship::ConnectAPI::Token.from(hash: key)
-	locales = Dir[File.join(SCREENSHOTS, '*', '*.jpg')].map { |path| File.basename(File.dirname(path)) }.uniq.sort - ['raw']
-	UI.user_error!("No screenshots in #{SCREENSHOTS}; run `fastlane screenshots`") if locales.empty?
-	app = Spaceship::ConnectAPI::App.find(CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier))
-	version = app.get_edit_app_store_version(platform: mac ? Spaceship::ConnectAPI::Platform::MAC_OS : Spaceship::ConnectAPI::Platform::IOS) || UI.user_error!("No editable #{mac ? 'Mac' : 'iOS'} version on App Store Connect")
-	localizations = version.get_app_store_version_localizations.to_h { |l| [l.locale, l] }
-	locales.each do |locale|
-		UI.header(locale)
-		localization = localizations[locale] || UI.user_error!("No #{locale} text on the version; upload the metadata first")
-		sync_screenshot_sets(localization, File.join(SCREENSHOTS, locale), dry_run: dry_run, mac: mac)
-	end
-	# App Store Connect processes the uploads on its own; a submit only needs them uploaded, so this doesn't wait for it
-	UI.success('Screenshots in sync') unless dry_run
-end
-
-# One language's sets, from the screenshots in folder: the Mac ones (APP_DESKTOP) for the Mac version, the rest for iOS
-def sync_screenshot_sets(localization, folder, dry_run:, mac: false)
-	local = Dir[File.join(folder, '*.jpg')].sort.group_by { |path| Deliver::AppScreenshot.calculate_display_type(path) }.select { |type, _| (type == 'APP_DESKTOP') == mac }
-	UI.user_error!("Screenshots of no App Store size: #{local[nil].map { |path| File.basename(path) }.join(', ')}") if local[nil]
-	sets = localization.get_app_screenshot_sets.to_h { |set| [set.screenshot_display_type, set] }
-	(sets.keys - local.keys).each do |type|
-		UI.message("#{type}: #{dry_run ? 'would remove' : 'removed'}")
-		sets[type].delete! unless dry_run
-	end
-	# File by file: a screenshot App Store Connect already has (the same checksum) stays as it is, only new files upload,
-	# and only the ones no longer here are removed, so an unchanged screenshot is never sent again
-	local.each do |type, paths|
-		set = sets[type]
-		remote = (set&.app_screenshots || []).group_by(&:source_file_checksum)
-		checksums = paths.map { |path| Digest::MD5.file(path).hexdigest }
-		if (set&.app_screenshots || []).map(&:source_file_checksum) == checksums
-			UI.message("#{type}: unchanged (#{paths.size})")
-			next
-		end
-		kept = paths.zip(checksums).filter_map { |path, sum| remote[sum]&.first && File.basename(path) }
-		changed = paths.zip(checksums).reject { |_, sum| remote[sum] }.map { |path, _| File.basename(path) }
-		stale = (set&.app_screenshots || []).count { |shot| !checksums.include?(shot.source_file_checksum) }
-		UI.message("#{type}: #{dry_run ? 'would upload' : 'uploading'} #{changed.join(', ')}#{kept.empty? ? '' : "; keeping #{kept.join(', ')}"}#{stale.zero? ? '' : "; removing #{stale} old"}")
-		next if dry_run
-		set ||= localization.create_app_screenshot_set(attributes: { screenshotDisplayType: type })
-		ids = paths.zip(checksums).map do |path, sum|
-			existing = remote[sum]&.shift
-			existing ? existing.id : Spaceship::ConnectAPI::AppScreenshot.create(app_screenshot_set_id: set.id, path: path, wait_for_processing: false).id
-		end
-		remote.values.flatten.each(&:delete!)
-		set.reorder_screenshots(app_screenshot_ids: ids)
-	end
 end
 
 # Each language's version text (description, keywords, what's new, promotional text, URLs) straight to the editable version,
@@ -241,7 +189,7 @@ platform :ios do
 
 	desc 'Upload the screenshots that changed to the editable version on App Store Connect (dry_run:true only reports)'
 	lane :upload_screenshots do |options|
-		sync_screenshots(api_key, dry_run: options[:dry_run].to_s == 'true', mac: options[:mac].to_s == 'true')
+		sync_screenshots(api_key, folder: SCREENSHOTS, platform: options[:mac].to_s == 'true' ? 'osx' : 'ios', dry_run: options[:dry_run].to_s == 'true')
 	end
 
 	desc 'Upload fastlane/metadata and the screenshots, attach the latest build of this version, and submit it for review (uploads:false skips the uploads, review:false stops after them; mac:true does the Mac version, with fastlane/metadata-mac)'
@@ -264,7 +212,7 @@ platform :ios do
 				UI.important('The app info (name, subtitle, categories, privacy URL) is locked while a version is in review, so only the version text goes up now; send the rest with `fastlane submit review:false` once the review ends')
 				upload_version_text(app, metadata, mac: mac)
 			end
-			sync_screenshots(key, mac: mac)
+			sync_screenshots(key, folder: SCREENSHOTS, platform: mac ? 'osx' : 'ios')
 		end
 		next if options[:review].to_s == 'false'
 		build = latest_testflight_build_number(api_key: key, app_identifier: CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier), version: versions[:version], platform: platform)
