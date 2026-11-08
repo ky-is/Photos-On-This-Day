@@ -1,25 +1,9 @@
-Nouveautés de la version 2.1 :
+Nouveautés :
 
-• Balayez la carte vers le bas pour la masquer
-• Le balayage entre les photos suit votre doigt avec fluidité
-• En balayant entre les jours, le jour suivant arrive du bon côté, déjà chargé
-• Corrections : titre affichant brièvement la date avant le lieu, photos zoomées qui se déplaçaient au-delà de leurs bords, balayages qui ouvraient une photo par erreur et grille qui tremblait quand on la pinçait
-
-Nouveautés de la 2.0 :
-
-• Nouveau visualiseur : les photos s’ouvrent en zoomant depuis la grille, balayez vers le bas ou pincez pour fermer, et touchez pour tout masquer. Parcourez toutes les photos du jour avec la bande de vignettes.
-• Les vidéos et les Live Photos sont lues
-• Pincez ou touchez deux fois pour zoomer, avec plus de détails
+• Nouveau visualiseur qui lit les Live Photos et les vidéos
 • Voyez sur une carte où chaque photo a été prise
-• Partagez la journée en publication, en story ou en vidéo diaporama, avec les meilleures photos de chaque année choisies pour vous.
-• Regardez les photos du jour en diaporama
-• Les jours sans photos vous proposent des jours proches qui en ont
-• Tous les quelques mois, si vous n’avez pas regardé depuis un moment, un rappel d’un jour riche en photos
-• Le widget ouvre la photo qu’il affiche
-• Widgets pour l’écran verrouillé avec le nombre de photos du jour
-• Widget Années : une photo de chaque année passée à cette date
-• Siri et Raccourcis : afficher les photos d’un jour ou d’une année choisie, un souvenir au hasard ou compter les photos du jour
-• Choisissez la fréquence à laquelle les widgets changent de photo, avec un bouton aléatoire facultatif pour changer de photo tout de suite
-• Disponible dans 8 langues supplémentaires
-• Chargement et défilement plus rapides
-• Accessibilité améliorée
+• Partagez la journée en publication, en story ou en vidéo diaporama
+• Widgets pour l’écran verrouillé et une option grille pour les widgets
+• Toucher un widget ouvre directement cette photo
+• Siri et Raccourcis
+• Accessibilité améliorée et corrections de bugs

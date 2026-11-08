@@ -1,25 +1,9 @@
-Novidades da versão 2.1:
+Novidades:
 
-• Deslize o mapa para baixo para ocultá-lo
-• Ao deslizar entre fotos, a foto acompanha o seu dedo com fluidez
-• Ao deslizar entre dias, o próximo dia entra pelo lado certo, já carregado
-• Correções para o título que mostrava a data antes do local por um instante, fotos ampliadas que se moviam além das bordas, gestos de deslizar que abriam uma foto sem querer e a grade que tremia com o gesto de pinça
-
-Novidades da 2.0:
-
-• Novo visualizador: as fotos abrem com zoom a partir da grade, deslize para baixo ou faça o gesto de pinça para fechar e toque para ocultar tudo. Percorra todas as fotos do dia com a faixa de miniaturas.
-• Vídeos e Live Photos são reproduzidos
-• Use o gesto de pinça ou toque duas vezes para ampliar, com mais detalhes
+• Novo visualizador que reproduz Live Photos e vídeos
 • Veja em um mapa onde cada foto foi tirada
-• Compartilhe o dia como post, story ou vídeo de apresentação, com as melhores fotos de cada ano escolhidas para você.
-• Veja as fotos do dia como uma apresentação de slides
-• Dias sem fotos indicam dias próximos que têm fotos
-• A cada poucos meses, se você não olhar há um tempo, um lembrete de um dia com muitas fotos
-• O widget abre a foto que ele mostra
-• Widgets para a Tela Bloqueada com o número de fotos de hoje
-• Widget Anos: uma foto de cada ano passado neste dia
-• Siri e Atalhos: mostre as fotos de um dia ou de um ano escolhido, uma lembrança aleatória ou conte as fotos de hoje
-• Escolha com que frequência os widgets trocam de foto, com um botão de embaralhar opcional para trocar a foto na hora
-• Disponível em mais 8 idiomas
-• Carregamento e rolagem mais rápidos
-• Acessibilidade aprimorada
+• Compartilhe o dia como post, story ou vídeo de apresentação
+• Widgets para a Tela Bloqueada e uma opção de grade para os widgets
+• Tocar em um widget abre diretamente essa foto
+• Siri e Atalhos
+• Acessibilidade aprimorada e correções de bugs

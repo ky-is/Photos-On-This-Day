@@ -1,25 +1,9 @@
-Neu in 2.1:
+Neu:
 
-• Karte nach unten wischen, um sie auszublenden
-• Beim Wischen zwischen Fotos folgt das Foto flüssig dem Finger
-• Beim Wischen zwischen Tagen gleitet der nächste Tag in der richtigen Richtung herein, schon vorab geladen
-• Fehlerbehebungen: Titel, der kurz das Datum vor dem Ort zeigte, gezoomte Fotos, die sich über ihre Ränder hinaus verschieben ließen, Wischgesten, die versehentlich ein Foto öffneten, und ruckelndes Raster beim Zusammenziehen
-
-Neu in 2.0:
-
-• Neue Fotoansicht: Fotos zoomen aus dem Raster auf, nach unten wischen oder zusammenziehen zum Schließen, tippen blendet alles aus. Mit der Miniaturleiste durch alle Fotos des Tages blättern.
-• Videos und Live Photos werden abgespielt
-• Mit Aufziehen oder Doppeltippen zoomen, mit schärferen Details
+• Neue Fotoansicht, die Live Photos und Videos abspielt
 • Auf einer Karte sehen, wo ein Foto aufgenommen wurde
-• Teile den Tag als Beitrag, Story oder Diashow-Video, mit den besten Fotos aus jedem Jahr, für dich ausgewählt.
-• Die Fotos des Tages als Diashow ansehen
-• Tage ohne Fotos verweisen auf Tage in der Nähe, die welche haben
-• Alle paar Monate, wenn du länger nicht reingeschaut hast, eine Erinnerung an einen Tag mit vielen Fotos
-• Das Widget öffnet das Foto, das es zeigt
-• Widgets für den Sperrbildschirm mit der Anzahl der heutigen Fotos
-• Jahre-Widget: ein Foto aus jedem vergangenen Jahr an diesem Tag
-• Siri und Kurzbefehle: Fotos eines Tages oder eines gewählten Jahres zeigen, eine zufällige Erinnerung oder die heutigen Fotos zählen
-• Lege fest, wie oft Widgets die Fotos wechseln, mit einer optionalen Zufallstaste, um sofort ein anderes Foto zu zeigen
-• In 8 weiteren Sprachen verfügbar
-• Schnelleres Laden und Scrollen
-• Verbesserte Bedienungshilfen
+• Teile den Tag als Beitrag, Story oder Diashow-Video
+• Widgets für den Sperrbildschirm und eine Raster-Option für Widgets
+• Ein Tippen aufs Widget öffnet direkt dieses Foto
+• Siri und Kurzbefehle
+• Verbesserte Bedienungshilfen und Fehlerbehebungen

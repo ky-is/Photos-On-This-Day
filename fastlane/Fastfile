@@ -122,11 +122,11 @@ def write_release_notes
 		These are the commit messages since #{previous} came out (gitmoji first: ✨ feature, 🐛 fix, 💄 look, ⚡️ speed, ♿️ accessibility, 🌐 languages):
 
 		#{commits}
-		Only include changes someone using the app would notice. Leave out the website, build scripts, fastlane and App Store work, screenshot tooling, refactors, and anything only on the Mac. Write each change plainly and briefly, the way the #{previous} notes below do, not the way the commits are worded.
+		Only include changes someone using the app would notice. Leave out the website, build scripts, fastlane and App Store work, screenshot tooling, refactors, and anything only on the Mac. Name each new feature in one short line, plainly, not the way the commits are worded. Don't list fixes or small refinements one by one: end with a single line summing them up, like "Improved accessibility and bug fixes".
 
-		#{previous} came out #{days} days ago. #{days < 31 ? "Since that's recent, many people haven't seen it yet: after this version's changes, keep the important points of the #{previous} notes (its features and notable improvements; drop its minor fixes), shortened if needed, under a short heading like \"New in #{previous}:\"." : "Only describe what's new in #{version}."}
+		#{previous} came out #{days} days ago. #{days < 31 ? "Since that's recent, many people haven't seen it yet: fold its main features (not its fixes) into the same list, shortened to a few words each, with no separate section per version." : "Only describe what's new in #{version}."}
 
-		Match the #{previous} notes' format: a first line like their "What's new in" line but for #{version}, then one "• " bullet per change. Keep each language under 4000 characters.
+		Format: a first line like "What's new:" in that language, then one "• " bullet per item, about ten at most. Keep each language under 4000 characters.
 
 		The #{previous} notes, in each language (reuse their wording and terms where it fits):
 
